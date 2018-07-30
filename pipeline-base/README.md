@@ -161,4 +161,9 @@ conf/run hu-s1 search
 conf/run hu-s1 extract_contigs extract_reads
 ```
 
-https://osf.io/ehgbv/ - hu genomes
+mkdir hu-genomes
+cd hu-genomes
+curl -L -o hu-genomes.tar.gz https://osf.io/ehgbv/?action=download
+tar xzf hu-genomes
+.tar.gz
+cd ../
