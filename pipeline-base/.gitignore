@@ -1,0 +1,10 @@
+.snakemake
+SRR1976948.abundtrim.fq.gz
+SRR606249.k31.abundtrim.fq.gz
+bcalm.podar-ref.k31.inputlist.txt
+bcalm.podarV.k31.inputlist.txt
+bcalm_to_gxt.log
+podar-ref/
+podar-ref_k31_r1/
+podar-ref_k31_r1_search_oh0/
+podarV/

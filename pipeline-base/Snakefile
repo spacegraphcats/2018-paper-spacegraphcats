@@ -1,0 +1,57 @@
+# TODO:
+#  * make location of spacegraphcats configurable
+#  * copy conf JSON files into this directory
+import os
+
+thisdir = os.getcwd()
+spacegraphcats = os.path.join(thisdir, '../../spacegraphcats')
+os.environ['PYTHONPATH'] = spacegraphcats
+print('XXX', spacegraphcats)
+
+podar_ref_genomes = expand("podar-ref/{num}.fa", num=range(0, 64))
+
+rule all:
+    input:
+        directory("podar-ref_k31_r1_search_oh0"),
+        directory("podar-ref_k31_r1_cdbg_search_oh0"),
+        directory("podarV_k31_r1"),
+        directory("hu-s1_k31_r1")
+
+rule download_podar_ref_genomes:
+    output:
+        podar_ref_genomes
+    shell:
+        """mkdir -p podar-ref && cd podar-ref && \
+             (curl -L https://osf.io/8uxj9/?action=download | tar xzf -)"""
+
+rule podar_ref_search:
+    input:
+        podar_ref_genomes
+    output:
+        directory("podar-ref_k31_r1_search_oh0")
+    shell:
+        "../../spacegraphcats/conf/run podar-ref search"
+
+rule podar_ref_search_cdbg_only:
+    input:
+        podar_ref_genomes
+    output:
+        directory("podar-ref_k31_r1_cdbg_search_oh0")
+    shell:
+        "../../spacegraphcats/conf/run podar-ref search --cdbg-only"
+
+rule podarV_build:
+    input:
+        "SRR606249.k31.abundtrim.fq.gz"
+    output:
+        directory("podarV_k31_r1")
+    shell:
+        "../../spacegraphcats/conf/run podarV build"
+
+rule hu_s1_build:
+    input:
+        "SRR1976948.abundtrim.fq.gz"
+    output:
+        directory("hu-s1_k31_r1")
+    shell:
+        "../../spacegraphcats/conf/run hu-s1 build"
