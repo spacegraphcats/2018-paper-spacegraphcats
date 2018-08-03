@@ -44,6 +44,7 @@ conf/run podar-ref search
 conf/run podar-ref extract_contigs extract_reads
 conf/run podar-ref search --cdbg-only
 ```
+(@CTB why do we need extract_contigs, above?)
 
 These should take about an hour on a reasonably fast computer, and require
 under 16 GB of RAM.
@@ -71,10 +72,6 @@ This will create three directories full of genomes, `bacteroides`,
 conf/run podarV-bacteroides search
 conf/run podarV-denticola search
 conf/run podarV-gingivalis search
-```
-
-Collect the results:
-```
 ```
 
 Compute the sourmash signatures for all of the strain genomes:
@@ -148,6 +145,53 @@ cd ../
 ```
 
 ### 3(b) - recover Fusobacterium and Proteiniclasticum.
+
+```
+curl -o podarV-recover.tar.gz -L https://osf.io/w3xuf/?action=download
+tar xzf podarV-recover.tar.gz
+```
+This creates subdirectories `ruminis` and `fuso`.
+
+Now, do the first round retrieval of neighborhoods:
+
+```
+conf/run podarV-fuso search extract_contigs extract_reads
+conf/run podarV-ruminis search extract_contigs extract_reads
+```
+
+which will produce
+
+```
+podarV_k31_r1_search_oh0_fuso
+podarV_k31_r1_search_oh0_ruminis
+```
+
+```
+gunzip -c podarV_k31_r1_search_oh0_ruminis/*.cdbg_ids.txt.gz | gzip -9c > ruminis-combined-node-list.txt.gz
+python -m spacegraphcats.search.extract_reads podarV/podarV.reads.bgz podarV_k31_r1/reads.bgz.labels ruminis-combined-node-list.txt.gz -o ruminis.reads.fa
+
+gunzip -c podarV_k31_r1_search_oh0_fuso/*.cdbg_ids.txt.gz | gzip -9c > fuso-combined-node-list.txt.gz
+python -m spacegraphcats.search.extract_reads podarV/podarV.reads.bgz podarV_k31_r1/reads.bgz.labels fuso-combined-node-list.txt.gz -o fuso.reads.fa
+```
+
+assemble:
+
+```
+megahit -r ruminis.reads.fa -o ruminis.assembly
+megahit -r fuso.reads.fa -o fuso.assembly
+```
+
+check completeness with checkm:
+```
+conda create -n py27 python=2.7 anaconda checkm-genome
+conda activate py27
+mkdir bins
+
+cp ruminis.assembly/final.contigs.fa bins/P_ruminis_shakya.fa
+cp fuso.assembly/final.contigs.fa bins/Fuso_spp_shakya.fa
+
+checkm lineage_wf -x fa --reduced_tree bins out
+```
 
 ## figure 4
 
