@@ -8,11 +8,12 @@ You'll need to [install spacegraphcats and bcalm](https://github.com/spacegraphc
 
 You will also need the following files & data sets:
 
-* SRR606249.k31.abundtrim.fq.gz - Shakya et al., Podar, 2013; doi: 10.1111/1462-2920.12086; Illumina metagenome.
-* SRR1976948.abundtrim.fq.gz - Hu et al., Banfield, 2016; doi: 10.1128/mBio.01669-15; sample SB1.
+* `SRR606249.k31.abundtrim.fq.gz` - Shakya et al., Podar, 2013; doi: 10.1111/1462-2920.12086; Illumina metagenome.
+* `SRR1976948.abundtrim.fq.gz` - Hu et al., Banfield, 2016; doi: 10.1128/mBio.01669-15; sample SB1.
 
-Download both of these short read data sets from the SRA/ENA, and process as
-below to remove low-abundance k-mers, using scripts from khmer=2.1.2:
+These are both k-mer trimmed. To generate from the raw SRA read sets,
+download the raw data from the SRA/ENA, and process as below to remove
+low-abundance k-mers, using scripts from khmer=2.1.2:
 
 ```
 # both interleave-reads.py and trim-low-abund.py come from khmer==2.1.2.
@@ -27,7 +28,7 @@ We need to build the following two directories of results:
 * `podar-ref_k31_r1_search_oh0`
 * `podar-ref_k31_r1_cdbg_search_oh0`
 
-To do so, first grab the data:
+To do so, first grab the constituent genome data:
 
 ```
 mkdir podar-ref
@@ -41,13 +42,14 @@ Then, execute:
 
 ```
 conf/run podar-ref search
-conf/run podar-ref extract_contigs extract_reads
 conf/run podar-ref search --cdbg-only
 ```
-(@CTB why do we need extract_contigs, above?)
 
-These should take about an hour on a reasonably fast computer, and require
-under 16 GB of RAM.
+This will build the two directories above by loading the reference
+genomes into a cDBG using bcalm, generating the dominating set,
+indexing the domset, and performing a number of searches. It should
+take about an hour on a reasonably fast computer, and require under 16
+GB of RAM.
 
 ## figure 3
 
@@ -66,7 +68,7 @@ Download and unpack the `podarV-strain` collection into the
 curl -L -o podarV-strain.tar.gz https://osf.io/h9emb/?action=download
 tar xzf podarV-strain.tar.gz
 ```
-This will create three directories full of genomes, `bacteroides`,
+This will create three directories full of genomes: `bacteroides`,
  `denticola`, and `gingivalis`. Now, run searches on podarV with them:
 ```
 conf/run podarV-bacteroides search
@@ -144,27 +146,28 @@ cd ../
 
 ```
 
-### 3(b) - recover Fusobacterium and Proteiniclasticum.
+### 3(b) - recover Fusobacterium and Proteiniclasticum from podarV.
 
 ```
 curl -o podarV-recover.tar.gz -L https://osf.io/w3xuf/?action=download
 tar xzf podarV-recover.tar.gz
 ```
-This creates subdirectories `ruminis` and `fuso`.
+This creates subdirectories `ruminis` and `fuso`.  The former contains
+all *Proteiniclasticum ruminis* genomes from GenBank, and the latter
+contains the 8 *Fusobacterium* strains detected in the read data set
+using `sourmash gather`.
 
 Now, do the first round retrieval of neighborhoods:
 
 ```
-conf/run podarV-fuso search extract_contigs extract_reads
-conf/run podarV-ruminis search extract_contigs extract_reads
+conf/run podarV-fuso search
+conf/run podarV-ruminis search
 ```
 
-which will produce
+which will produce the directories `podarV_k31_r1_search_oh0_fuso` and
+`podarV_k31_r1_search_oh0_ruminis`.
 
-```
-podarV_k31_r1_search_oh0_fuso
-podarV_k31_r1_search_oh0_ruminis
-```
+Next, extract the reads corresponding to each neighborhood:
 
 ```
 gunzip -c podarV_k31_r1_search_oh0_ruminis/*.cdbg_ids.txt.gz | gzip -9c > ruminis-combined-node-list.txt.gz
@@ -174,14 +177,15 @@ gunzip -c podarV_k31_r1_search_oh0_fuso/*.cdbg_ids.txt.gz | gzip -9c > fuso-comb
 python -m spacegraphcats.search.extract_reads podarV/podarV.reads.bgz podarV_k31_r1/reads.bgz.labels fuso-combined-node-list.txt.gz -o fuso.reads.fa
 ```
 
-assemble:
+Assemble the reads using megahit:
 
 ```
+conda install -y megahit
 megahit -r ruminis.reads.fa -o ruminis.assembly
 megahit -r fuso.reads.fa -o fuso.assembly
 ```
 
-check completeness with checkm:
+Check completeness with checkm:
 ```
 conda create -n py27 python=2.7 anaconda checkm-genome
 conda activate py27
@@ -193,21 +197,30 @@ cp fuso.assembly/final.contigs.fa bins/Fuso_spp_shakya.fa
 checkm lineage_wf -x fa --reduced_tree bins out
 ```
 
-## figure 4
+& done!
 
-* podarV_k31_r1_search_oh0
-* hu-s1_k31_r1_search_oh0
+## Figure 4
+
+### Figure 4(a), neighborhood sizes for podar-ref, podarV, and hu-s1
+
+We need the following output directories:
+
+* `podarV_k31_r1_search_oh0`
+* `hu-s1_k31_r1_search_oh0`
+
+First, generate the primary results:
+```
+conf/run podarV search extract_contigs extract_reads
+conf/run hu-s1 search extract_contigs extract_reads
+```
+
+You'll also want the hu-genomes:
 
 ```
-conf/run podarV search
-conf/run extract_contigs extract_reads
-conf/run hu-s1 search
-conf/run hu-s1 extract_contigs extract_reads
-```
-
 mkdir hu-genomes
 cd hu-genomes
 curl -L -o hu-genomes.tar.gz https://osf.io/ehgbv/?action=download
 tar xzf hu-genomes
 .tar.gz
 cd ../
+```
