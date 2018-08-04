@@ -2,20 +2,54 @@
 #  * make location of spacegraphcats configurable
 #  * copy conf JSON files into this directory
 import os
+import itertools
 
 thisdir = os.getcwd()
 spacegraphcats = os.path.join(thisdir, '../../spacegraphcats')
 os.environ['PYTHONPATH'] = spacegraphcats
-print('XXX', spacegraphcats)
 
 podar_ref_genomes = expand("podar-ref/{num}.fa", num=range(0, 64))
+
+hu_bin_genomes = ["hu-genomes/hu-genome24.fa",
+                  "hu-genomes/hu-genome33.fa", "hu-genomes/hu-genome25.fa",
+                  "hu-genomes/hu-genome27.fa", "hu-genomes/hu-genome08.fa",
+                  "hu-genomes/hu-genome40.fa", "hu-genomes/hu-genome30.fa",
+                  "hu-genomes/hu-genome31.fa", "hu-genomes/hu-genome41.fa",
+                  "hu-genomes/hu-genome26.fa", "hu-genomes/hu-genome35.fa",
+                  "hu-genomes/hu-genome22.fa", "hu-genomes/hu-genome23.fa",
+                  "hu-genomes/hu-genome34.fa", "hu-genomes/hu-genome36.fa",
+                  "hu-genomes/hu-genome19.fa", "hu-genomes/hu-genome21.fa",
+                  "hu-genomes/hu-genome20.fa", "hu-genomes/hu-genome37.fa",
+                  "hu-genomes/hu-genome29.fa", "hu-genomes/hu-genome11.fa",
+                  "hu-genomes/hu-genome10.fa", "hu-genomes/hu-genome28.fa",
+                  "hu-genomes/hu-genome12.fa", "hu-genomes/hu-genome13.fa",
+                  "hu-genomes/hu-genome38.fa", "hu-genomes/hu-genome39.fa",
+                  "hu-genomes/hu-genome14.fa", "hu-genomes/hu-genome03.fa",
+                  "hu-genomes/hu-genome02.fa"]
+
+strain_bacteroides = [x.strip() for x in open('conf/strain-bacteroides.txt')]
+strain_gingivalis = [x.strip() for x in open('conf/strain-gingivalis.txt')]
+strain_denticola = [x.strip() for x in open('conf/strain-denticola.txt')]
+
+recover_ruminis = [x.strip() for x in open('conf/recover-ruminis.txt')]
+recover_fuso = [x.strip() for x in open('conf/recover-fuso.txt')]
+
+###
 
 rule all:
     input:
         directory("podar-ref_k31_r1_search_oh0"),
         directory("podar-ref_k31_r1_cdbg_search_oh0"),
         directory("podarV_k31_r1"),
-        directory("hu-s1_k31_r1")
+        directory("podarV_k31_r1_search_oh0"),
+        directory("hu-s1_k31_r1"),
+        directory("hu-s1_k31_r1_search_oh0"),
+        directory("podarV_k31_r1_search_oh0_fuso"),
+        directory("podarV_k31_r1_search_oh0_ruminis"),
+        [ x + '.sig' for x in itertools.chain(recover_fuso, recover_ruminis) ],
+        [ x + '.sig' for x in itertools.chain(strain_gingivalis,
+                                              strain_denticola,
+                                              strain_bacteroides) ]
 
 rule download_podar_ref_genomes:
     output:
@@ -23,6 +57,31 @@ rule download_podar_ref_genomes:
     shell:
         """mkdir -p podar-ref && cd podar-ref && \
              (curl -L https://osf.io/8uxj9/?action=download | tar xzf -)"""
+
+rule download_hu_bin_genomes:
+    output:
+        hu_bin_genomes
+    shell:
+        """mkdir -p hu-genomes && cd hu-genomes && \
+             (curl -L https://osf.io/ehgbv/?action=download | tar xzf -)"""
+
+rule download_podarV_strain_genomes:
+    output:
+        strain_denticola,
+        strain_gingivalis,
+        strain_bacteroides
+    shell:
+        "curl -L https://osf.io/h9emb/?action=download | tar xzf -"
+
+rule download_podarV_recover_genomes:
+    output:
+        recover_ruminis,
+        recover_fuso
+    shell:
+        "curl -L https://osf.io/w3xuf/?action=download | tar xzf -"
+
+
+###
 
 rule podar_ref_search:
     input:
@@ -48,6 +107,24 @@ rule podarV_build:
     shell:
         "../../spacegraphcats/conf/run podarV build"
 
+rule podarV_search:
+    input:
+        "podarV_k31_r1",
+        podar_ref_genomes
+    output:
+        directory("podarV_k31_r1_search_oh0")
+    shell:
+        "../../spacegraphcats/conf/run podarV search"
+
+rule podarV_labeled_reads:
+    input:
+        "SRR606249.k31.abundtrim.fq.gz"
+    output:
+        "podarV_k31_r1/reads.bgz.labels",
+        "podarV/podarV.reads.bgz"
+    shell:
+        "../../spacegraphcats/conf/run podarV {output[0]} --nolock"
+
 rule hu_s1_build:
     input:
         "SRR1976948.abundtrim.fq.gz"
@@ -55,3 +132,76 @@ rule hu_s1_build:
         directory("hu-s1_k31_r1")
     shell:
         "../../spacegraphcats/conf/run hu-s1 build"
+
+rule hu_s1_search:
+    input:
+        hu_bin_genomes,
+        directory("hu-s1_k31_r1"),
+    output:
+        directory("hu-s1_k31_r1_search_oh0")
+    shell:
+        "../../spacegraphcats/conf/run hu-s1 search"
+
+rule podarV_ruminis_search:
+    input:
+        recover_ruminis,
+        directory("podarV_k31_r1"),
+    output:
+        directory("podarV_k31_r1_search_oh0_ruminis")
+    shell:
+        "../../spacegraphcats/conf/run podarV-ruminis search"
+
+rule combine_ruminis_nodes:
+    input:
+        expand("podarV_k31_r1_search_oh0_ruminis/{x}.cdbg_ids.txt.gz",
+               x = [ os.path.basename(j) for j in recover_ruminis ])
+    output:
+        "ruminis-combined-node-list.txt.gz"
+    shell:
+        "gunzip -c {input} | gzip -9c > {output[0]}"
+
+rule extract_ruminis_reads:
+    input:
+        "ruminis-combined-node-list.txt.gz",
+        "podarV_k31_r1/reads.bgz.labels"
+    output:
+        "ruminis.reads.fa"
+    shell:
+        "python -m spacegraphcats.search.extract_reads podarV/podarV.reads.bgz podarV_k31_r1/reads.bgz.labels {input[0]} -o {output[0]}"
+
+rule podarV_fuso_search:
+    input:
+        recover_fuso,
+        directory("podarV_k31_r1"),
+    output:
+        directory("podarV_k31_r1_search_oh0_fuso")
+    shell:
+        "../../spacegraphcats/conf/run podarV-fuso search"
+
+rule combine_fuso_nodes:
+    input:
+        expand("podarV_k31_r1_search_oh0_fuso/{x}.cdbg_ids.txt.gz",
+               x = [ os.path.basename(j) for j in recover_fuso ])
+    output:
+        "fuso-combined-node-list.txt.gz"
+    shell:
+        "gunzip -c {input} | gzip -9c > {output[0]}"
+
+rule extract_fuso_reads:
+    input:
+        "fuso-combined-node-list.txt.gz",
+        "podarV_k31_r1/reads.bgz.labels"
+    output:
+        "fuso.reads.fa"
+    shell:
+        "python -m spacegraphcats.search.extract_reads podarV/podarV.reads.bgz podarV_k31_r1/reads.bgz.labels {input[0]} -o {output[0]}"
+
+###
+
+rule compute_signature_for_genome:
+    input:
+        "{genomefile}"
+    output:
+        "{genomefile}.sig"
+    shell:
+        "sourmash compute -k 31 --scaled=1000 {input[0]} -o {output[0]}"

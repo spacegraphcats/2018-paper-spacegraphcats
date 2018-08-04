@@ -1,0 +1,3 @@
+ruminis/P_ruminis_CGMCC_1.5058.fna.gz
+ruminis/P_ruminis_DSM_24773.fna.gz
+ruminis/P_ruminis_ML2.fna.gz
