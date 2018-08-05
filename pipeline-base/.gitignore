@@ -24,3 +24,13 @@ podarV_k31_r1_search_oh0/
 podarV_k31_r1_search_oh0_ruminis/
 ruminis-combined-node-list.txt.gz
 ruminis/
+bacteroides.csv
+denticola.csv
+fuso-combined-node-list.txt.gz
+fuso.reads.fa
+gingivalis.csv
+podarV_k31_r1_search_oh0_bacteroides/
+podarV_k31_r1_search_oh0_denticola/
+podarV_k31_r1_search_oh0_fuso/
+podarV_k31_r1_search_oh0_gingivalis/
+ruminis.reads.fa

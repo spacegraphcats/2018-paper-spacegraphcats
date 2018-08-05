@@ -44,12 +44,16 @@ rule all:
         directory("podarV_k31_r1_search_oh0"),
         directory("hu-s1_k31_r1"),
         directory("hu-s1_k31_r1_search_oh0"),
-        directory("podarV_k31_r1_search_oh0_fuso"),
-        directory("podarV_k31_r1_search_oh0_ruminis"),
         [ x + '.sig' for x in itertools.chain(recover_fuso, recover_ruminis) ],
         [ x + '.sig' for x in itertools.chain(strain_gingivalis,
                                               strain_denticola,
-                                              strain_bacteroides) ]
+                                              strain_bacteroides) ],
+        [ x + '.sig' for x in itertools.chain(podar_ref_genomes,
+                                              hu_bin_genomes) ],
+        directory("podarV_k31_r1_search_oh0_denticola"),
+        directory("podarV_k31_r1_search_oh0_bacteroides"),
+        directory("podarV_k31_r1_search_oh0_gingivalis"),
+        "bacteroides.csv", "denticola.csv", "gingivalis.csv"
 
 rule download_podar_ref_genomes:
     output:
@@ -142,6 +146,15 @@ rule hu_s1_search:
     shell:
         "../../spacegraphcats/conf/run hu-s1 search"
 
+rule hu_s1_labeled_reads:
+    input:
+        "SRR1976948.abundtrim.fq.gz"
+    output:
+        "hu-s1_k31_r1/reads.bgz.labels",
+        "hu-s1/podarV.reads.bgz"
+    shell:
+        "../../spacegraphcats/conf/run hu-s1 {output[0]} --nolock"
+
 rule podarV_ruminis_search:
     input:
         recover_ruminis,
@@ -174,9 +187,9 @@ rule podarV_fuso_search:
         recover_fuso,
         directory("podarV_k31_r1"),
     output:
-        directory("podarV_k31_r1_search_oh0_fuso")
+        "podarV_31_r1_search_oh0_fuso"
     shell:
-        "../../spacegraphcats/conf/run podarV-fuso search"
+        "../../spacegraphcats/conf/run podarV-fuso search --nolock"
 
 rule combine_fuso_nodes:
     input:
@@ -196,6 +209,57 @@ rule extract_fuso_reads:
     shell:
         "python -m spacegraphcats.search.extract_reads podarV/podarV.reads.bgz podarV_k31_r1/reads.bgz.labels {input[0]} -o {output[0]}"
 
+rule podarV_bacteroides_search:
+    input:
+        strain_bacteroides
+    output:
+        directory("podarV_k31_r1_search_oh0_bacteroides")
+    shell:
+        "../../spacegraphcats/conf/run podarV-bacteroides search"
+
+rule podarV_gingivalis_search:
+    input:
+        strain_gingivalis
+    output:
+        directory("podarV_k31_r1_search_oh0_gingivalis")
+    shell:
+        "../../spacegraphcats/conf/run podarV-gingivalis search"
+
+rule podarV_denticola_search:
+    input:
+        strain_denticola
+    output:
+        directory("podarV_k31_r1_search_oh0_denticola")
+    shell:
+        "../../spacegraphcats/conf/run podarV-denticola search"
+
+rule denticola_compare:
+    input:
+        "podar-ref/56.fa.sig",
+        [ x + '.sig' for x in strain_denticola ]
+    output:
+        "denticola.csv"
+    shell:
+        "sourmash search {input} -n 0 --threshold=0.0 -o {output}"
+        
+rule gingivalis_compare:
+    input:
+        "podar-ref/37.fa.sig",
+        [ x + '.sig' for x in strain_gingivalis ]
+    output:
+        "gingivalis.csv"
+    shell:
+        "sourmash search {input} -n 0 --threshold=0.0 -o {output}"
+        
+rule bacteroides_compare:
+    input:
+        "podar-ref/4.fa.sig",
+        [ x + '.sig' for x in strain_bacteroides ]
+    output:
+        "bacteroides.csv"
+    shell:
+        "sourmash search {input} -n 0 --threshold=0.0 -o {output}"
+        
 ###
 
 rule compute_signature_for_genome:
