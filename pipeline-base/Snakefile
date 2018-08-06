@@ -1,8 +1,8 @@
 # TODO:
 #  * make location of spacegraphcats configurable
-#  * copy conf JSON files into this directory
 import os
 import itertools
+import json
 
 thisdir = os.getcwd()
 spacegraphcats = os.path.join(thisdir, '../../spacegraphcats')
@@ -34,26 +34,123 @@ strain_denticola = [x.strip() for x in open('conf/strain-denticola.txt')]
 recover_ruminis = [x.strip() for x in open('conf/recover-ruminis.txt')]
 recover_fuso = [x.strip() for x in open('conf/recover-fuso.txt')]
 
+def signatures(*filenames):
+    return [ x + '.sig' for x in itertools.chain(*filenames) ]
+
+def catlas_build(conf_file):
+    "Produce the list of files output by 'conf/run <config> build"
+    with open(conf_file, 'rt') as fp:
+        jj = json.load(fp)
+
+    catlas_base = jj['catlas_base']
+    ksize = jj['ksize']
+    radius = jj['radius']
+
+    dirname = '{}_k{}_r{}'.format(catlas_base, ksize, radius)
+
+    z = []
+    z.append(catlas_base + '/bcalm.{}.k31.unitigs.fa'.format(catlas_base))
+    z.append(dirname + '/catlas.csv')
+    z.append(dirname + '/cdbg.gxt')
+    z.append(dirname + '/contigs.fa.gz')
+    z.append(dirname + '/contigs.fa.gz.indices')
+    z.append(dirname + '/contigs.fa.gz.info.csv')
+    z.append(dirname + '/contigs.fa.gz.mphf')
+    z.append(dirname + '/first_doms.txt')
+    return z
+
+
+def catlas_search(conf_file, cdbg_only=False, suffix=''):
+    "Produce the list of files output by 'conf/run <config> search"
+    with open(conf_file, 'rt') as fp:
+        jj = json.load(fp)
+
+    catlas_base = jj['catlas_base']
+    ksize = jj['ksize']
+    radius = jj['radius']
+
+    cdbg_str = ""
+    if cdbg_only:
+        cdbg_str = '_cdbg'
+    dirname = '{}_k{}_r{}{}_search_oh0{}'.format(catlas_base, ksize, radius,
+                                                 cdbg_str, suffix)
+
+    filenames = jj['search']
+    z = []
+    for x in filenames:
+        x = os.path.basename(x)
+        z.append(dirname + '/{}.cdbg_ids.txt.gz'.format(x))
+        z.append(dirname + '/{}.contigs.sig'.format(x))
+        z.append(dirname + '/{}.frontier.txt.gz'.format(x))
+        z.append(dirname + '/{}.response.txt'.format(x))
+
+    z.append(dirname + '/results.csv')
+
+    return z
+
+
+def catlas_extract(conf_file, cdbg_only=False, suffix=''):
+    "Produce the list of files output by 'conf/run <config> extract_contigs extract_reads"
+    with open(conf_file, 'rt') as fp:
+        jj = json.load(fp)
+
+    catlas_base = jj['catlas_base']
+    ksize = jj['ksize']
+    radius = jj['radius']
+
+    cdbg_str = ""
+    if cdbg_only:
+        cdbg_str = '_cdbg'
+    dirname = '{}_k{}_r{}{}_search_oh0{}'.format(catlas_base, ksize, radius,
+                                                 cdbg_str, suffix)
+
+    filenames = jj['search']
+    z = []
+    for x in filenames:
+        x = os.path.basename(x)
+        z.append(dirname + '/{}.cdbg_ids.reads.fa.gz'.format(x))
+        z.append(dirname + '/{}.cdbg_ids.contigs.fa.gz'.format(x))
+
+    return z
+
+
+def catlas_crumbs(conf_file):
+    "Produce crumbs!"
+    with open(conf_file, 'rt') as fp:
+        jj = json.load(fp)
+
+    catlas_base = jj['catlas_base']
+    ksize = jj['ksize']
+    radius = jj['radius']
+
+    dirname = '{}_k{}_r{}_search_oh0'.format(catlas_base, ksize, radius)
+
+    filenames = jj['search']
+    z = []
+    for x in filenames:
+        x = os.path.basename(x)
+        z.append(dirname + '/{}.cdbg_ids.reads.fa.gz.crumbs.fa'.format(x))
+        z.append(dirname + '/{}.cdbg_ids.contigs.fa.gz.crumbs.fa'.format(x))
+
+    return z
+
 ###
 
 rule all:
     input:
-        directory("podar-ref_k31_r1_search_oh0"),
-        directory("podar-ref_k31_r1_cdbg_search_oh0"),
-        directory("podarV_k31_r1"),
-        directory("podarV_k31_r1_search_oh0"),
-        directory("hu-s1_k31_r1"),
-        directory("hu-s1_k31_r1_search_oh0"),
-        [ x + '.sig' for x in itertools.chain(recover_fuso, recover_ruminis) ],
-        [ x + '.sig' for x in itertools.chain(strain_gingivalis,
-                                              strain_denticola,
-                                              strain_bacteroides) ],
-        [ x + '.sig' for x in itertools.chain(podar_ref_genomes,
-                                              hu_bin_genomes) ],
-        directory("podarV_k31_r1_search_oh0_denticola"),
-        directory("podarV_k31_r1_search_oh0_bacteroides"),
-        directory("podarV_k31_r1_search_oh0_gingivalis"),
-        "bacteroides.csv", "denticola.csv", "gingivalis.csv"
+        catlas_search('conf/podar-ref.json', cdbg_only=True),
+        catlas_search('conf/podarV.json'),
+        signatures(recover_fuso, recover_ruminis),
+        signatures(strain_gingivalis, strain_denticola, strain_bacteroides),
+        signatures(podar_ref_genomes, hu_bin_genomes),
+        catlas_search('conf/podarV-ruminis.json', suffix='_ruminis'),
+        catlas_search('conf/podarV-fuso.json', suffix='_fuso'),
+        catlas_search('conf/podarV-denticola.json', suffix='_denticola'),
+        catlas_search('conf/podarV-bacteroides.json', suffix='_bacteroides'),
+        catlas_search('conf/podarV-gingivalis.json', suffix='_gingivalis'),
+        "bacteroides.csv", "denticola.csv", "gingivalis.csv",
+        catlas_search('conf/hu-s1.json'),
+        catlas_extract('conf/hu-s1.json')
 
 rule download_podar_ref_genomes:
     output:
@@ -91,7 +188,7 @@ rule podar_ref_search:
     input:
         podar_ref_genomes
     output:
-        directory("podar-ref_k31_r1_search_oh0")
+        catlas_search('conf/podar-ref.json')
     shell:
         "../../spacegraphcats/conf/run podar-ref search"
 
@@ -99,7 +196,7 @@ rule podar_ref_search_cdbg_only:
     input:
         podar_ref_genomes
     output:
-        directory("podar-ref_k31_r1_cdbg_search_oh0")
+        catlas_search('conf/podar-ref.json', cdbg_only=True),
     shell:
         "../../spacegraphcats/conf/run podar-ref search --cdbg-only"
 
@@ -107,16 +204,16 @@ rule podarV_build:
     input:
         "SRR606249.k31.abundtrim.fq.gz"
     output:
-        directory("podarV_k31_r1")
+        catlas_build('conf/podarV.json'),
     shell:
         "../../spacegraphcats/conf/run podarV build"
 
 rule podarV_search:
     input:
-        "podarV_k31_r1",
+        catlas_build('conf/podarV.json'),
         podar_ref_genomes
     output:
-        directory("podarV_k31_r1_search_oh0")
+        catlas_search('conf/podarV.json'),
     shell:
         "../../spacegraphcats/conf/run podarV search"
 
@@ -129,45 +226,18 @@ rule podarV_labeled_reads:
     shell:
         "../../spacegraphcats/conf/run podarV {output[0]} --nolock"
 
-rule hu_s1_build:
-    input:
-        "SRR1976948.abundtrim.fq.gz"
-    output:
-        directory("hu-s1_k31_r1")
-    shell:
-        "../../spacegraphcats/conf/run hu-s1 build"
-
-rule hu_s1_search:
-    input:
-        hu_bin_genomes,
-        directory("hu-s1_k31_r1"),
-    output:
-        directory("hu-s1_k31_r1_search_oh0")
-    shell:
-        "../../spacegraphcats/conf/run hu-s1 search"
-
-rule hu_s1_labeled_reads:
-    input:
-        "SRR1976948.abundtrim.fq.gz"
-    output:
-        "hu-s1_k31_r1/reads.bgz.labels",
-        "hu-s1/podarV.reads.bgz"
-    shell:
-        "../../spacegraphcats/conf/run hu-s1 {output[0]} --nolock"
-
 rule podarV_ruminis_search:
     input:
         recover_ruminis,
-        directory("podarV_k31_r1"),
+        catlas_build('conf/podarV.json'),
     output:
-        directory("podarV_k31_r1_search_oh0_ruminis")
+        catlas_search('conf/podarV-ruminis.json', suffix='_ruminis'),
     shell:
         "../../spacegraphcats/conf/run podarV-ruminis search"
 
 rule combine_ruminis_nodes:
     input:
-        expand("podarV_k31_r1_search_oh0_ruminis/{x}.cdbg_ids.txt.gz",
-               x = [ os.path.basename(j) for j in recover_ruminis ])
+        catlas_search('conf/podarV-ruminis.json', suffix='_ruminis'),
     output:
         "ruminis-combined-node-list.txt.gz"
     shell:
@@ -185,9 +255,9 @@ rule extract_ruminis_reads:
 rule podarV_fuso_search:
     input:
         recover_fuso,
-        directory("podarV_k31_r1"),
+        catlas_build('conf/podarV.json'),
     output:
-        "podarV_31_r1_search_oh0_fuso"
+        catlas_search('conf/podarV-fuso.json', suffix='_fuso'),
     shell:
         "../../spacegraphcats/conf/run podarV-fuso search --nolock"
 
@@ -213,7 +283,7 @@ rule podarV_bacteroides_search:
     input:
         strain_bacteroides
     output:
-        directory("podarV_k31_r1_search_oh0_bacteroides")
+        catlas_search('conf/podarV-bacteroides.json', suffix='_bacteroides'),
     shell:
         "../../spacegraphcats/conf/run podarV-bacteroides search"
 
@@ -221,7 +291,7 @@ rule podarV_gingivalis_search:
     input:
         strain_gingivalis
     output:
-        directory("podarV_k31_r1_search_oh0_gingivalis")
+        catlas_search('conf/podarV-gingivalis.json', suffix='_gingivalis'),
     shell:
         "../../spacegraphcats/conf/run podarV-gingivalis search"
 
@@ -229,7 +299,7 @@ rule podarV_denticola_search:
     input:
         strain_denticola
     output:
-        directory("podarV_k31_r1_search_oh0_denticola")
+        catlas_search('conf/podarV-denticola.json', suffix='_denticola'),
     shell:
         "../../spacegraphcats/conf/run podarV-denticola search"
 
@@ -259,8 +329,55 @@ rule bacteroides_compare:
         "bacteroides.csv"
     shell:
         "sourmash search {input} -n 0 --threshold=0.0 -o {output}"
-        
-###
+
+### hu-s1 rules
+
+rule hu_s1_build:
+    input:
+        "SRR1976948.abundtrim.fq.gz"
+    output:
+        catlas_build('conf/hu-s1.json'),
+    shell:
+        "../../spacegraphcats/conf/run hu-s1 build"
+
+rule hu_s1_search:
+    input:
+        hu_bin_genomes,
+        catlas_build('conf/hu-s1.json'),
+    output:
+        catlas_search('conf/hu-s1.json'),
+    shell:
+        "../../spacegraphcats/conf/run hu-s1 search"
+
+rule hu_s1_labeled_reads:
+    input:
+        "SRR1976948.abundtrim.fq.gz"
+    output:
+        "hu-s1_k31_r1/reads.bgz.labels",
+        "hu-s1/hu-s1.reads.bgz"
+    shell:
+        "../../spacegraphcats/conf/run hu-s1 {output[0]} --nolock"
+
+rule hu_s1_extract:
+    input:
+        catlas_search('conf/hu-s1.json')
+    output:
+        catlas_extract('conf/hu-s1.json')
+    shell:
+        "../../spacegraphcats/conf/run hu-s1 extract_contigs extract_reads"
+
+rule hu_s1_crumbs:
+    input:
+        catlas_extract('conf/hu-s1.json')
+    output:
+        catlas_crumbs('conf/hu-s1.json')
+    shell:
+        """python -m spacegraphcats.search.make_donut -o .crumbs.fa \
+              --query {input} \
+              --subtract hu-genomes/*.fa \
+              --directory hu-s1_k31_r1_search_oh0"""
+
+### generic rules
 
 rule compute_signature_for_genome:
     input:
