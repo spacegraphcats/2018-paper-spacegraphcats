@@ -306,7 +306,7 @@ rule podarV_denticola_search:
 rule denticola_compare:
     input:
         "podar-ref/56.fa.sig",
-        [ x + '.sig' for x in strain_denticola ]
+        signatures(strain_denticola)
     output:
         "denticola.csv"
     shell:
@@ -315,7 +315,7 @@ rule denticola_compare:
 rule gingivalis_compare:
     input:
         "podar-ref/37.fa.sig",
-        [ x + '.sig' for x in strain_gingivalis ]
+        signatures(strain_gingivalis)
     output:
         "gingivalis.csv"
     shell:
@@ -324,7 +324,7 @@ rule gingivalis_compare:
 rule bacteroides_compare:
     input:
         "podar-ref/4.fa.sig",
-        [ x + '.sig' for x in strain_bacteroides ]
+        signatures(strain_bacteroides)
     output:
         "bacteroides.csv"
     shell:
@@ -368,13 +368,14 @@ rule hu_s1_extract:
 
 rule hu_s1_crumbs:
     input:
-        catlas_extract('conf/hu-s1.json')
+        subtract=hu_bin_genomes,
+        extracted=catlas_extract('conf/hu-s1.json')
     output:
         catlas_crumbs('conf/hu-s1.json')
     shell:
         """python -m spacegraphcats.search.make_donut -o .crumbs.fa \
-              --query {input} \
-              --subtract hu-genomes/*.fa \
+              --query {input.extracted} \
+              --subtract {input.subtract} \
               --directory hu-s1_k31_r1_search_oh0"""
 
 ### generic rules
