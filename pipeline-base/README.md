@@ -134,7 +134,7 @@ cd ../
 cd podarV_k31_r1_search_oh0_denticola
 
 for i in GCA*.sig; do sourmash search ../podar-ref/56.fa.sig $i -o $i.sim.csv --threshold=0.0 -n 0; done
-for i in GCA*.sig; do sourmash search ../podar-ref/46.fa.sig $i -o $i.cont.csv --threshold=0.0 -n 0 --containment; done
+for i in GCA*.sig; do sourmash search ../podar-ref/56.fa.sig $i -o $i.cont.csv --threshold=0.0 -n 0 --containment; done
 
 head -1 GCA_900164975.1_16852_2_85_genomic.fna.gz.contigs.sig.sim.csv > denticola.x.contigs.sim.csv
 for i in GCA*.sim.csv; do tail -1 $i; done >> denticola.x.contigs.sim.csv
