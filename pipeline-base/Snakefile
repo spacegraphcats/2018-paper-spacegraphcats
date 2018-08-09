@@ -150,7 +150,8 @@ rule all:
         catlas_search('conf/podarV-gingivalis.json', suffix='_gingivalis'),
         "bacteroides.csv", "denticola.csv", "gingivalis.csv",
         catlas_search('conf/hu-s1.json'),
-        catlas_extract('conf/hu-s1.json')
+        catlas_extract('conf/hu-s1.json'),
+        catlas_crumbs('conf/hu-s1.json')
 
 rule download_podar_ref_genomes:
     output:
