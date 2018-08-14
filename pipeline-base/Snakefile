@@ -89,6 +89,30 @@ def catlas_search(conf_file, cdbg_only=False, suffix=''):
     return z
 
 
+def catlas_search_sigs(conf_file, cdbg_only=False, suffix=''):
+    "Produce the list of contigs.sig files output by 'conf/run <config> search"
+    with open(conf_file, 'rt') as fp:
+        jj = json.load(fp)
+
+    catlas_base = jj['catlas_base']
+    ksize = jj['ksize']
+    radius = jj['radius']
+
+    cdbg_str = ""
+    if cdbg_only:
+        cdbg_str = '_cdbg'
+    dirname = '{}_k{}_r{}{}_search_oh0{}'.format(catlas_base, ksize, radius,
+                                                 cdbg_str, suffix)
+
+    filenames = jj['search']
+    z = []
+    for x in filenames:
+        x = os.path.basename(x)
+        z.append(dirname + '/{}.contigs.sig'.format(x))
+
+    return z
+
+
 def catlas_extract(conf_file, cdbg_only=False, suffix=''):
     "Produce the list of files output by 'conf/run <config> extract_contigs extract_reads"
     with open(conf_file, 'rt') as fp:
@@ -151,7 +175,8 @@ rule all:
         "bacteroides.csv", "denticola.csv", "gingivalis.csv",
         catlas_search('conf/hu-s1.json'),
         catlas_extract('conf/hu-s1.json'),
-        catlas_crumbs('conf/hu-s1.json')
+        catlas_crumbs('conf/hu-s1.json'),
+        'fuso.reads.fa', 'ruminis.reads.fa'
 
 rule download_podar_ref_genomes:
     output:
@@ -330,6 +355,78 @@ rule bacteroides_compare:
         "bacteroides.csv"
     shell:
         "sourmash search {input} -n 0 --threshold=0.0 -o {output}"
+
+rule bacteroides_search_cont:
+    input:
+        "podar-ref/4.fa.sig",
+        catlas_search_sigs('conf/podarV-bacteroides.json',
+                           suffix='_bacteroides')
+    output:
+        [ x + '.cont.csv' for x in 
+                            catlas_search_sigs('conf/podarV-bacteroides.json',
+                                               suffix='_bacteroides') ]
+    shell:
+        "for i in podarV_k31_r1_search_oh0_bacteroides/*.sig; do sourmash search podar-ref/4.fa.sig $i -o $i.cont.csv --threshold=0.0 -n 0 --containment; done"
+
+rule bacteroides_summarize_cont:
+    input:
+        [ x + '.cont.csv' for x in
+                             catlas_search_sigs('conf/podarV-bacteroides.json',
+                                               suffix='_bacteroides') ]
+    output:
+        "bacteroides.x.contigs.cont.csv"
+    shell:
+        """head -1 podarV_k31_r1_search_oh0_bacteroides/GCA_900104585.1_PRJEB16348_genomic.fna.gz.contigs.sig.cont.csv > bacteroides.x.contigs.cont.csv &&
+           for i in {input}; do tail -1 $i; done >> bacteroides.x.contigs.cont.csv
+        """
+
+rule gingivalis_search_cont:
+    input:
+        "podar-ref/37.fa.sig",
+        catlas_search_sigs('conf/podarV-gingivalis.json',
+                           suffix='_gingivalis')
+    output:
+        [ x + '.cont.csv' for x in 
+                            catlas_search_sigs('conf/podarV-gingivalis.json',
+                                               suffix='_gingivalis') ]
+    shell:
+        "for i in podarV_k31_r1_search_oh0_gingivalis/*.sig; do sourmash search podar-ref/37.fa.sig $i -o $i.cont.csv --threshold=0.0 -n 0 --containment; done"
+
+rule gingivalis_summarize_cont:
+    input:
+        [ x + '.cont.csv' for x in
+                             catlas_search_sigs('conf/podarV-gingivalis.json',
+                                               suffix='_gingivalis') ]
+    output:
+        "gingivalis.x.contigs.cont.csv"
+    shell:
+        """head -1 podarV_k31_r1_search_oh0_gingivalis/GCA_900157325.1_3A1_genomic.fna.gz.contigs.sig.cont.csv > gingivalis.x.contigs.cont.csv &&
+           for i in {input}; do tail -1 $i; done >> gingivalis.x.contigs.cont.csv
+        """
+
+rule denticola_search_cont:
+    input:
+        "podar-ref/56.fa.sig",
+        catlas_search_sigs('conf/podarV-denticola.json',
+                           suffix='_denticola')
+    output:
+        [ x + '.cont.csv' for x in 
+                            catlas_search_sigs('conf/podarV-denticola.json',
+                                               suffix='_denticola') ]
+    shell:
+        "for i in podarV_k31_r1_search_oh0_denticola/*.sig; do sourmash search podar-ref/56.fa.sig $i -o $i.cont.csv --threshold=0.0 -n 0 --containment; done"
+
+rule denticola_summarize_cont:
+    input:
+        [ x + '.cont.csv' for x in
+                             catlas_search_sigs('conf/podarV-denticola.json',
+                                               suffix='_denticola') ]
+    output:
+        "denticola.x.contigs.cont.csv"
+    shell:
+        """head -1 podarV_k31_r1_search_oh0_denticola/GCA_900164975.1_16852_2_85_genomic.fna.gz.contigs.sig.cont.csv > denticola.x.contigs.cont.csv &&
+           for i in {input}; do tail -1 $i; done >> denticola.x.contigs.cont.csv
+        """
 
 ### hu-s1 rules
 
