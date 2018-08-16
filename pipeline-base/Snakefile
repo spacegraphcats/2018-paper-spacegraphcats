@@ -164,6 +164,7 @@ rule all:
     input:
         catlas_search('conf/podar-ref.json', cdbg_only=True),
         catlas_search('conf/podarV.json'),
+        catlas_crumbs('conf/podarV.json'),
         signatures(recover_fuso, recover_ruminis),
         signatures(strain_gingivalis, strain_denticola, strain_bacteroides),
         signatures(podar_ref_genomes, hu_bin_genomes),
@@ -251,6 +252,26 @@ rule podarV_labeled_reads:
         "podarV/podarV.reads.bgz"
     shell:
         "../../spacegraphcats/conf/run podarV {output[0]} --nolock"
+
+rule podarV_extract:
+    input:
+        catlas_search('conf/podarV.json')
+    output:
+        catlas_extract('conf/podarV.json')
+    shell:
+        "../../spacegraphcats/conf/run podarV extract_contigs extract_reads --nolock"
+
+rule podarV_crumbs:
+    input:
+        subtract=podar_ref_genomes,
+        extracted=catlas_extract('conf/podarV.json')
+    output:
+        catlas_crumbs('conf/podarV.json')
+    shell:
+        """python -m spacegraphcats.search.make_donut -o .crumbs.fa \
+              --query {input.extracted} \
+              --subtract {input.subtract} \
+              --directory podarV_k31_r1_search_oh0"""
 
 rule podarV_ruminis_search:
     input:
