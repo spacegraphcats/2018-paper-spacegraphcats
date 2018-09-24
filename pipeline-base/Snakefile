@@ -162,6 +162,7 @@ def catlas_crumbs(conf_file):
 
 rule all:
     input:
+        catlas_search('conf/podar-ref.json'),
         catlas_search('conf/podar-ref.json', cdbg_only=True),
         catlas_search('conf/podarV.json'),
         catlas_crumbs('conf/podarV.json'),
