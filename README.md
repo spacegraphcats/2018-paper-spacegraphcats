@@ -1,3 +1,6 @@
 # 2018-paper-spacegraphcats
 
-[fig 2-4, pipeline install and execution instructions](pipeline-base/README.md)
+This is still a bit of a work in progress prior to submission of the first
+paper, but please see:
+
+[figures 2, and 3 - pipeline install and execution instructions](pipeline-base/README.md)
