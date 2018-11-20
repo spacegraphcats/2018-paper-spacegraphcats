@@ -1,0 +1,213 @@
+\documentclass[9pt,twocolumn,twoside,lineno]{pnas-new}
+% Use the lineno option to display guide line numbers if required.
+% Note that the use of elements such as single-column equations
+% may affect the guide line number alignment.
+
+\newboolean{preprint}
+\setboolean{preprint}{true}
+
+\setboolean{displaywatermark}{false}
+
+% Remove PNAS page styling (except first page, see below)
+% for preprint
+\ifthenelse{\boolean{preprint}}%
+{%
+\pagestyle{plain} % Reset page style
+\renewcommand{\significancestatement}[1]{\relax} % Remove 'significance statement' box
+}{}
+
+
+% Used to adjust subfloat vertical alignment
+\usepackage[export]{adjustbox}
+
+% Easier float positions
+\renewcommand{\topfraction}{0.9}	% max fraction of floats at top
+\renewcommand{\bottomfraction}{0.8}	% max fraction of floats at bottom
+%   Parameters for TEXT pages (not float pages):
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}     % 2 may work better
+\setcounter{dbltopnumber}{2}    % for 2-column pages
+\renewcommand{\dbltopfraction}{0.9}	% fit big float above 2-col. text
+\renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
+%   Parameters for FLOAT pages (not text pages):
+\renewcommand{\floatpagefraction}{0.7}	% require fuller float pages
+% N.B.: floatpagefraction MUST be less than topfraction !!
+\renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
+
+%Macros
+\usepackage{xspace}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{amsmath,amsthm,mathtools}
+
+% \usepackage{algorithm}
+% \usepackage{algorithmic}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\newcommand{\algoref}[1]{\hyperref[#1]{Algorithm~\ref*{#1}}}
+\newcommand{\appendixref}[1]{\hyperref[#1]{Appendix~\ref*{#1}}}
+\newcommand{\ie}{{i.e.}\xspace}
+\newcommand{\eg}{{e.g.,}\xspace}
+\newcommand{\cf}{{c.f.}\xspace}
+\newcommand{\ea}{{et~al.}\xspace}
+\newcommand{\aka}{{a.k.a.}\xspace}
+\newcommand{\etc}{{etc.}\xspace}
+
+\newcommand{\red}[1]{\textit{\color{red}{#1}}}
+\usepackage{subfig}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{prop}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{observation}{Observation}
+\newtheorem{proposition}{Proposition}
+%\newtheorem*{claim}{Claim}
+\newtheoremstyle{case}
+  {\topsep}   % ABOVESPACE
+  {\topsep}   % BELOWSPACE
+  {}  % BODYFONT
+  {\parindent}       % INDENT (empty value is the same as 0pt)
+  {\bfseries} % HEADFONT
+  {\normalfont.}         % HEADPUNCT
+  {5pt plus 1pt minus 1pt} % HEADSPACE
+  {#1 #2: {\normalfont #3}}          % CUSTOM-HEAD-SPEC
+\theoremstyle{case}
+\newtheorem{case}{Case}
+\newtheorem{subcase}{Case}
+\numberwithin{subcase}{case}
+\makeatletter%Make sure case-counter is reset in every environment
+\@addtoreset{case}{lemma}
+\@addtoreset{case}{theorem}
+\@addtoreset{case}{corollary}
+% \@addtoreset{case}{claim} % Does not work with thmtools!
+\makeatother
+
+\newcommand{\dist}{\ensuremath{\text{dist}}}
+\def\maxindeg{\Delta^{\!-}}
+\def\dir#1{\vec{#1}}
+
+\newcommand*{\MARK}[1]{(#1)}
+
+%Import macros
+\input{notation}
+
+\templatetype{pnasresearcharticle} % Choose template
+% {pnasresearcharticle} = Template for a two-column research article
+% {pnasmathematics} = Template for a one-column mathematics article
+% {pnasinvited} = Template for a PNAS invited submission
+
+% Turn this on for easier proofreading
+% \usepackage{setspace}
+% \doublespacing
+
+\graphicspath{{figures}}
+
+\title{Exploring neighborhoods in large metagenome assembly graphs reveals hidden sequence diversity}
+
+% Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
+\author[a,1]{C. Titus Brown}
+% ORCID: 0000-0001-6001-2677
+\author[b]{Dominik Moritz}
+% ORCID: 0000-0002-3110-1053
+\author[c]{Michael P. O'Brien}
+% ORCID: 0000-0002-5942-791X
+\author[c]{Felix Reidl}
+% ORCID: 0000-0002-2354-3003
+\author[a]{Taylor Reiter}
+% ORCID: 0000-0002-7388-421X
+\author[c,1]{Blair D. Sullivan}
+% ORCID: 0000-0001-7720-6208
+
+\affil[a]{Department of Population Health and Reproduction, University of California Davis}
+\affil[b]{Paul G. Allen School of Computer Science and Engineering, University of Washington}
+\affil[c]{Department of Computer Science, NC State University}
+
+% Please give the surname of the lead author for the running footer
+\leadauthor{Brown}
+
+% Please add here a significance statement to explain the relevance of your work
+\significancestatement{Authors must submit a 120-word maximum statement about the significance of their research paper written at a level understandable to an undergraduate educated scientist outside their field of speciality. The primary goal of the Significance Statement is to explain the relevance of the work in broad context to a broad readership. The Significance Statement appears in the paper itself and is required for all research papers.}
+
+% Please include corresponding author, author contribution and author declaration information
+\authorcontributions{DM, MPO, FR, and BDS designed and implemented algorithms; CTB, DM, MPO, and FR developed software; CTB and TR conducted biological data analysis; CTB and BDS supervised work. All authors interpreted results, wrote text, created figures, and approved the submitted paper.}
+%\authordeclaration{Please declare any conflict of interest here.}
+\correspondingauthor{\textsuperscript{1}To whom correspondence should be addressed. E-mail: ctbrown@ucdavis.edu, vbsulliv@ncsu.edu}
+
+% Keywords are not mandatory, but authors are strongly encouraged to provide them. If provided, please include two to five keywords, separated by the pipe symbol, e.g:
+\keywords{metagenomics $|$ sequence assembly $|$ strain variation $|$ bounded expansion $|$ dominating set}
+\input{abstract}
+\dates{This manuscript was compiled on \today}
+%\doi{\url{www.pnas.org/cgi/doi/10.1073/pnas.XXXXXXXXXX}}
+
+\begin{document}
+
+% Optional adjustment to line up main text (after abstract) of first page with line numbers, when using both lineno and twocolumn options.
+% You should only change this length when you've finalised the article contents.
+\verticaladjustment{-2pt}
+
+\maketitle
+\ifthenelse{\boolean{preprint}}%
+{\thispagestyle{plain}}% Preprint style
+{\thispagestyle{firststyle}}% Default PNAS first-page style
+\ifthenelse{\boolean{shortarticle}}{\ifthenelse{\boolean{singlecolumn}}{\abscontentformatted}{\abscontent}}{}
+
+%% THIS IS THE INTRODUCTION
+
+%% Problem description and related work in the area of organizing large graphs.
+%% Intro & citations should indicate to an editor appropriate potential reviewers.
+%% Try to balance the novelty of hierarchy of dominating sets and efficient computation with
+%% idea of using graph locality to improve binning.
+\input{intro}
+
+%This should be non-controversial.
+\section*{Results}
+\input{results}
+
+%This is where we can make subjective claims.
+\section*{Discussion}
+\input{discussion}
+
+%Perhaps less-modest; definitely forward looking
+\section*{Conclusions}
+\input{conclusion}
+
+
+%WARNING: Using \verb inside matmethods macro causes strange errors about
+%redefined $ and tikz-incompatibility! Widetext also seems to cause an error with
+%ending scope of this stupid thing.
+\matmethods{
+\input{matmethods}
+
+}%end of matmethods
+
+\showmatmethods % Display the Materials and Methods section
+
+
+\acknow{This work is funded in part by the Gordon and Betty Moore
+  Foundation’s Data-Driven Discovery Initiative through Grants
+  GBMF4551 to C. Titus Brown, GBMF4553 to Jeffrey Heer, and GBMF4560
+  to Blair D. Sullivan.  This work arose from the Barnraising for
+  Data-Intensive Discovery at Mt. Desert Island Biological Lab in May
+  2016.  We thank Erich Schwarz, Martin Steinegger, Johannes
+  S{\"o}ding, Mark Blaxter, and members of the Data Intensive Biology
+  lab at UC Davis for discussion and feedback.
+ }%end of acknow
+
+\showacknow % Display the acknowledgments section
+
+% \pnasbreak splits and balances the columns before the references.
+% If you see unexpected formatting errors, try commenting out this line
+% as it can run into problems with floats and footnotes on the final page.
+%\pnasbreak
+
+% Bibliography
+\bibliography{bibliography}
+
+\newpage
+\clearpage
+\input{appendix.tex}
+
+\end{document}

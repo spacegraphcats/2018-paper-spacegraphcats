@@ -1,0 +1,31 @@
+The assembly-independent approach described in this work provides an
+alternative window into metagenome content. We extend previous work
+showing that assembly-based methods are fragile to strain
+variation, and provide an alternative workflow that substantially
+broadens our ability to characterize metagenome content.  This first
+investigation focuses on only one mock and one real data set, but
+the neighborhood indexing approach should be broadly applicable to
+all shotgun metagenomes.
+
+In this initial investigation of neighborhood indexing, we have
+focused on using neighborhood queries with a genome bin.  We recognize
+that this approach is of limited use in regions where no genome bin is
+available; \sgc is flexible and performant enough to support
+alternative approaches such as querying with k-mers belonging to genes
+of interest.
+
+Potential applications of \sgc in metagenomics include developing
+metrics for genome binning quality, analyzing pangenome neighborhood
+structure, exploring $r$-dominating sets for $r > 1$, extending analyses
+to colored De Bruijn graphs, and investigating {\em de novo}
+extraction of genomes based on neighborhood content.  We could also
+apply \sgc to analyze the neighborhood structure of assembly graphs
+overlayed with physical contact information (from e.g. HiC), which could
+yield new applications in both metagenomics and genomics
+\cite{Marbouty2014,Beitel2014}.
+
+More generally, the graph indexing approach developed here may be
+applicable well beyond metagenomes and sequence analysis.  The
+exploitation of bounded expansion to efficiently compute $r$-dominating
+sets on large graphs makes this technique applicable to a broad array
+of problems.

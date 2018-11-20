@@ -1,0 +1,9 @@
+\begin{algorithm}[!h]
+	\begin{algorithmic}[1]
+		\Require Index $I_{\mathcal{M}}$, Query $Q$
+		\Ensure The query neighborhood $\mathcal{N}_Q$
+		\State $\mathcal{N}_Q \leftarrow \bigcup_{k \in Q}I_{\mathcal{M}}^{-1}(I_{\mathcal{M}}(k))$\;
+		\State \Return $\mathcal{N}_Q$
+	\end{algorithmic}
+	\caption{$\texttt{search}(I_{\mathcal{M}}, Q)$}\label{alg:search}
+\end{algorithm}

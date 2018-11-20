@@ -1,0 +1,22 @@
+\begin{algorithm}[!h]
+	\begin{algorithmic}[1]
+		\Require{Metagenome $\mathcal{M}$, radius $r$}
+		\Ensure{Invertible index $I \colon \mathcal{M} \to \mathcal{P}$; $\mathcal{P}$ is a set of \pieces}
+		\State $G\leftarrow \texttt{cDBG}(\mathcal{M})$\;
+		\State $D\leftarrow \texttt{rdomset}(G, r)$\;
+		\State Initialize $\delta[v] \leftarrow v$ for all $v \in D$\;
+		\State $U \leftarrow V(G) \setminus D$
+		\While{$U \neq \emptyset$}\label{algstep:partition_start}
+			\For{$v \in V(G) \setminus U$}
+				\For{$u \in N(v) \cap U$}
+					\State $\delta[u] \leftarrow \delta[v]$\;
+					\State $U \leftarrow U \setminus \{u\}$\;
+				\EndFor
+			\EndFor
+		\EndWhile
+ 		\State $\mathcal{P}[v] \leftarrow \{u:\delta[u] = v\}$\;\label{algstep:partition_end}
+		\State $I_{\mathcal{M}} \leftarrow \texttt{mphfIndex}(\mathcal{M}, \mathcal{P})$\;
+		\State \Return $I_{\mathcal{M}}$
+	\end{algorithmic}
+	\caption{$\texttt{indexPieces}(\mathcal{M},r)$}\label{alg:index_pieces}
+\end{algorithm}

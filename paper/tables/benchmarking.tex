@@ -1,0 +1,32 @@
+%Data Set Properties
+
+\begin{table}[t]
+	\centering
+	\begin{tabular}{l r r r r r}
+	\toprule
+	Dataset & $|V|$ & $|E|$/$|V|$ & $|D|$ & $\overline{|Q|}$ & $\overline{|\mathcal{P} \cap \mathcal{N}_Q|}$ \\
+	\midrule
+	\podarv &      916\,041 & 2.2 &    542\,350 & 1\,475\,892 &   4\,106 \\
+	\hu     &  13\,852\,950 & 2.6 & 6\,724\,505 & 1\,112\,516 & 106\,091 \\
+	\bottomrule
+	\end{tabular}
+	\caption{Number of cDBG nodes $|V|$, edge density of cDBG $|E|/|V|$, size of $1$-dominating set $|D|$,
+	average query size (k-mers) $\overline{|Q|}$, and average number of pieces in query neighborhood $\overline{|\mathcal{P} \cap \mathcal{N}_Q|}$. Queries are the 51 genomes and 23 genome bins fully present in \podarv and \hu, respectively.} \label{tab:data}
+
+	\centering
+	\begin{tabular}{l l r r}
+	\toprule
+	Dataset & Algorithm & Time (s) & Memory (MB) \\
+	\midrule
+	\multirow{3}{*}{\podarv}
+   & \texttt{rdomset}     &  78.1 &  4\,304 \\
+   & \texttt{indexPieces} & 359.9 & 14\,108 \\
+   & \texttt{search}      &  14.9 &  3\,463 \\
+	\multirow{3}{*}{\hu}
+   & \texttt{rdomset}     & 1\,181.1 & 60\,238  \\
+   & \texttt{indexPieces} &    859.3 & 40\,713  \\
+   & \texttt{search}      &     67.9 & 15\,228  \\
+	\bottomrule
+	\end{tabular}
+	\caption{Time and memory usage of \sgc for Algorithms~\ref{alg:r-domset}-\ref{alg:search} on representative metagenome data. The times for Algorithm~\ref{alg:search} are averaged over all queries (see Table~\ref{tab:data}).  Statistics reported for Algorithm~\ref{alg:index_pieces} exclude lines 1-2 of pseudocode. Times are rounded to the nearest tenth of a second; memory is rounded to the nearest Megabyte.}\label{tab:benchmarking}
+\end{table}

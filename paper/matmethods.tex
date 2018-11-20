@@ -1,0 +1,101 @@
+\subsection*{Data}
+
+We use two data sets: SRR606249 from
+\texttt{podarV}~\cite{shakya2013comparative} and SRR1976948 (sample
+SB1) from \texttt{hu}~\cite{hu}. Each data set was first preprocessed
+to remove low-abundance k-mers as in \cite{Zhang2015}, using {\tt
+  trim-low-abund.py} from khmer v2.1.2 \cite{Standage2017} with the
+parameters {\tt -C 3 -Z 18 -M 20e9 -V -k 31}. We build compact De Bruijn
+graphs using BCALM v2.2.0 \cite{bcalm}.  Stringent read trimming at
+low-abundance k-mers was done with {\tt trim-low-abund.py} from khmer, with the
+parameters {\tt -C 5 -M 20e9 -k 31}.
+
+\subsection*{Software}
+
+The source code for the index construction and search is available at
+\url{https://github.com/spacegraphcats/spacegraphcats}~\cite{spacegraphcats}.
+It is implemented in Python 3 under the 3-Clause BSD License.
+
+Snakemake \cite{snakemake} workflows to reproduce all of the analysis
+are available at
+\url{https://github.com/dib-lab/2018-paper-spacegraphcats/}, and
+Jupyter Notebooks to recreate all of the figures are in that same
+repository \cite{jupyter}. The notebooks rely on the numpy,
+matplotlib, pandas, scipy, and Vega-Lite libraries
+\cite{numpy,matplotlib,pandas,scipy,vegalite}.
+
+\subsection*{Benchmarking}
+
+We measured time and memory usage for Algorithms 1-3 by executing the
+following targets in the \sgc \texttt{conf/Snakefile}:
+\texttt{catlas.csv} for \texttt{rdomset}, \texttt{contigs.fa.gz.mphf}
+for \texttt{indexPieces}, and \texttt{search} for \texttt{search}.  We
+report wall time and maximum resident set size, running under Ubuntu
+18.04 on an NSF Jetstream virtual machine with 10 cores and 30 GB of
+RAM \cite{jetstream1,jetstream2}. To measure maximum resident set
+size, we used the memusg script (Jaeho Shin,
+https://gist.github.com/netj/526585).
+
+\subsection*{Graph denoising}
+
+For each data set, we built a compact De Bruijn graph (cDBG) for
+k=31 by computing the set of unitigs with
+BCALM~\cite{chikhi2016compacting}, removing all vertices of degree one
+with a mean $k$-mer abundance of 1.1 or less, and then contracting
+long degree-two paths when possible.
+
+\subsection*{Neighborhood indexing and search}
+
+We use \sgc to build an $r$-dominating set for the denoised cDBG and
+index it. We then perform neighborhood queries with \sgc, which
+produces a set of cDBG nodes and reads that contributed to them.  The
+full list of query genomes for the {\em Proteiniclasticum} query is
+  available in Supp Material \ref{subsec:query_accessions}, and
+  the NCBI accessions for the {\em P. gingivalis}, {\em T. denticola}, and {\em B. thetaiotamicron} queries are in the directory {\tt pipeline-base} of the paper repository, files {\tt strain-gingivalis.txt}, {\tt strain-denticola.txt}, and {\tt strain-bacteroides.txt}, respectively.
+
+\subsection*{Search results analysis}
+
+Query neighborhood size, Jaccard containment, and Jaccard similarity
+was estimated using modulo hash signatures with a k-mer size of 31 and
+a scaled factor of 1000, as implemented in sourmash v2.0a9
+\cite{sourmash}.
+
+\subsection*{Assembly and genome bin analysis}
+
+We assembled reads using MEGAHIT v1.1.3 \cite{megahit} and \plass
+v2-c7e35 \cite{plass}, treating the reads as single-ended. Bin
+completeness was estimated with CheckM 1.0.11, with the {\tt
+  --reduced\_tree} argument \cite{CheckM}.  Amino acid identity
+between bins and genomes was calculated using CompareM commit
+7cd51276 (https://github.com/dparks1134/CompareM).
+
+\subsection*{Gene targeted analysis}
+
+Analysis of specific genes was done with HMMER v3.2.1
+\cite{hmmer}. \plass amino acid assemblies were queried with HMMER {\tt hmmscan}
+ using the PFAM domains listed in Supp Material \ref{tab:pfam_accessions}, 
+using a threshold score of 100 \cite{pfam}. Matching sequences were then
+extracted from the assemblies for further analysis. To overcome
+problems associated with comparing non-overlapping sequence fragments,
+only sequences that overlapped 125 of the most-overlapped 200 residues
+of the PFAM domain were retained (all sequences shared a minimum
+overlap of 50 residues with all other sequences). These sequences were
+aligned with MAFFT v7.407 with the {\tt --auto} argument \cite{mafft}. Pairwise similarities were
+calculated using HMMER where the final value represented the number of
+identical amino acids in the alignment divided by the number of
+overlapping residues between the sequences. Pairwise distances were
+visualized using a multidimensional scaling calculated in R using the
+{\tt cmdscale} function. To visualize the assembly graph structure
+underlying these amino acid assemblies, we use paladin v1.3.1 
+to map abundance-trimmed reads back to the \plass amino acid assembly,
+with the {\tt -f} argument set to 125 to set the minimum ORF length accepted \cite{paladin}. 
+We extracted the reads that mapped to the gene of interest, created an
+assembly graph using BCALM v2.2.0 \cite{chikhi2016compacting}, and
+visualized the graph using Bandage v0.8.1 \cite{bandage}.
+
+\subsection*{KEGG Analysis}
+
+We annotated the \plass assemblies using Kyoto Encyclopedia of Genes
+GhostKOALA v2.0 \cite{kegg}. To assign KEGG ortholog function, we used
+methods implemented at https://github.com/edgraham/GhostKoalaParser
+release 1.1.
