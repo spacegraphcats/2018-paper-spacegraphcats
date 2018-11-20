@@ -13,7 +13,7 @@ obstacle and enables rapid exploration of sequence data that is local to a query
 %In the past, biologists manually crafted genomic neighborhoods.
 %SGC simplifies this dramatically by giving them a tool to query for neighborhoods of genomic sequences.
 Because a partition into \pieces provides an implicit data reduction (the cDBG edge relationships are subsumed by \piece membership), the query-independent nature of the index allows many queries to be processed quickly without loading the entire graph into memory.
-Our approach consequently provides a data exploration framework not available in any other automated software packages.
+Our approach consequently provides a data exploration framework not otherwise available.
 
 Exploiting the structural sparsity of cDBGs is a crucial component of our
 algorithms. First, it is necessary to use graph structure to obtain a guarantee
@@ -23,10 +23,10 @@ $\log n$ in general graphs\footnote{That is, graphs about which we make no
 structural assumptions.} unless $\text{NP}\subseteq \text{DTIME}(n^{O(\log \log
 n)})$~\cite{chlebik2008approximation}. Without such a guarantee, we cannot be
 sure that we are achieving significant data reduction by grouping cDBG vertices
-into \pieces. Being able to do this in linear time also ensures that the
+into \pieces. Being able to do this in linear time also ensures that
 indexing and querying can scale to very large data sets. Furthermore, because we
-utilize a broad structural characterization (bounded expansion)  rather than a
-highly specialized aspect of cDBGs, our methods enable neighborhood-based
+utilize a broad structural characterization (bounded expansion) of cDBGs rather than a
+highly specialized aspect, our methods enable neighborhood-based
 information retrieval in any domain whose graphs exhibit bounded expansion
 structure; examples include some infrastructure,
 social, and communication networks~\cite{demaine2014structural,felixThesis,wcol2018}.
@@ -88,7 +88,7 @@ query followed by amino acid assembly recovers additional content for
 all but two of the genome bins; this is likely an underestimate, since
 \plass may also be failing to assemble some content.
 
-We note that when we bioinformatically analyze the
+When we bioinformatically analyze the
 function of the expanded genome content from neighborhood queries, our
 results are consistent with the previous metabolic analyses by \cite{Hu2016}, and extend the
 set of available genes by 13\%.
@@ -116,7 +116,7 @@ metagenome but does not link those proteins to specific genomes. The
 binning-based workflow connects the increased sensitivity of \plass
 assembly to the full suite of tools available for genome-resolved
 metagenome analysis, including both phylogenomic and metabolic
-analysis. The \sgc workflow does not separate regions of the graph shared
+analysis. However, \sgc does not separate regions of the graph shared
 in multiple query neighborhoods; existing
 strain recovery approaches such as DESMAN or MSPminer could be used for this purpose
 \cite{desman,mspminer}.
