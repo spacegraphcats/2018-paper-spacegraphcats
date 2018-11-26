@@ -54,7 +54,7 @@ social, and communication networks~\cite{demaine2014structural,felixThesis,wcol2
 \subsection*{Neighborhood queries extend genome bins}
 
 In both the \podarv and \hu metagenomes, neighborhood queries were
-able to identify additional content likely belonging to query genomes.
+able to identify additional content likely belonging to query genomes (@supportme).
 In the \podarv mock metagenome, we retrieved a potentially complete
 genome for an unknown strain based on partial matches to known
 genomes. In the \hu metagenome, we increased the estimated
@@ -63,16 +63,15 @@ e.g. in the case of {\em Microgenomates bacterium 39\textunderscore 7}
 we added an estimated 16.5\% to the genome bin.  In both cases we rely
 solely on the structure of the assembly graph to expand the genome
 bins. We do not make use of sequence composition, contig abundance, or
-phylogenetic marker genes in our search. Neighborhood search provides
+phylogenetic marker genes in our search. Thus graph proximity provides
 an orthogonal set of information for genome-resolved metagenomics that
 could be used to improve current binning techniques.
 
 \subsection*{Query neighborhoods from real metagenomes contain substantial strain variation that may block assembly}
 
 Previous work suggests that metagenome assembly and binning
-approaches are fragile to strain variation, which
-would prevent the characterization of some genomes from metagenomes
-\cite{CAMI,Awad155358}.  The extent of this problem is unknown, although
+approaches are fragile to strain variation \cite{CAMI,Awad155358}. This may
+prevent the characterization of some genomes from metagenomes.  The extent of this problem is unknown, although
 the majority of approaches to genome-resolved metagenomics rely on
 assembly and thus could be affected.
 
@@ -93,12 +92,12 @@ function of the expanded genome content from neighborhood queries, our
 results are consistent with the previous metabolic analyses by \cite{Hu2016}, and extend the
 set of available genes by 13\%.
 This suggests that current approaches to genome binning are specific,
-and that the main question is sensitivity, which agrees with the conclusions
-in the recent analysis of Baltic Sea microbial genomes \cite{baltic}.
+and that the main question is sensitivity, which agrees with a more direct
+measurement of lost content \cite{baltic}.
 
 \subsection*{Neighborhood queries enable a genome-targeted workflow to recover strain variation}
 
-The analysis workflow described above starts with genome bins. The
+The \sgc analysis workflow described above starts with genome bins. The
 genome bins are used as a query into the metagenome assembly graph,
 following which we extract reads from the query neighborhood.  We
 assemble these reads with the \plass amino acid assembler, and then
@@ -115,7 +114,7 @@ proteins with specific genome bins, as opposed to a whole-metagenome
 metagenome but does not link those proteins to specific genomes. The
 binning-based workflow connects the increased sensitivity of \plass
 assembly to the full suite of tools available for genome-resolved
-metagenome analysis, including both phylogenomic and metabolic
+metagenome analysis, including phylogenomic and metabolic
 analysis. However, \sgc does not separate regions of the graph shared
 in multiple query neighborhoods; existing
 strain recovery approaches such as DESMAN or MSPminer could be used for this purpose
