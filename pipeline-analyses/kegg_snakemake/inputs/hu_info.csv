@@ -1,0 +1,31 @@
+name,accession,taxonomy,abbreviation,abbreviation2,gc,coverage,sample_origin,unitig_size,bin_size,kingdom,group,phylum,class,order,family,genus
+hu-genome02,>gi|973165987|gb|LGHE01000001.1|,Methanoculleus marisnigri isolate 63_41 ,M. marisnigri isolate 63_41 ,M. marisnigri  63_41 ,63,41,SB2,6.8M,1.8M,archaea,,Euryarchaeota,Methanomicrobia,Methanomicrobiales,Methanomicrobiaceae,Methanoculleus
+hu-genome03,>gi|973165684|gb|LGHG01000001.1|,Synergistales bacterium 54_9 ,S. bacterium 54_9 ,S. bacterium 54_9 ,54,9,SB2,3.5M,1.5M,bacteria,,Synergistetes,Synergistia,Syntergistales,,
+hu-genome08,>gi|973156162|gb|LGHB01000001.1|,Methanosaeta harundinacea isolate 56_747 ,M. harundinacea isolate 56_747 ,M. harundinacea  56_747 ,56,747,SB2,14M,2.2M,archaea,,Euryarchaeota,Methanomicrobia,Methanosarcinales,Methanosaetaceae,Methanothrix
+hu-genome10,>gi|973152098|gb|LGGY01000001.1|,Marinimicrobia bacterium 46_43 ,M. bacterium 46_43 ,M. bacterium 46_43 ,46,43,SB2,3.8M,2.0M,bacteria,FCB group,Candidatus Marinimicrobia,,,,
+hu-genome11,>gi|973149027|gb|LGGW01000001.1|,Mesotoga infera isolate 46_70 ,M. infera isolate 46_70 ,M. infera  46_70 ,46,70,SB2,3.0M,1.6M,bacteria,,Thermotogae,Thermotogae,Kosmotogales,Kosmotogaceae,Mesotoga
+hu-genome12,>gi|973146095|gb|LGGV01000001.1|,Synergistales bacterium 58_81 ,S. bacterium 58_81 ,S. bacterium 58_81 ,58,81,SB2,3.3M ,1.3M,bacteria,,Synergistetes,Synergistia,Syntergistales,,
+hu-genome13,>gi|973144917|gb|LGGX01000001.1|,Candidate division TA06 bacterium 34_109 ,TA06 bacterium 34_109 ,TA06 bacterium 34_109 ,34,109,SB2,1.9M ,2.0M,bacteria,candidate phyla,,,,,
+hu-genome14,>gi|973141867|gb|LGGU01000001.1|,Desulfotomaculum kuznetsovii isolate 45_62 ,D. kuznetsovii isolate 45_62 ,D. kuznetsovii  45_62 ,45,62,SB2,1.5M ,697K,bacteria,terrabacteria,Firmicutes,Clostridia,Clostridiales,Peptococcaceae,Desulfotomaculum
+hu-genome19,>gi|973126483|gb|LGGQ01000001.1|,Microgenomates bacterium 39_7 ,M. bacterium 39_7 ,M. bacterium,39,7,SB1,542K ,703K,bacteria,,Candidatus Microgenomates,,,,
+hu-genome20,>gi|973124867|gb|LGGN01000001.1|,Proteiniphilum acetatigenes isolate 50_10 ,P. acetatigenes isolate 50_10 ,P. acetatigenes,50,10,SB1,3.7M ,1.7M,bacteria,FCB group,Bacteriodetes,Bacteroidia,Bacteroidales,Dysgonamonadaceae,Proteiniphilum
+hu-genome21,>gi|973123431|gb|LGGO01000001.1|,Candidate division WS6 bacterium 34_10 ,WS6 bacterium 34_10 ,WS6 bacterium 1,34,10,SB1,1.4M ,1.1M,bacteria,candidate phyla,,,,,
+hu-genome22,>gi|973120446|gb|LGGL01000001.1|,Methanobacterium sp. 42_16 ,Methanobacterium sp. 42_16 ,Methanobacterium sp.,42,16,SB1,3.6M ,2.1M,archaea,,Euryarchaeota,Methanobacteria,Methanobacteriales,Methanobacteriaceae,
+hu-genome23,>gi|973118751|gb|LGGM01000001.1|,Clostridiales bacterium 38_11 ,C. bacterium 38_11 ,C. bacterium,38,11,SB1,2.4M ,1.8M,bacteria,terrabacteria,Firmicutes,Clostridia,Clostridiales,,
+hu-genome24,>gi|973115486|gb|LGGJ01000001.1|,Methanocalculus sp. 52_23 ,Methanocalculus sp. 52_23 ,Methanocalculus sp.,52,23,SB1,4.2M ,1.9M,archaea,,Euryarchaeota,Methanomicrobia,Methanomicrobiales,Methanocalculaceae,Methanocalculus
+hu-genome25,>gi|973115441|gb|LGGK01000001.1|,Anaerolineae bacterium 49_20 ,A. bacterium 49_20 ,An. Bacterium,49,20,SB1,2.2M ,1.0M,bacteria,terrabacteria,Chloroflexi,Anaerolineae,,,
+hu-genome26,>gi|973112280|gb|LGGH01000001.1|,Mesotoga infera isolate 46_47 ,M. infera isolate 46_47 ,M. infera,46,47,SB1,2.1M ,1.2M,bacteria,,Thermotogae,Thermotogae,Kosmotogales,Kosmotogaceae,Mesotoga
+hu-genome27,>gi|973110956|gb|LGGI01000001.1|,Candidate division WS6 bacterium 36_33 ,WS6 bacterium 36_33 ,WS6 bacterium 2,36,33,SB1,632K ,439K,bacteria,candidate phyla,,,,,
+hu-genome28,>gi|973109779|gb|LGGG01000001.1|,Parcubacteria bacterium 34_609 ,P. bacterium 34_609 ,P. bacterium,34,609,SB1,1.5M ,570K,bacteria,,Candidatus Parcubacteria,,,,
+hu-genome29,>gi|973108653|gb|LGGF01000001.1|,Desulfotomaculum sp. 46_80 ,Desulfotomaculum sp. 46_80 ,Desulfotomaculum sp.,46,80,SB1,3.4M ,2.2M,bacteria,terrabacteria,Firmicutes,Clostridia,Clostridiales,Peptococcaceae,Desulfotomaculum
+hu-genome30,>gi|973106586|gb|LGGD01000001.1|,Methanoculleus marisnigri isolate 62_101 ,M. marisnigri isolate 62_101 ,M. marisnigri,62,101,SB1,5.8M ,1.6M,archaea,,Euryarchaeota,Methanomicrobia,Methanomicrobiales,Methanomicrobiaceae,Methanoculleus
+hu-genome31,>gi|973105436|gb|LGGE01000001.1|,Synergistales bacterium 57_84 ,S. bacterium 57_84 ,S. bacterium,57,84,SB1,3.1M ,1.2M,bacteria,,Synergistetes,Synergistia,Syntergistales,,
+hu-genome33,>gi|973101184|gb|LGGB01000001.1|,Synergistales bacterium 53_16 ,S. bacterium 53_16 ,S. bacterium,53,16,SB1,3.7M ,1.7M,bacteria,,Synergistetes,Synergistia,Syntergistales,,
+hu-genome34,>gi|973097275|gb|LGGA01000001.1|,Atribacteria bacterium 34_128 ,A. bacterium 34_128 ,At. Bacterium,34,128,SB1,1.2M ,883K,bacteria,candidate phyla,,,,,
+hu-genome35,>gi|973097089|gb|LGFY01000001.1|,Marinimicrobia bacterium 46_47 ,M. bacterium 46_47 ,M. bacterium,46,47,SB1,2.8M ,1.6M,bacteria,FCB group,Candidatus Marinimicrobia,,,,
+hu-genome36,>gi|973095283|gb|LGFZ01000001.1|,Desulfotomaculum sp. 46_296 ,Desulfotomaculum sp. 46_296 ,Desulfotomaculum sp.,46,296,SB1,7.8M ,2.2M,bacteria,terrabacteria,Firmicutes,Clostridia,Clostridiales,Peptococcaceae,Desulfotomaculum
+hu-genome37,>gi|973091715|gb|LGFX01000001.1|,Candidate division TA06 bacterium 32_111 ,TA06 bacterium 32_111 ,TA06 bacterium,32,111,SB1,1.4M ,1.8M,bacteria,candidate phyla,,,,,
+hu-genome38,>gi|973090209|gb|LGFW01000001.1|,Parcubacteria bacterium 33_209 ,P. bacterium 33_209 ,P. bacterium,33,209,SB1,849K ,509K,bacteria,,Candidatus Parcubacteria,,,,
+hu-genome39,>gi|973089069|gb|LGFV01000001.1|,Actinobacteria bacterium 66_15 ,A. bacterium 66_15 ,Ac. Bacterium,66,15,SB1,5.7M ,2.1M,bacteria,terrabacteria,Actinobacteria,Actinobacteria,,,
+hu-genome40,>gi|973086334|gb|LGFU01000001.1|,Anaerolinea thermophila isolate 46_16 ,A. thermophila isolate 46_16 ,An. Thermophila,46,16,SB1,2.6M ,1.5M,bacteria,terrabacteria,Chloroflexi,Anaerolineae,Anaerolineales,Anaerolineaceae,
+hu-genome41,>gi|973084119|gb|LGFT01000001.1|,Methanosaeta harundinacea isolate 57_489 ,M. harundinacea isolate 57_489 ,M. harundinacea,57,489,SB1,15M ,2.3M,archaea,,Euryarchaeota,Methanomicrobia,Methanosarcinales,Methanosaetaceae,Methanothrix
