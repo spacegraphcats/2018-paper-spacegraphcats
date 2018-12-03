@@ -320,14 +320,14 @@ See Table~\ref{tab:completeness}.
 \subsection{K-mer inclusion of reads by MEGAHIT assemblies}
 \label{subsec:inclusion}
 
-See Table~\ref{tab:kmer_inclusion}. We estimated the number of k-mers present
-in the query neighborhood that assembled into the MEGAHIT assembly of the query 
-neighborhood. We used sourmash compute to calculate signatures with k-size of
-31 and a scaled value of 2000. We then used sourmash comare to estimate
+See Table~\ref{tab:kmer_inclusion}. We estimated the number of k-mers in each
+query neighborhood that were contained in the MEGAHIT assembly of that query
+neighborhood. We used sourmash {\tt compute} to calculate signatures with k-size of
+31 and a scaled value of 2000. We then used sourmash {\tt compare} to estimate
 containment in MEGAHIT assemblies. The query neighborhood with the smallest 
 containment, \emph{M. harundinacea} isolate \emph{57\_489}, had the largest query
-neighborhood, while the query neighborhood iwth teh largest containment,
-\emph{M. bacterium 39\_7}, had the smalled query neighborhood.  
+neighborhood, while the query neighborhood with the largest containment,
+\emph{M. bacterium 39\_7}, had the smallest query neighborhood.  
 
 \begin{table}
   \begin{tabular}{l c}
@@ -348,10 +348,10 @@ neighborhood, while the query neighborhood iwth teh largest containment,
 
 See Figure~\ref{fig:gyrAalign}. The MDS plot in the left panel of figure 4 shows
 distinct gyrA sequences identified in the Plass assemblies using HMMER. To visualize
-the sequences within these clusters and the sequences located in other query 
-neighborhoods, we constructed a multiple sequence alignment. However, because many
+the sequences within these clusters and in other query neighborhoods, we 
+constructed a multiple sequence alignment. However, because many
 sequences assembled by Plass were fragmented (see Results: Some query neighborhoods
-contain substantial strain variation), we first clustered the sequences at 95% 
+contain substantial strain variation), we first clustered the sequences at 95\% 
 similarity using CD-HIT. We then aligned the centroid sequences using MAFFT with 
 default settings. To produce the multiple sequence alignment visualization, we 
 calculated an unrooted neighbor joining tree using the MAFFT alignment. Then we used
@@ -368,10 +368,11 @@ the function {\tt msaplot} in the R package ggtree to plot the alignment.
 \subsection{gyrA by neighborhood}
 \label{subsec:gyrAnbhd}
 
-See Table~\ref{tab:gyrAcounts}. As can be seen in figure 4 left panel, we observe
-many unique amino acid sequences per single copy ortholog per query neighborhood.
+See Table~\ref{tab:gyrAcounts}. As can be seen in the left panel of figure 4 in the 
+main text, we observe many unique amino acid sequences per single copy ortholog 
+per query neighborhood.
 Although we observe many possible traversal paths in compact De Bruijn graphs built
-from reads that give rise to these sequences, we had no way to ascertain whether we
+from reads that give rise to these sequences, we have no way to ascertain whether we
 observed combinatorial complexity by assembling variants that would never be linked 
 in nature. Therefore, we sought to conservatively estimate the number of positions
 per amino acid sequence that contained variants using MAFFT alignments. First, we 
@@ -379,17 +380,19 @@ subsetted the alignment to sequences from one query neighborhood. Then we identi
 all aligned non-gap characters for each position in the alignment (gaps were induced
 in some neighborhoods by the presence of amino acid residues in other query neighborhood
 amino acid sequences). For each of these positions, we counted the number of unique 
-amino acid sequences per postion, and the number of times each occurred at that position. 
+amino acid sequences per position, and the number of times each occurred at that position. 
 We then elimated any variant that occurred fewer than 10 times. Lastly, we counted the 
 number of well-supported distinct characters. We did this for gyrA, as well as the 
-amino acid sequences for the other genes we tested (see other genes).  
+amino acid sequences for the other genes we tested (see other genes). Table~\ref{tab:gyrAcounts}
+shows that we see increased number of gyrA sequences in many neighborhoods even with
+this conservative approach.  
 
 \subsection{Other genes}
 
 \label{subsec:othergenes}
 
 See bin and neighborhood content results for {\em alaS} in Table~\ref{tab:alaS}, {\em gyrB} in Table~\ref{tab:gyrB}, {\em recA} in Table~\ref{tab:recA}, rpb2d6 in Table~\ref{tab:rpb2d6}, {\em rplB} in Table~\ref{tab:rplB}, and {\em rpsC} in Table~\ref{tab:rpsC}. We selected gyrB and
-recA becuase they were used by Hu et al. to assign taxonomy to binned genomes. We selected
+recA because they were used by \hu to assign taxonomy to binned genomes. We selected
 other genes used as single copy orthologs by programs like CheckM, and with longer PFAM
 domains. 
 
