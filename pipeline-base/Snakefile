@@ -137,7 +137,7 @@ def catlas_extract(conf_file, cdbg_only=False, suffix=''):
 
     return z
 
-
+# not used currently, leaving for legacy reasons :)
 def catlas_crumbs(conf_file):
     "Produce crumbs!"
     with open(conf_file, 'rt') as fp:
@@ -165,7 +165,6 @@ rule all:
         catlas_search('conf/podar-ref.json'),
         catlas_search('conf/podar-ref.json', cdbg_only=True),
         catlas_search('conf/podarV.json'),
-        catlas_crumbs('conf/podarV.json'),
         signatures(recover_fuso, recover_ruminis),
         signatures(strain_gingivalis, strain_denticola, strain_bacteroides),
         signatures(podar_ref_genomes, hu_bin_genomes),
@@ -177,7 +176,6 @@ rule all:
         "bacteroides.csv", "denticola.csv", "gingivalis.csv",
         catlas_search('conf/hu-s1.json'),
         catlas_extract('conf/hu-s1.json'),
-        catlas_crumbs('conf/hu-s1.json'),
         'fuso.reads.fa', 'ruminis.reads.fa'
 
 rule download_podar_ref_genomes:
