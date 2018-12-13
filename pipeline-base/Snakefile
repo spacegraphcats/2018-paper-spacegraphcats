@@ -158,6 +158,26 @@ def catlas_crumbs(conf_file):
 
     return z
 
+def plass_assemblies(conf_file):
+    "Produce PLASS assemblies!"
+    with open(conf_file, 'rt') as fp:
+        jj = json.load(fp)
+
+    catlas_base = jj['catlas_base']
+    ksize = jj['ksize']
+    radius = jj['radius']
+
+    dirname = '{}_k{}_r{}_search_oh0'.format(catlas_base, ksize, radius)
+
+    filenames = jj['search']
+    z = []
+    for x in filenames:
+        x = os.path.basename(x)
+        output = dirname + '/{}.cdbg_ids.reads.fa.gz.plass.fa'.format(x)
+        z.append(output)
+
+    return z
+
 ###
 
 rule all:
@@ -176,7 +196,8 @@ rule all:
         "bacteroides.csv", "denticola.csv", "gingivalis.csv",
         catlas_search('conf/hu-s1.json'),
         catlas_extract('conf/hu-s1.json'),
-        'fuso.reads.fa', 'ruminis.reads.fa'
+        'fuso.reads.fa', 'ruminis.reads.fa',
+        plass_assemblies('conf/hu-s1.json')
 
 rule download_podar_ref_genomes:
     output:
@@ -506,3 +527,11 @@ rule compute_signature_for_genome:
         "{genomefile}.sig"
     shell:
         "sourmash compute -k 31 --scaled=1000 {input[0]} -o {output[0]}"
+
+rule assemble_plass:
+    input:
+        "{filename}"
+    output:
+        "{filename}.plass.fa"
+    shell:
+        "plass assemble {input} {output} {input}.dir"
