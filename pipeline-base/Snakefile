@@ -173,7 +173,28 @@ def plass_assemblies(conf_file):
     z = []
     for x in filenames:
         x = os.path.basename(x)
-        output = dirname + '/{}.cdbg_ids.reads.fa.gz.plass.fa'.format(x)
+        output = dirname + '/{}.cdbg_ids.reads.fa.gz.plass.cdhit.fa'.format(x)
+        z.append(output)
+
+    return z
+
+
+def megahit_assemblies(conf_file):
+    "Produce Megahit assemblies!"
+    with open(conf_file, 'rt') as fp:
+        jj = json.load(fp)
+
+    catlas_base = jj['catlas_base']
+    ksize = jj['ksize']
+    radius = jj['radius']
+
+    dirname = '{}_k{}_r{}_search_oh0'.format(catlas_base, ksize, radius)
+
+    filenames = jj['search']
+    z = []
+    for x in filenames:
+        x = os.path.basename(x)
+        output = dirname + '/{}.cdbg_ids.reads.fa.gz.megahit.fa'.format(x)
         z.append(output)
 
     return z
@@ -197,7 +218,10 @@ rule all:
         catlas_search('conf/hu-s1.json'),
         catlas_extract('conf/hu-s1.json'),
         'fuso.reads.fa', 'ruminis.reads.fa',
-        plass_assemblies('conf/hu-s1.json')
+        plass_assemblies('conf/hu-s1.json'),
+        "checkm.plass.out",
+        megahit_assemblies('conf/hu-s1.json'),
+        "checkm.megahit.out"
 
 rule download_podar_ref_genomes:
     output:
@@ -528,6 +552,16 @@ rule compute_signature_for_genome:
     shell:
         "sourmash compute -k 31 --scaled=1000 {input[0]} -o {output[0]}"
 
+rule assemble_megahit:
+    input:
+        "{filename}"
+    output:
+        "{filename}.megahit.fa"
+    conda:
+        "envs/megahit.yaml"
+    shell:
+        "megahit -m 20e9 -o {output}.assemble -r {input} -f && cp {output}.assemble/final.contigs.fa {output}"
+
 rule assemble_plass:
     input:
         "{filename}"
@@ -535,3 +569,40 @@ rule assemble_plass:
         "{filename}.plass.fa"
     shell:
         "plass assemble {input} {output} {input}.dir"
+
+rule remove_plass_stop:
+    input:
+        "{filename}.plass.fa"
+    output:
+        "{filename}.plass.fa.nostop.fa"
+    shell:
+        "scripts/remove-stop-plass.py {input}"
+
+rule plass_cd_hit:
+    input:
+        "{filename}.plass.fa.nostop.fa"
+    output:
+        "{filename}.plass.cdhit.fa"
+    shell:
+        "cd-hit -c 1 -i {input} -o {output}"
+
+rule checkm_plass:
+    input:
+        plass_assemblies('conf/hu-s1.json')
+    output:
+        directory("checkm.plass.out")
+    conda:
+        "envs/checkm.yaml"
+    shell:
+        "rm -fr checkm.plass.bins && mkdir checkm.plass.bins && ln {input} checkm.plass.bins && checkm lineage_wf -x fa checkm.plass.bins {output} -t {threads} --genes --pplacer_threads={threads}"
+
+
+rule checkm_megahit:
+    input:
+        megahit_assemblies('conf/hu-s1.json')
+    output:
+        directory("checkm.megahit.out")
+    conda:
+        "envs/checkm.yaml"
+    shell:
+        "rm -fr checkm.megahit.bins && mkdir checkm.megahit.bins && ln {input} checkm.megahit.bins && checkm lineage_wf -x fa checkm.megahit.bins {output} -t {threads} --pplacer_threads={threads}"
