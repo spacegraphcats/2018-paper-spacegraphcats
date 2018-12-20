@@ -2,9 +2,9 @@ import os
 import itertools
 import json
 
-thisdir = os.getcwd()
-spacegraphcats = os.path.join(thisdir, '../../spacegraphcats')
-os.environ['PYTHONPATH'] = spacegraphcats
+from spacegraphcats.snakemake import (catlas_build, catlas_search,
+                                      catlas_extract, catlas_search_input)
+
 
 podar_ref_genomes = expand("podar-ref/{num}.fa", num=range(0, 64))
 
@@ -35,57 +35,6 @@ recover_fuso = [x.strip() for x in open('conf/recover-fuso.txt')]
 def signatures(*filenames):
     return [ x + '.sig' for x in itertools.chain(*filenames) ]
 
-def catlas_build(conf_file):
-    "Produce the list of files output by 'conf/run <config> build"
-    with open(conf_file, 'rt') as fp:
-        jj = json.load(fp)
-
-    catlas_base = jj['catlas_base']
-    ksize = jj['ksize']
-    radius = jj['radius']
-
-    dirname = '{}_k{}_r{}'.format(catlas_base, ksize, radius)
-
-    z = []
-    z.append(catlas_base + '/bcalm.{}.k31.unitigs.fa'.format(catlas_base))
-    z.append(dirname + '/catlas.csv')
-    z.append(dirname + '/cdbg.gxt')
-    z.append(dirname + '/contigs.fa.gz')
-    z.append(dirname + '/contigs.fa.gz.indices')
-    z.append(dirname + '/contigs.fa.gz.info.csv')
-    z.append(dirname + '/contigs.fa.gz.mphf')
-    z.append(dirname + '/first_doms.txt')
-    return z
-
-
-def catlas_search(conf_file, cdbg_only=False, suffix=''):
-    "Produce the list of files output by 'conf/run <config> search"
-    with open(conf_file, 'rt') as fp:
-        jj = json.load(fp)
-
-    catlas_base = jj['catlas_base']
-    ksize = jj['ksize']
-    radius = jj['radius']
-
-    cdbg_str = ""
-    if cdbg_only:
-        cdbg_str = '_cdbg'
-    dirname = '{}_k{}_r{}{}_search_oh0{}'.format(catlas_base, ksize, radius,
-                                                 cdbg_str, suffix)
-
-    filenames = jj['search']
-    z = []
-    for x in filenames:
-        x = os.path.basename(x)
-        z.append(dirname + '/{}.cdbg_ids.txt.gz'.format(x))
-        z.append(dirname + '/{}.contigs.sig'.format(x))
-        z.append(dirname + '/{}.frontier.txt.gz'.format(x))
-        z.append(dirname + '/{}.response.txt'.format(x))
-
-    z.append(dirname + '/results.csv')
-
-    return z
-
 
 def catlas_search_sigs(conf_file, cdbg_only=False, suffix=''):
     "Produce the list of contigs.sig files output by 'conf/run <config> search"
@@ -107,52 +56,6 @@ def catlas_search_sigs(conf_file, cdbg_only=False, suffix=''):
     for x in filenames:
         x = os.path.basename(x)
         z.append(dirname + '/{}.contigs.sig'.format(x))
-
-    return z
-
-
-def catlas_extract(conf_file, cdbg_only=False, suffix=''):
-    "Produce the list of files output by 'conf/run <config> extract_contigs extract_reads"
-    with open(conf_file, 'rt') as fp:
-        jj = json.load(fp)
-
-    catlas_base = jj['catlas_base']
-    ksize = jj['ksize']
-    radius = jj['radius']
-
-    cdbg_str = ""
-    if cdbg_only:
-        cdbg_str = '_cdbg'
-    dirname = '{}_k{}_r{}{}_search_oh0{}'.format(catlas_base, ksize, radius,
-                                                 cdbg_str, suffix)
-
-    filenames = jj['search']
-    z = []
-    for x in filenames:
-        x = os.path.basename(x)
-        z.append(dirname + '/{}.cdbg_ids.reads.fa.gz'.format(x))
-        z.append(dirname + '/{}.cdbg_ids.contigs.fa.gz'.format(x))
-
-    return z
-
-# not used currently, leaving for legacy reasons :)
-def catlas_crumbs(conf_file):
-    "Produce crumbs!"
-    with open(conf_file, 'rt') as fp:
-        jj = json.load(fp)
-
-    catlas_base = jj['catlas_base']
-    ksize = jj['ksize']
-    radius = jj['radius']
-
-    dirname = '{}_k{}_r{}_search_oh0'.format(catlas_base, ksize, radius)
-
-    filenames = jj['search']
-    z = []
-    for x in filenames:
-        x = os.path.basename(x)
-        z.append(dirname + '/{}.cdbg_ids.reads.fa.gz.crumbs.fa'.format(x))
-        z.append(dirname + '/{}.cdbg_ids.contigs.fa.gz.crumbs.fa'.format(x))
 
     return z
 
@@ -258,7 +161,7 @@ rule download_podarV_recover_genomes:
 
 rule podar_ref_search:
     input:
-        podar_ref_genomes
+        catlas_search_input('conf/podar-ref.json')
     output:
         catlas_search('conf/podar-ref.json')
     shell:
@@ -266,7 +169,7 @@ rule podar_ref_search:
 
 rule podar_ref_search_cdbg_only:
     input:
-        podar_ref_genomes
+        catlas_search_input('conf/podar-ref.json')
     output:
         catlas_search('conf/podar-ref.json', cdbg_only=True),
     shell:
@@ -283,7 +186,7 @@ rule podarV_build:
 rule podarV_search:
     input:
         catlas_build('conf/podarV.json'),
-        podar_ref_genomes
+        catlas_search_input('conf/podarV.json')
     output:
         catlas_search('conf/podarV.json'),
     shell:
@@ -507,8 +410,8 @@ rule hu_s1_build:
 
 rule hu_s1_search:
     input:
-        hu_bin_genomes,
         catlas_build('conf/hu-s1.json'),
+        catlas_search_input('conf/hu-s1.json')
     output:
         catlas_search('conf/hu-s1.json'),
     shell:
