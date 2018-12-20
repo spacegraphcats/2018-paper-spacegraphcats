@@ -209,17 +209,6 @@ rule podarV_extract:
     shell:
         "{sys.executable} -m spacegraphcats conf/podarV.json extract_contigs extract_reads --nolock"
 
-rule podarV_crumbs:
-    input:
-        subtract=podar_ref_genomes,
-        extracted=catlas_extract('conf/podarV.json')
-    output:
-        catlas_crumbs('conf/podarV.json')
-    shell:
-        """python -m spacegraphcats.search.make_donut -o .crumbs.fa \
-              --query {input.extracted} \
-              --subtract {input.subtract} \
-              --directory podarV_k31_r1_search_oh0"""
 
 rule podarV_ruminis_search:
     input:
@@ -433,18 +422,6 @@ rule hu_s1_extract:
         catlas_extract('conf/hu-s1.json')
     shell:
         "{sys.executable} -m spacegraphcats conf/hu-s1.json extract_contigs extract_reads --nolock"
-
-rule hu_s1_crumbs:
-    input:
-        subtract=hu_bin_genomes,
-        extracted=catlas_extract('conf/hu-s1.json')
-    output:
-        catlas_crumbs('conf/hu-s1.json')
-    shell:
-        """python -m spacegraphcats.search.make_donut -o .crumbs.fa \
-              --query {input.extracted} \
-              --subtract {input.subtract} \
-              --directory hu-s1_k31_r1_search_oh0"""
 
 ### generic rules
 
