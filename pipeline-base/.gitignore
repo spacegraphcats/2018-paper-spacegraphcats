@@ -41,5 +41,6 @@ gingivalis.x.contigs.cont.csv
 ruminis.assembly/
 checkm.plass.bins
 checkm.plass.out
-megahit.plass.bins
-megahit.plass.out
+checkm.hu.bins/
+checkm.megahit.bins/
+checkm.megahit.out/

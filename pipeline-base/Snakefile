@@ -219,9 +219,12 @@ rule all:
         catlas_extract('conf/hu-s1.json'),
         'fuso.reads.fa', 'ruminis.reads.fa',
         plass_assemblies('conf/hu-s1.json'),
-        "checkm.plass.out",
+        "checkm-plass.txt",
         megahit_assemblies('conf/hu-s1.json'),
-        "checkm.megahit.out"
+        "checkm-megahit.txt",
+        "checkm-hu.txt",
+        signatures(megahit_assemblies('conf/hu-s1.json')),
+        signatures(catlas_extract('conf/hu-s1.json'))
 
 rule download_podar_ref_genomes:
     output:
@@ -590,19 +593,32 @@ rule checkm_plass:
     input:
         plass_assemblies('conf/hu-s1.json')
     output:
-        directory("checkm.plass.out")
+        directory("checkm.plass.out"),
+        "checkm-plass.txt"
     conda:
         "envs/checkm.yaml"
     shell:
-        "rm -fr checkm.plass.bins && mkdir checkm.plass.bins && ln {input} checkm.plass.bins && checkm lineage_wf -x fa checkm.plass.bins {output} -t {threads} --genes --pplacer_threads={threads}"
+        "rm -fr checkm.plass.bins && mkdir checkm.plass.bins && ln {input} checkm.plass.bins && checkm lineage_wf -x fa checkm.plass.bins checkm.plass.out -t {threads} --genes --pplacer_threads={threads} -f checkm-plass.txt"
 
 
 rule checkm_megahit:
     input:
         megahit_assemblies('conf/hu-s1.json')
     output:
-        directory("checkm.megahit.out")
+        directory("checkm.megahit.out"),
+        "checkm-megahit.txt"
     conda:
         "envs/checkm.yaml"
     shell:
-        "rm -fr checkm.megahit.bins && mkdir checkm.megahit.bins && ln {input} checkm.megahit.bins && checkm lineage_wf -x fa checkm.megahit.bins {output} -t {threads} --pplacer_threads={threads}"
+        "rm -fr checkm.megahit.bins && mkdir checkm.megahit.bins && ln {input} checkm.megahit.bins && checkm lineage_wf -x fa checkm.megahit.bins checkm.megahit.out -t {threads} --pplacer_threads={threads} -f checkm-megahit.txt"
+
+rule checkm_hu:
+    input:
+        hu_bin_genomes
+    output:
+        directory("checkm.hu.out"),
+        "checkm-hu.txt"
+    conda:
+        "envs/checkm.yaml"
+    shell:
+        "rm -fr checkm.hu.bins && mkdir checkm.hu.bins && ln {input} checkm.hu.bins && checkm lineage_wf -x fa checkm.hu.bins checkm.hu.out -t {threads} --pplacer_threads={threads} -f checkm-hu.txt"
