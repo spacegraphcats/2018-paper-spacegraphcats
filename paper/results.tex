@@ -38,10 +38,10 @@
 
 \subsection*{Dominating sets enable efficient neighborhood queries in large assembly graphs}
 
-We design and implement~\cite{spacegraphcats} a set of algorithms for efficiently
+We designed and implemented~\cite{spacegraphcats} a set of algorithms for efficiently
 finding content in a metagenome that is close to a query as measured
 by distance in a compact De Bruijn graph (cDBG) representation of the
-sequencing data (\autoref{fig:domset}). To accomplish this, we first organize the cDBG into {\em \pieces}
+sequencing data (\autoref{fig:domset}). To accomplish this, we organize the cDBG into {\em \pieces}
 around a set of \emph{dominators} that are collectively close to all vertices. In this
 context, the {\em neighborhood} of a query is the union of all \pieces it overlaps;
 to enable efficient search, we build an invertible index of the \pieces.
@@ -94,7 +94,7 @@ all genomic content assigned to \pieces that contain part of the query.
 
 
 Our implementations of these algorithms in \sgc can be run on
-metagenomic data with millions of cDBG nodes; (\autoref{tab:data})
+metagenomic data with millions of cDBG nodes (\autoref{tab:data});
 indexing takes under an hour, enabling queries to complete in seconds
 to minutes (\autoref{tab:benchmarking}). See \appendixref{subsec:runtimes}
 for full benchmarking (including cDBG construction). This
@@ -129,8 +129,8 @@ neighborhoods.
 \subsection*{Neighborhood queries enable recovery of relevant unknown genomic content}
 %Use queries that aren't 100% present in the graph to try to retrieve things that are there.
 
-We first measure how well an inexact query can recover a target genome
-from a metagenome. For a benchmark data set, we use the
+We first measured how well an inexact query can recover a target genome
+from a metagenome. For a benchmark data set, we used the
 \podarv data set \cite{podar}. This is a ``mock'' metagenome containing
 genomes from 65 strains and species of bacteria and archaea, each
 grown independently and rendered into DNA, then combined and sequenced
@@ -140,18 +140,18 @@ benchmark for assembly \cite{Awad155358,megahit,Seah2015,nurk2017metaspades}.
 %by querying for a known target genome using queries closely related to the target.
 To evaluate the effectiveness of neighborhood query at recovering
 strain variants,
-we choose three target genomes from \podarv -- {\em Porphyromonas
+we chose three target genomes from \podarv -- {\em Porphyromonas
   gingivalis ATCC 33277}, {\em Treponema denticola ATCC 35405}, and
 {\em Bacteroides thetaiotaomicron VPI-5482} -- that have many
-taxonomically close relatives in Genbank. We then use these relatives
+taxonomically close relatives in GenBank. We then used these relatives
 to query the \podarv mixture and measure the recovery of the target
 genome.  The results, in \autoref{fig:partial_query}(a), show that
 graph neighborhood query can recover 35\% or more of some target genomes
 starting from a relative with Jaccard similarity as low as 1\%: even a
-small number of shared k-mers suffice to define a much larger neighborhood
+small number of shared k-mers sufficed to define a much larger neighborhood
 that contains related genomes.
 
-We next apply neighborhood query to retrieve an unknown genome from \podarv.
+We next applied neighborhood query to retrieve an unknown genome from \podarv.
 Several papers have noted the
 presence of unexpected sequence in the assemblies of this data, and
 Awad et al. identify at least two species that differ from
@@ -167,15 +167,15 @@ be entirely recovered with existing approaches: when we
 assemble the reads that share k-mers with the available genomes, a
 marker-based analysis with CheckM estimates that 98.8\% of the {\em
   Fusobacterium} variant is recovered, while only 72.96\% of the {\em
-  Proteiniclasticum} variant is recovered. We therefore try using
+  Proteiniclasticum} variant is recovered. We therefore tried using
 neighborhood queries to expand our knowledge of the {\em Proteiniclasticum} variant.
 
-We perform a neighborhood query into \podarv with all three known {\em
-  Proteiniclasticum} genomes from GenBank.  We then extract the reads
-overlapping this neighborhood and assemble them with MEGAHIT.  The
+We performed a neighborhood query into \podarv with all three known {\em
+  Proteiniclasticum} genomes from GenBank.  We then extracted the reads
+overlapping this neighborhood and assembled them with MEGAHIT.  The
 retrieved genome neighborhood for {\em Proteiniclasticum} contains
 2256K novel k-mers (\autoref{fig:partial_query}(b)). The reads from
-the query neighborhood assemble into a 3.1 Mbp genome bin. The
+the query neighborhood assembled into a 3.1 Mbp genome bin. The
 assembly is estimated by CheckM to be 100\% complete, with 10.3\%
 contamination.
 The mean amino acid identity between {\em P. ruminis ML2} and the
@@ -191,14 +191,14 @@ neighborhood query retrieves a full draft genome sequence (see Appendix~\ref{sub
     \subfloat{\includegraphics[width=0.55\linewidth]{figures/hu_strain_b}}
 	\caption{Query neighborhoods in \hu metagenome are large and contain additional marker genes.
   (a) Left Panel: Neighborhood sizes are larger in \hu than in \podarv. Here
-  we query \podarv and \hu using each of 64 and 23 genomes fully present
-  in the respective datasets and measure the relative size of its neighborhood—a
+  we queried \podarv and \hu using each of 64 and 23 genomes fully present
+  in the respective datasets and measured the relative size of its neighborhood—a
   size of 1 indicates that no additional sequence is present in the neighborhood,
   while a size of 2 indicates that the retrieved neighborhood is twice the size
   of the query genome.
   (b) Right Panel: Query neighborhoods are estimated to be more complete
-  than the original genome bins. We query \hu using each of 23 genomes binned
-  from SB1, and assemble the resulting neighborhoods using MEGAHIT and \plass.
+  than the original genome bins. We queried \hu using each of 23 genomes binned
+  from SB1, and assembled the resulting neighborhoods using MEGAHIT and \plass.
   The blue points represent completeness estimates of MEGAHIT-assembled
   neighborhoods, while green and pink bars represent the additional or missing
   content in the \plass assemblies respectively.
@@ -219,29 +219,29 @@ genomes in an ocean environment found that up to 40\% of single-cell
 genome content may be missing in metagenome-assembled genomes \cite{baltic}.
 
 We first ask whether genome query neighborhood sizes in a real
-metagenome differ from mock metagenomes.  We examine genomes inferred
+metagenome differ from mock metagenomes.  We examined genomes inferred
 from the SB1 sample from the Hu et al.\ (2016) study, in which 6
 metagenomic samples taken from various types of oil reservoirs were
 sequenced, assembled, binned, and computationally analyzed for
 biochemical function \cite{Hu2016}.  Examining the 23 binned genomes
-in GenBank originating from the SB1 sample, we compare the \hu
+in GenBank originating from the SB1 sample, we compared the \hu
 neighborhood size distribution with the \podarv data set
-(\autoref{fig:hu_strain}(a)). We see that more genome bins in \hu
+(\autoref{fig:hu_strain}(a)). We saw that more genome bins in \hu
 have 1.5x or larger query neighborhoods than do the genomes in
 \podarv. This suggests the presence of considerably more local
 neighborhood content in the real metagenome than in the mock
 metagenome.
 
-We next investigate the metagenomic content in the query
-neighborhoods.  As with the unknown variants in \podarv, we use
+We next investigated metagenomic content in the query
+neighborhoods.  As with the unknown variants in \podarv, we used
 CheckM to estimate genome bin completeness.  The estimated bin
 completeness for many of the query genomes is low
 (\appendixref{subsec:checkm}).
 To see if the query neighborhoods contain missing marker genes, we
-assemble reads from the query neighborhoods using MEGAHIT.  However,
-we find little improvement in the completion metrics (\autoref{fig:hu_strain}(b)).
+assembled reads from the query neighborhoods using MEGAHIT.  However,
+we found little improvement in the completion metrics (\autoref{fig:hu_strain}(b)).
 
-Investigating further, we find that the query neighborhood assemblies
+Investigating further, we found that the query neighborhood assemblies
 contain only between 4\% and 56\% of the neighborhood k-mer
 content (\appendixref{subsec:inclusion}), suggesting that MEGAHIT is
 not including many of the reads in the assembly of the query neighborhoods.
@@ -249,13 +249,13 @@ This could result from high
 error rates and/or high strain variation in the underlying reads
 \cite{CAMI,Awad155358}.
 
-To attempt to recover more gene content from the assemblies, we turn to
+To attempt the recovery of more gene content from the assemblies, we turned to
 the \plass amino acid assembler \cite{plass}. \plass implements an
 overlap-based amino acid assembly approach that is considerably more
 sensitive than nucleotide assemblers and could be more robust to
 errors and strain variation \cite{spa}.
 
-When we apply \plass to the reads from the query neighborhoods, we see
+When we applied \plass to the reads from the query neighborhoods, we saw
 a further increase in neighborhood completeness
 (\autoref{fig:hu_strain}(b)).  This suggests that the genome bin
 query neighborhoods contain real genes that are accessible to the
@@ -281,7 +281,7 @@ approach to detecting marker genes \cite{CheckM}.
       matches to {\em gyrA} sequences from the bin are highlighted using color from relevant triangle.
       (b) Right Panel: Genome neighborhoods re-associate annotated
     functionality to binned genomes. For each of 23 genome bins
-    originating from \hu, we find the unbinned content by removing all
+    originating from \hu, we found the unbinned content by removing all
     orthologs found in the binned genomes in \cite{hu} and by counting distinct
     ortholog annotations once. Functional content is
     distributed throughout pathways present in the binned genomes,
@@ -302,17 +302,17 @@ identifiable.
 
 The {\em gyrA} gene encodes an essential DNA topoisomerase that
 participates in DNA supercoiling and was used by \cite{Hu2016} as a
-phylogenetic marker.  In the GenBank bins, we find that 15 of the 23
+phylogenetic marker.  In the GenBank bins, we found that 15 of the 23
 bins contain at least one gyrA sequence (with 18 {\em gyrA} genes
-total).  We therefore use {\em gyrA} for an initial analysis of the
+total).  We therefore used {\em gyrA} for an initial analysis of the
 \plass-assembled neighborhood content for all 23 bins.  To avoid confounding effects of
 random sequencing error in the analysis and increase specificity at the
-cost of sensitivity, we focus only on high-abundance data:
-we truncate all reads
+cost of sensitivity, we focused only on high-abundance data:
+we truncated all reads
 in the query neighborhoods at any k-mer that appears fewer than five
-times, and run \plass on these abundance-trimmed reads from each
-neighborhood.  We then search the gene assemblies with a gyrA-derived
-HMM, align all high-scoring matches, and calculate a pairwise similarity
+times, and ran \plass on these abundance-trimmed reads from each
+neighborhood.  We then searched the gene assemblies with a gyrA-derived
+HMM, aligned all high-scoring matches, and calculated a pairwise similarity
 matrix from the resulting alignment.\looseness-1
 %TER add in k-mer size of 31 into materials and methods
 
@@ -325,17 +325,18 @@ are retrieved and used to construct a compact De Bruijn graph, the
 variation is visible as spurs off of a few longer paths (insets in
 \autoref{fig:hu_content}(a)). When we count the number of
 well-supported amino acid variants in isolated positions (i.e. ignoring linkage between variants)
-we see that ten of the 23 neighborhoods increase in the number of gyrA
+we see that ten of the 23 neighborhoods have an increase number of gyrA
 genes, with four neighborhoods gaining a gyrA where none exists in
 the bin (\appendixref{subsec:gyrAnbhd}; see lowest inset
 in \autoref{fig:hu_content}(a) for one example). Only one
-neighborhood, {\em M. bacterium}, loses its gyrA genes, due to the
+neighborhood, {\em M. bacterium}, loses its gyrA genes due to the
 stringent k-mer abundance trimming.
 Collectively, the use of the \plass assembler on genome
 neighborhoods substantially increases the number of gyrA sequences associated with bins.
 
-We see this same pattern for many genes, including alaS, gyrB, rpb2
-domain 6, recA, rplB, and rpsC (\appendixref{subsec:othergenes}).
+We see this same pattern for many genes, including {\em alaS}, {\em gyrB},
+{\em rpb2}
+domain 6, {\em recA}, {\em rplB}, and {\em rpsC} (\appendixref{subsec:othergenes}).
 This shows that multiple variants of those proteins are present within
 at least some of the neighborhoods and implies the presence of
 underlying nucleotide strain variation.
@@ -347,10 +348,10 @@ assemblies.
 \subsection*{Query neighborhoods assembled with \plass contain additional functional content}
 
 In addition to capturing variants close to sequences in the bins, we
-identify many novel genes in the query neighborhoods. We use KEGG to
-annotate the \plass-assembled amino acid sequences, and subtract any
+identify many novel genes in the query neighborhoods. We used KEGG to
+annotate the \plass-assembled amino acid sequences, and subtracted any
 homolog already annotated in the genome bin.
-We also ignore homolog abundance so that each homolog is counted only
+We also ignoreed homolog abundance such that each homolog is counted only
 once per neighborhood.
 
 Novel functional content is distributed throughout pathways present in
