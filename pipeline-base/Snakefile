@@ -1,3 +1,14 @@
+# First-stage pipeline for Brown et al., 2018,
+# https://www.biorxiv.org/content/early/2018/11/05/462788.
+#
+# See
+#
+#   https://github.com/dib-lab/2018-paper-spacegraphcats
+#
+# for source github repo.
+#
+# Contact: Titus Brown, ctbrown@ucdavis.edu.
+
 import os
 import itertools
 import json
