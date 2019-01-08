@@ -100,6 +100,48 @@ def megahit_assemblies(conf_file):
 
     return z
 
+
+def hardtrim_reads(conf_file):
+    "Produce hardtrimmed reads!"
+    with open(conf_file, 'rt') as fp:
+        jj = json.load(fp)
+
+    catlas_base = jj['catlas_base']
+    ksize = jj['ksize']
+    radius = jj['radius']
+
+    dirname = '{}_k{}_r{}_search_oh0'.format(catlas_base, ksize, radius)
+
+    filenames = jj['search']
+    z = []
+    for x in filenames:
+        x = os.path.basename(x)
+        output = dirname + '/{}.cdbg_ids.reads.hardtrim.fa.gz'.format(x)
+        z.append(output)
+
+    return z
+
+
+def plass_hardtrim_reads(conf_file):
+    "Produce plass assemblies of hardtrimmed reads!"
+    with open(conf_file, 'rt') as fp:
+        jj = json.load(fp)
+
+    catlas_base = jj['catlas_base']
+    ksize = jj['ksize']
+    radius = jj['radius']
+
+    dirname = '{}_k{}_r{}_search_oh0'.format(catlas_base, ksize, radius)
+
+    filenames = jj['search']
+    z = []
+    for x in filenames:
+        x = os.path.basename(x)
+        output = dirname + '/{}.cdbg_ids.reads.hardtrim.fa.gz.plass.cdhit.fa'.format(x)
+        z.append(output)
+
+    return z
+
 ###
 
 rule all:
@@ -125,7 +167,9 @@ rule all:
         "checkm-megahit.txt",
         "checkm-hu.txt",
         signatures(megahit_assemblies('conf/hu-s1.json')),
-        signatures(catlas_extract('conf/hu-s1.json'))
+        signatures(catlas_extract('conf/hu-s1.json')),
+        plass_hardtrim_reads('conf/hu-s1.json'),
+        "checkm-hardtrim-plass.txt"
 
 rule download_podar_ref_genomes:
     output:
@@ -479,6 +523,18 @@ rule checkm_plass:
         "rm -fr checkm.plass.bins && mkdir checkm.plass.bins && ln {input} checkm.plass.bins && checkm lineage_wf -x fa checkm.plass.bins checkm.plass.out -t {threads} --genes --pplacer_threads={threads} -f checkm-plass.txt"
 
 
+rule checkm_hardtrim_plass:
+    input:
+        plass_hardtrim_reads('conf/hu-s1.json')
+    output:
+        directory("checkm.hardtrim-plass.out"),
+        "checkm-hardtrim-plass.txt"
+    conda:
+        "envs/checkm.yaml"
+    shell:
+        "rm -fr checkm.hardtrim-plass.bins && mkdir checkm.hardtrim-plass.bins && ln {input} checkm.hardtrim-plass.bins && checkm lineage_wf -x fa checkm.hardtrim-plass.bins checkm.hardtrim-plass.out -t {threads} --genes --pplacer_threads={threads} -f checkm-hardtrim-plass.txt"
+
+
 rule checkm_megahit:
     input:
         megahit_assemblies('conf/hu-s1.json')
@@ -500,3 +556,11 @@ rule checkm_hu:
         "envs/checkm.yaml"
     shell:
         "rm -fr checkm.hu.bins && mkdir checkm.hu.bins && ln {input} checkm.hu.bins && checkm lineage_wf -x fa checkm.hu.bins checkm.hu.out -t {threads} --pplacer_threads={threads} -f checkm-hu.txt"
+
+rule do_hardtrim_reads:
+    input:
+        "{filename}.fa.gz"
+    output:
+        "{filename}.hardtrim.fa.gz"
+    shell:
+        "trim-low-abund.py -C 5 -M 20e9 -k 31 {input} --gzip -o {output}"
