@@ -21,7 +21,7 @@ podar_ref_genomes = expand("podar-ref/{num}.fa", num=range(0, 64))
 
 hu_bin_genomes = ["hu-genomes/hu-genome24.fa",
                   "hu-genomes/hu-genome33.fa", "hu-genomes/hu-genome25.fa",
-                  "hu-genomes/hu-genome27.fa", "hu-genomes/hu-genome08.fa",
+                  "hu-genomes/hu-genome27.fa",
                   "hu-genomes/hu-genome40.fa", "hu-genomes/hu-genome30.fa",
                   "hu-genomes/hu-genome31.fa", "hu-genomes/hu-genome41.fa",
                   "hu-genomes/hu-genome26.fa", "hu-genomes/hu-genome35.fa",
@@ -29,12 +29,9 @@ hu_bin_genomes = ["hu-genomes/hu-genome24.fa",
                   "hu-genomes/hu-genome34.fa", "hu-genomes/hu-genome36.fa",
                   "hu-genomes/hu-genome19.fa", "hu-genomes/hu-genome21.fa",
                   "hu-genomes/hu-genome20.fa", "hu-genomes/hu-genome37.fa",
-                  "hu-genomes/hu-genome29.fa", "hu-genomes/hu-genome11.fa",
-                  "hu-genomes/hu-genome10.fa", "hu-genomes/hu-genome28.fa",
-                  "hu-genomes/hu-genome12.fa", "hu-genomes/hu-genome13.fa",
-                  "hu-genomes/hu-genome38.fa", "hu-genomes/hu-genome39.fa",
-                  "hu-genomes/hu-genome14.fa", "hu-genomes/hu-genome03.fa",
-                  "hu-genomes/hu-genome02.fa"]
+                  "hu-genomes/hu-genome29.fa",
+                  "hu-genomes/hu-genome28.fa", "hu-genomes/hu-genome32.fa",
+                  "hu-genomes/hu-genome38.fa", "hu-genomes/hu-genome39.fa"]
 
 strain_bacteroides = [x.strip() for x in open('conf/strain-bacteroides.txt')]
 strain_gingivalis = [x.strip() for x in open('conf/strain-gingivalis.txt')]
@@ -169,6 +166,9 @@ rule all:
         catlas_search('conf/podarV-bacteroides.json', suffix='_bacteroides'),
         catlas_search('conf/podarV-gingivalis.json', suffix='_gingivalis'),
         "bacteroides.csv", "denticola.csv", "gingivalis.csv",
+	"bacteroides.x.contigs.cont.csv",
+	"denticola.x.contigs.cont.csv",
+	"gingivalis.x.contigs.cont.csv",
         catlas_search('conf/hu-s1.json'),
         catlas_extract('conf/hu-s1.json'),
         'fuso.reads.fa', 'ruminis.reads.fa',
