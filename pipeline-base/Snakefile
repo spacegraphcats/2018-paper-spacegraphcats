@@ -44,6 +44,26 @@ def signatures(*filenames):
     return [ x + '.sig' for x in itertools.chain(*filenames) ]
 
 
+def add_suffix_to_search_output(conf_file, suffix):
+    "Produce the list of contigs.sig files output by 'conf/run <config> search"
+    with open(conf_file, 'rt') as fp:
+        jj = json.load(fp)
+
+    catlas_base = jj['catlas_base']
+    ksize = jj['ksize']
+    radius = jj['radius']
+
+    dirname = '{}_k{}_r{}_search_oh0'.format(catlas_base, ksize, radius)
+
+    filenames = jj['search']
+    z = []
+    for x in filenames:
+        x = os.path.basename(x)
+        z.append(dirname + '/{}.{}'.format(x, suffix))
+
+    return z
+
+
 def catlas_search_sigs(conf_file, cdbg_only=False, suffix=''):
     "Produce the list of contigs.sig files output by 'conf/run <config> search"
     with open(conf_file, 'rt') as fp:
@@ -180,7 +200,8 @@ rule all:
         signatures(megahit_assemblies('conf/hu-s1.json')),
         signatures(catlas_extract('conf/hu-s1.json')),
         plass_hardtrim_reads('conf/hu-s1.json'),
-        "checkm-hardtrim-plass.txt"
+        "checkm-hardtrim-plass.txt",
+        "megahit-containment.csv"
 
 rule download_podar_ref_genomes:
     output:
@@ -575,3 +596,21 @@ rule do_hardtrim_reads:
         "{filename}.hardtrim.fa.gz"
     shell:
         "trim-low-abund.py -C 5 -M 20e9 -k 31 {input} --gzip -o {output}"
+
+rule megahit_read_containment:
+    input:
+        "{filename}.sig",
+        "{filename}.megahit.fa.sig"
+    output:
+        "{filename}.megahit.cont.csv"
+    shell:
+        "sourmash search --threshold=0.0 -k 31 --scaled=1000 {input[0]} {input[1]} --containment -o {output}"
+
+rule megahit_read_containment_summary:
+    input:
+        add_suffix_to_search_output('conf/hu-s1.json',
+                                    'cdbg_ids.reads.fa.gz.megahit.cont.csv')
+    output:
+        "megahit-containment.csv"
+    shell:
+        "head -1 {input[0]} > {output} && grep -hv 'similarity,' {input} >> {output}"
