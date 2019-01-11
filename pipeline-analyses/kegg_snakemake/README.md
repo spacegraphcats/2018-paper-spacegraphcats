@@ -14,7 +14,7 @@ conda create -n hu python=3.6
 source activate hu
 conda install snakemake
 cd pipeline-analyses/kegg_snakemake
-snakemake --use-cond
+snakemake --use-conda
 ``` 
 
 The GhostKOALA output files are downloaded as the first step in the 
