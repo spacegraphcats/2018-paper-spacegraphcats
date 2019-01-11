@@ -31,7 +31,7 @@ using the pipeline-base Snakefile.
 8. For the taxonomy data, click download. Save the file as "outputs/GhostKOALA/nbhd.user.out.top.gz"
 9. Then, unzip the file `gunzip outputs/GhostKOALA/user.out.top.gz`
 10. Generate the prokka amino acid sequences for each bin using the 
-pipeline-analyses/bin_prokka Snakefile. 
+pipeline-analyses/bin_prokka_snakemake Snakefile. 
 11. Follow steps 3-9, this time replacing `nbhd` in the filename with `bin`.  
 
         

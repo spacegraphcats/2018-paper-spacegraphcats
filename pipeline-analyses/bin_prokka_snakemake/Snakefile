@@ -1,0 +1,31 @@
+rule all:
+    input: 
+        'outputs/all_sb1_bin_prokka.faa'
+
+rule download_bins:
+    output: 'inputs/hu-bins.tar.gz'
+    shell:
+        "curl -L -o {output} https://osf.io/n3b5j/download"
+
+rule unpack_bins:
+    output: dynamic('inputs/{bin}.fa')
+    input: 'inputs/hu-bins.tar.gz' 
+    params: output_folder = 'inputs/hu-bins/'
+    shell:
+        "tar xf {input} --directory {params.output_folder}"
+
+rule prokka_bins:
+    output: 'outputs/prokka/{bin}.faa'
+    input:  'inputs/{bin}.fa'
+    conda: 'env.yml'
+    params: outdir = 'outputs/prokka'
+    shell:"""
+    prokka {input} --outdir {params.outdir} --prefix {wildcards.bin} --metagenome --force --locustag {wildcards.bin}
+    touch {output}
+    """
+
+rule cat_bins_faa:
+    output: 'outputs/all_sb1_bin_prokka.faa'
+    input: dynamic('outputs/prokka/{bin}.faa')
+    shell:
+        "cat {input} > {output}"
