@@ -1,0 +1,17 @@
+channels:
+ - bioconda
+ - conda-forge
+ - r
+dependencies:
+ - r-dplyr=0.7.4
+ - r-ggplot2=2.2.1
+ - r-readr=1.1.1
+ - blast=2.7.1
+ - r-tidyr=0.8.1
+ - hmmer=3.2.1
+ - bioconductor-genomicranges=1.30.3
+ - bioconductor-ggbio=1.26.0
+ - samtools=1.9
+ - mafft=7.407
+ - r-ggseqlogo=0.1 
+ - r-gridextra=2.3
