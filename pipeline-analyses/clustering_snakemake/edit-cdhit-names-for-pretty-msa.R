@@ -1,5 +1,8 @@
 library(Biostrings)
 library(stringr)
+library(tidyr)
+library(dplyr)
+
 cdh <- readAAStringSet(snakemake@input[['cdh']])
 info <- read.csv(snakemake@input[['info']])
 

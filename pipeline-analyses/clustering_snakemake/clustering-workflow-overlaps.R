@@ -60,7 +60,7 @@ if(max(dom$domain_len) > 211){
                                    end.field="end",
                                    #strand.field="strand",
                                    starts.in.df.are.0based=FALSE)
-  ov <- subsetByOverlaps(dom, want, minoverlap = (length(dom)/2))
+  ov <- subsetByOverlaps(dom, want, minoverlap = max(dom$domain_len/2))
   print("Domain not long enough to select area with most coverage. 
         Used whole domain, kept sequences that overlapped at least half of domain.")
   write.table(ov$query_name, file = snakemake@output[['keep']], 
