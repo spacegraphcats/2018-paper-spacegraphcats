@@ -1,60 +1,57 @@
 ENV = "env.yml"
-ENV2 = "env2.yml"
-NBHD = "hu-genome36"
-TRIM = ["loose"]
-PFAM_BASE=["PF00521_gyra"]
+NBHD = ["hu-genome36", "hu-genome21", "hu-genome27"]
 
 rule all:
     input: 
         #"outputs/paladin/{nbhd}.hardtrim.sam.flagstat"
-        #expand("outputs/paladin/{nbhd}.{trim}trim.sort.bam.bai", nbhd = NBHD, trim = TRIM, pfam_base = PFAM_BASE)
-        "outputs/reads-dedup.fa.unitigs.gfa"
+        #expand("outputs/paladin/{nbhd}.hardtrim.sort.bam.bai", nbhd = NBHD, pfam_base = PFAM_BASE)
+        expand("outputs/{nbhd}/reads-dedup.fa.unitigs.gfa", nbhd = NBHD)
 
 rule download_plass:
-    output: "inputs/plass/{nbhd}.{trim}trim.plass.c100.fa" # shouldn't need to use clean if only dealing with one nbhd
+    output: "inputs/plass/{nbhd}.hardtrim.plass.c100.fa" # shouldn't need to use clean if only dealing with one nbhd
     shell:'''
     touch {output} #place holder for downloading plass hardtrim results
     '''
 
 rule format_plass_cut:
-    output: "outputs/plass/{nbhd}.{trim}trim.plass.c100.cut.fa"
-    input: "inputs/plass/{nbhd}.{trim}trim.plass.c100.fa"
+    output: "outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.fa"
+    input: "inputs/plass/{nbhd}.hardtrim.plass.c100.fa"
     shell:'''
     cut -d ' ' -f1 {input} > {output}
     '''
 
 rule format_plass_dup:
-    output: "outputs/plass/{nbhd}.{trim}trim.plass.c100.cut.dup.fa"
-    input: "outputs/plass/{nbhd}.{trim}trim.plass.c100.cut.fa"
+    output: "outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.dup.fa"
+    input: "outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.fa"
     shell:'''
     awk '(/^>/ && s[$0]++){{$0=$0"_"s[$0]}}1;' {input} > {output}
     '''
 
 rule download_pfam:
-    output: "inputs/pfam/{pfam_base}.sto"
+    output: "inputs/pfam/PF00521_gyra.sto"
     params: 
         out_dir = "inputs/pfam"
     shell:'''
-    pfam=$(echo {wildcards.pfam_base} | cut -f1 -d"_")
+    pfam=$(echo PF00521)
     wget -O {output} https://pfam.xfam.org/family/${{pfam}}/alignment/full
     '''
 
 rule hmmbuild:
-    input: "inputs/pfam/{pfam_base}.sto"
-    output: "outputs/hmmbuild/{pfam_base}.hmm"
+    input: "inputs/pfam/PF00521_gyra.sto"
+    output: "outputs/hmmbuild/PF00521_gyra.hmm"
     shell: '''
-    hmmbuild outputs/hmmbuild/{wildcards.pfam_base}.hmm inputs/pfam/{wildcards.pfam_base}.sto   
-    hmmpress outputs/hmmbuild/{wildcards.pfam_base}.hmm
+    hmmbuild {output} {input}   
+    hmmpress {output}
 '''
 
 rule hmmscan:
     output:
-        out = "outputs/hmmscan/{nbhd}.{trim}trim.plass.{pfam_base}-hmmscanT100.out",
-        tbl = "outputs/hmmscan/{nbhd}.{trim}trim.plass.{pfam_base}-hmmscanT100-tbl.out",
-        dom = "outputs/hmmscan/{nbhd}.{trim}trim.plass.{pfam_base}-hmmscanT100-dom.out"
+        out = "outputs/{nbhd}/hmmscan/{nbhd}.hardtrim.plass.PF00521_gyra-hmmscanT100.out",
+        tbl = "outputs/{nbhd}/hmmscan/{nbhd}.hardtrim.plass.PF00521_gyra-hmmscanT100-tbl.out",
+        dom = "outputs/{nbhd}/hmmscan/{nbhd}.hardtrim.plass.PF00521_gyra-hmmscanT100-dom.out"
     input:
-        hmm = "outputs/hmmbuild/{pfam_base}.hmm",
-        faa = "outputs/plass/{nbhd}.{trim}trim.plass.c100.cut.dup.fa"
+        hmm = "outputs/hmmbuild/PF00521_gyra.hmm",
+        faa = "outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.dup.fa"
     conda: ENV
     shell:'''
     hmmscan -T 100 -o {output.out} --tblout {output.tbl} --domtblout {output.dom} {input.hmm} {input.faa} 
@@ -64,60 +61,60 @@ rule def_hmm_matches_and_find_reads:
 # get the names of the PLASS assembled aa seqs that match the PFAM
 # domain of interest.
     input:
-        dom = "outputs/hmmscan/{nbhd}.{trim}trim.plass.{pfam_base}-hmmscanT100-dom.out",
+        dom = "outputs/{nbhd}/hmmscan/{nbhd}.hardtrim.plass.PF00521_gyra-hmmscanT100-dom.out",
         rhmmer = "rhmmer.R"
     output:
-        keep = "outputs/hmmscan/{nbhd}.{trim}trim.plass.{pfam_base}-hmmscanT100-NAMES.txt"
+        keep = "outputs/{nbhd}/hmmscan/{nbhd}.hardtrim.plass.PF00521_gyra-hmmscanT100-NAMES.txt"
     conda: ENV
     script:'variant-workflow-hmm-matches.R'
 
 rule paladin_index:
-    output: "outputs/plass/{nbhd}.{trim}trim.plass.c100.cut.dup.fa.bwt"
-    input: "outputs/plass/{nbhd}.{trim}trim.plass.c100.cut.dup.fa"
+    output: "outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.dup.fa.bwt"
+    input: "outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.dup.fa"
     conda: ENV
     shell:'''
     paladin index -r3 {input}
     '''
 
 rule paladin_align:
-    output: "outputs/paladin/{nbhd}.{trim}trim.sam"
+    output: "outputs/{nbhd}/paladin/{nbhd}.hardtrim.sam"
     input:
-        indx="outputs/plass/{nbhd}.{trim}trim.plass.c100.cut.dup.fa.bwt",
-        reads="inputs/reads/{nbhd}.{trim}trim.reads.gz"
+        indx="outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.dup.fa.bwt",
+        reads="inputs/reads/{nbhd}.hardtrim.reads.gz"
     params: 
-        indx="outputs/plass/{nbhd}.{trim}trim.plass.c100.cut.dup.fa"
+        indx="outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.dup.fa"
     conda: ENV
     shell:'''
     paladin align -f 125 -t 2 {params.indx} {input.reads} > {output}
     '''
 
 rule samtools_flagstat_paladin:
-    output: "outputs/paladin/{nbhd}.{trim}trim.sam.flagstat"
-    input: "outputs/paladin/{nbhd}.{trim}trim.sam"
+    output: "outputs/{nbhd}/paladin/{nbhd}.hardtrim.sam.flagstat"
+    input: "outputs/{nbhd}/paladin/{nbhd}.hardtrim.sam"
     conda: ENV
     shell:'''
     samtools flagstat {input} > {output}
     '''
 
 rule samtools_view_paladin:
-    output: "outputs/paladin/{nbhd}.{trim}trim.bam"
-    input: "outputs/paladin/{nbhd}.{trim}trim.sam"
+    output: "outputs/{nbhd}/paladin/{nbhd}.hardtrim.bam"
+    input: "outputs/{nbhd}/paladin/{nbhd}.hardtrim.sam"
     conda: ENV
     shell:'''
     samtools view -b {input} > {output}
     '''
 
 rule samtools_sort_paladin:
-    output: "outputs/paladin/{nbhd}.{trim}trim.sort.bam"
-    input: "outputs/paladin/{nbhd}.{trim}trim.bam"
+    output: "outputs/{nbhd}/paladin/{nbhd}.hardtrim.sort.bam"
+    input: "outputs/{nbhd}/paladin/{nbhd}.hardtrim.bam"
     conda: ENV
     shell:'''
     samtools sort {input} > {output}
     '''
 
 rule samtools_index_paladin:
-    output: "outputs/paladin/{nbhd}.{trim}trim.sort.bam.bai"
-    input: "outputs/paladin/{nbhd}.{trim}trim.sort.bam"
+    output: "outputs/{nbhd}/paladin/{nbhd}.hardtrim.sort.bam.bai"
+    input: "outputs/{nbhd}/paladin/{nbhd}.hardtrim.sort.bam"
     conda: ENV
     shell:'''
     samtools index {input} 
@@ -126,11 +123,11 @@ rule samtools_index_paladin:
 rule extract_plass_readnames_from_bam:
 # extract names of reads for each aa seq bam section that matched 
 # PFAM domain of interest
-    output: dynamic("outputs/bam_subsets/{plass_match}-NAMES.txt") 
+    output: dynamic("outputs/{nbhd}/bam_subsets/{plass_match}-NAMES.txt") 
     input:
-        plass_names = expand("outputs/hmmscan/{nbhd}.{trim}trim.plass.{pfam_base}-hmmscanT100-NAMES.txt", nbhd = NBHD, trim = TRIM, pfam_base=PFAM_BASE), 
-        bai = expand("outputs/paladin/{nbhd}.{trim}trim.sort.bam.bai", nbhd = NBHD, trim = TRIM), 
-        bam = expand("outputs/paladin/{nbhd}.{trim}trim.sort.bam", nbhd = NBHD, trim = TRIM) 
+        plass_names = "outputs/{nbhd}/hmmscan/{nbhd}.hardtrim.plass.PF00521_gyra-hmmscanT100-NAMES.txt", 
+        bai = "outputs/{nbhd}/paladin/{nbhd}.hardtrim.sort.bam.bai", 
+        bam = "outputs/{nbhd}/paladin/{nbhd}.hardtrim.sort.bam" 
     run:
         import pysam
         import re
@@ -139,7 +136,11 @@ rule extract_plass_readnames_from_bam:
             plass_hmmscan_matches = f.readlines()
 
         plass_hmmscan_matches = [x.strip() for x in plass_hmmscan_matches] 
-
+        
+        nbhd_folder = str(input.bai)
+        nbhd_folder = re.sub('outputs/', '', nbhd_folder)
+        nbhd_folder = re.sub('/paladin/.*', '', nbhd_folder) 
+        print(nbhd_folder)
         samfile = pysam.AlignmentFile(str(input.bam), 'rb')
 
         for match in plass_hmmscan_matches:
@@ -147,48 +148,48 @@ rule extract_plass_readnames_from_bam:
             for read in samfile.fetch(match):
                 name = re.sub('.*:', '', read.qname)
                 reads.append(name)
-                with open(f"outputs/bam_subsets/{match}-NAMES.txt", 'w') as outfile:
+                with open("outputs/" + nbhd_folder + f"/bam_subsets/{match}-NAMES.txt", 'w') as outfile:
                     for s in reads:
                         outfile.write("%s\n" % s)
         samfile.close()
 
 
 rule grab_plass_reads:
-    output: "outputs/bam_subsets/{plass_match}.fa" # loses fq info
+    output: "outputs/{nbhd}/bam_subsets/{plass_match}.fa" # loses fq info
     input: 
-        names = "outputs/bam_subsets/{plass_match}-NAMES.txt",
-        reads=expand("inputs/reads/{nbhd}.{trim}trim.reads.gz", nbhd = NBHD, trim = TRIM)
+        names = "outputs/{nbhd}/bam_subsets/{plass_match}-NAMES.txt",
+        reads= "inputs/reads/{nbhd}.hardtrim.reads.gz"
     conda: ENV
     shell:'''
     ./extract-hmmscan-matches.py {input.names} {input.reads}  > {output} 
     '''
 
 rule concatenate_reads:
-    output: "outputs/bcalm/reads.fa"
-    input: dynamic("outputs/bam_subsets/{plass_match}.fa")
+    output: "outputs/{nbhd}/bcalm/reads.fa"
+    input: dynamic("outputs/{nbhd}/bam_subsets/{plass_match}.fa")
     shell:'''
     cat {input} > {output}
     '''
 
 rule deduplicate_reads:
-    output: "outputs/bcalm/reads-dedup.fa"
-    input: "outputs/bcalm/reads.fa"
+    output: "outputs/{nbhd}/bcalm/reads-dedup.fa"
+    input: "outputs/{nbhd}/bcalm/reads.fa"
     conda: ENV
     shell:'''
     fastx_collapser < {input} > {output}
     ''' 
 
 rule bcalm_reads:
-    output: "outputs/reads-dedup.fa.unitigs.fa"
-    input: "outputs/bcalm/reads-dedup.fa"
+    output: "outputs/{nbhd}/reads-dedup.fa.unitigs.fa"
+    input: "outputs/{nbhd}/bcalm/reads-dedup.fa"
     conda: ENV
     shell:'''
     bcalm -in {input} -kmer-size 31
     '''
 
 rule unitigs_to_gfa:
-    input: "outputs/reads-dedup.fa.unitigs.fa"
-    output: "outputs/reads-dedup.fa.unitigs.gfa"
+    input: "outputs/{nbhd}/reads-dedup.fa.unitigs.fa"
+    output: "outputs/{nbhd}/reads-dedup.fa.unitigs.gfa"
     conda: ENV
     shell:'''
     python convertToGFA.py {input} {output} 31
