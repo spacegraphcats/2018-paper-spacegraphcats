@@ -3,9 +3,7 @@ NBHD = ["hu-genome36", "hu-genome21", "hu-genome27"]
 
 rule all:
     input: 
-        #"outputs/paladin/{nbhd}.hardtrim.sam.flagstat"
-        #expand("outputs/paladin/{nbhd}.hardtrim.sort.bam.bai", nbhd = NBHD, pfam_base = PFAM_BASE)
-        expand("outputs/{nbhd}/reads-dedup.fa.unitigs.gfa", nbhd = NBHD)
+        expand("outputs/{nbhd}/bcalm/reads-dedup.fa.unitigs.gfa", nbhd = NBHD)
 
 rule download_plass:
     output: "inputs/plass/{nbhd}.hardtrim.plass.c100.fa" # shouldn't need to use clean if only dealing with one nbhd
@@ -180,16 +178,17 @@ rule deduplicate_reads:
     ''' 
 
 rule bcalm_reads:
-    output: "outputs/{nbhd}/reads-dedup.fa.unitigs.fa"
+    output: "outputs/{nbhd}/bcalm/reads-dedup.fa.unitigs.fa"
     input: "outputs/{nbhd}/bcalm/reads-dedup.fa"
+    params: out_dir = "outputs/{nbhd}/bcalm"
     conda: ENV
     shell:'''
-    bcalm -in {input} -kmer-size 31
+    bcalm -in {input} -kmer-size 31 -out {input} -out-dir {params.out_dir}
     '''
 
 rule unitigs_to_gfa:
-    input: "outputs/{nbhd}/reads-dedup.fa.unitigs.fa"
-    output: "outputs/{nbhd}/reads-dedup.fa.unitigs.gfa"
+    input: "outputs/{nbhd}/bcalm/reads-dedup.fa.unitigs.fa"
+    output: "outputs/{nbhd}/bcalm/reads-dedup.fa.unitigs.gfa"
     conda: ENV
     shell:'''
     python convertToGFA.py {input} {output} 31
