@@ -1,5 +1,6 @@
 ENV = "env.yml"
 NBHD = ["hu-genome36", "hu-genome30", "hu-genome21", "hu-genome27"]
+#NBHD = ["hu-genome21"]
 
 rule all:
     input: 
@@ -14,9 +15,11 @@ rule download_plass:
 rule decompress_plass:
     output: "inputs/plass/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz.plass.cdhit.fa.clean.cut.dup"
     input: "inputs/plass/hu-s1-plass-hardtrim-clean-jan08.2019.tar.gz"
-    params: folder = "inputs/plass"
+    params: 
+        folder = "inputs/plass",
+        out = "hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz.plass.cdhit.fa.clean.cut.dup"
     shell:'''
-    tar xvf {input} -C {params.folder}
+    tar xvf {input} -C {params.folder} {params.out}
     '''
 
 rule download_reads:
@@ -28,9 +31,11 @@ rule download_reads:
 rule decompress_reads:
     output: "inputs/reads/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz"
     input: "inputs/reads/hu-s1-reads-hardtrim-jan08.2019.tar.gz"
-    params: folder = "inputs/reads"
+    params: 
+        folder = "inputs/reads",
+        out = "hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz"
     shell:'''
-    tar xvf {input} -C {params.folder}
+    tar xvf {input} -C {params.folder} {params.out}
     '''
 
 rule download_pfam:
@@ -45,6 +50,7 @@ rule download_pfam:
 rule hmmbuild:
     input: "inputs/pfam/PF00521_gyra.sto"
     output: "outputs/hmmbuild/PF00521_gyra.hmm"
+    conda: ENV
     shell: '''
     hmmbuild {output} {input}   
     hmmpress {output}
