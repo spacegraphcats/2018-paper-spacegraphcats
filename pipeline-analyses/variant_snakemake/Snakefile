@@ -1,28 +1,36 @@
 ENV = "env.yml"
-NBHD = ["hu-genome36", "hu-genome21", "hu-genome27"]
+NBHD = ["hu-genome36", "hu-genome30", "hu-genome21", "hu-genome27"]
 
 rule all:
     input: 
         expand("outputs/{nbhd}/bcalm/reads-dedup.fa.unitigs.gfa", nbhd = NBHD)
 
 rule download_plass:
-    output: "inputs/plass/{nbhd}.hardtrim.plass.c100.fa" # shouldn't need to use clean if only dealing with one nbhd
+    output: "inputs/plass/hu-s1-plass-hardtrim-clean-jan08.2019.tar.gz"
     shell:'''
-    touch {output} #place holder for downloading plass hardtrim results
+    curl -L -o {output} https://osf.io/9hg85/download
     '''
 
-rule format_plass_cut:
-    output: "outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.fa"
-    input: "inputs/plass/{nbhd}.hardtrim.plass.c100.fa"
+rule decompress_plass:
+    output: "inputs/plass/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz.plass.cdhit.fa.clean.cut.dup"
+    input: "inputs/plass/hu-s1-plass-hardtrim-clean-jan08.2019.tar.gz"
+    params: folder = "inputs/plass"
     shell:'''
-    cut -d ' ' -f1 {input} > {output}
+    tar xvf {input} -C {params.folder}
     '''
 
-rule format_plass_dup:
-    output: "outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.dup.fa"
-    input: "outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.fa"
+rule download_reads:
+    output: "inputs/reads/hu-s1-reads-hardtrim-jan08.2019.tar.gz"
     shell:'''
-    awk '(/^>/ && s[$0]++){{$0=$0"_"s[$0]}}1;' {input} > {output}
+    curl -L -o {output} https://osf.io/x5ezk/download 
+    '''
+
+rule decompress_reads:
+    output: "inputs/reads/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz"
+    input: "inputs/reads/hu-s1-reads-hardtrim-jan08.2019.tar.gz"
+    params: folder = "inputs/reads"
+    shell:'''
+    tar xvf {input} -C {params.folder}
     '''
 
 rule download_pfam:
@@ -49,7 +57,7 @@ rule hmmscan:
         dom = "outputs/{nbhd}/hmmscan/{nbhd}.hardtrim.plass.PF00521_gyra-hmmscanT100-dom.out"
     input:
         hmm = "outputs/hmmbuild/PF00521_gyra.hmm",
-        faa = "outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.dup.fa"
+        faa = "inputs/plass/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz.plass.cdhit.fa.clean.cut.dup"
     conda: ENV
     shell:'''
     hmmscan -T 100 -o {output.out} --tblout {output.tbl} --domtblout {output.dom} {input.hmm} {input.faa} 
@@ -67,8 +75,8 @@ rule def_hmm_matches_and_find_reads:
     script:'variant-workflow-hmm-matches.R'
 
 rule paladin_index:
-    output: "outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.dup.fa.bwt"
-    input: "outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.dup.fa"
+    output: "inputs/plass/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz.plass.cdhit.fa.clean.cut.dup.bwt"
+    input: "inputs/plass/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz.plass.cdhit.fa.clean.cut.dup"
     conda: ENV
     shell:'''
     paladin index -r3 {input}
@@ -77,10 +85,10 @@ rule paladin_index:
 rule paladin_align:
     output: "outputs/{nbhd}/paladin/{nbhd}.hardtrim.sam"
     input:
-        indx="outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.dup.fa.bwt",
-        reads="inputs/reads/{nbhd}.hardtrim.reads.gz"
+        indx="inputs/plass/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz.plass.cdhit.fa.clean.cut.dup.bwt",
+        reads="inputs/reads/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz"
     params: 
-        indx="outputs/{nbhd}/plass/{nbhd}.hardtrim.plass.c100.cut.dup.fa"
+        indx="inputs/plass/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz.plass.cdhit.fa.clean.cut.dup"
     conda: ENV
     shell:'''
     paladin align -f 125 -t 2 {params.indx} {input.reads} > {output}
@@ -156,7 +164,7 @@ rule grab_plass_reads:
     output: "outputs/{nbhd}/bam_subsets/{plass_match}.fa" # loses fq info
     input: 
         names = "outputs/{nbhd}/bam_subsets/{plass_match}-NAMES.txt",
-        reads= "inputs/reads/{nbhd}.hardtrim.reads.gz"
+        reads= "inputs/reads/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz"
     conda: ENV
     shell:'''
     ./extract-hmmscan-matches.py {input.names} {input.reads}  > {output} 
