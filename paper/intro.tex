@@ -1,6 +1,6 @@
 \dropcap{M}etagenomics is the analysis of microbial communities through shotgun
 DNA sequencing, which randomly samples many subsequences (reads)
-from the genomic DNA of each microbe present in the community.
+from the genomic DNA of each microbe present in the community (@refs).
 %@cite
 A common problem in metagenomics is the reconstruction of
 individual microbial genomes from the mixture.
@@ -33,7 +33,7 @@ Associating missing metagenomic sequence to inferred bins or known
 genomes is technically challenging.  Current approaches to extending
 bins use manual inspection of sequence read pairs or assembly graphs
 and do not scale to many
-genomes \cite{perchlorate,metacherchant}. In pangenome studies with the
+genomes @addrefs \cite{perchlorate,metacherchant}. In pangenome studies with the
 goal of investigating strain variants of known genomes,
  current approaches use mapping or k-mer baiting, in which
 assembled sequences are used to extract reads or contigs from a
@@ -41,26 +41,23 @@ metagenome \cite{desman,Nayfach2016,ekg,mspminer}.
 These methods fail to recover genomic content that does not overlap with
 the query, such as large indels or novel genomic islands.
 
-Missing content may in some instances be connected in the assembly
-graph to known sequence, in which case it is possible to recover it
-via a graph-based neighborhood query \cite{metacherchant,perchlorate}.  A graph query approach allows the recovery of sequence distinct from but connected to extant
-genomic regions, as well as sequence from regions that do not assemble
-well but are graph-proximal to the query \cite{metacherchant}.  However, many graph query
+Graph queries have shown promise for recovering sequence from regions that do
+not assemble well but are graph-proximal to the query \cite{metacherchant,perchlorate}. However, many graph query
 algorithms are NP-hard and hence computationally intractable in the
-general case; compounding the computational challenge, metagenome assembly
+general case @felix; compounding the computational challenge, metagenome assembly
 graphs are frequently large, with millions of nodes, and require 10s
 to 100s of gigabytes of RAM for storage.\looseness-1
 
 In this paper, we develop and implement a scalable graph query
-framework that crucially exploits the structural sparsity of compact De Bruijn
+framework for metagenome assembly graphs. Crucially, we exploit the structural sparsity of compact De Bruijn
 assembly graphs in order to compute a succinct index data structure in linear
 time. We use this framework to perform neighborhood
 queries in large assembly graphs, which enables us to extract the
 genome of a novel bacterial species, recover missing sequence
 variation in amino acid sequences for genome bins, and identify
-missing content for metagenome-assembled genomes.  Our methods
-are assembly-free and avoid error correction and other techniques that
-may discard strain information.  These algorithms are available in an
+missing content for metagenome-assembled genomes.  Our query methods
+are assembly-free and avoid techniques that
+may discard strain information such as error correction.  These algorithms are available in an
 open-source Python software package,
 \textsf{spacegraphcats}~\cite{spacegraphcats}.
 
