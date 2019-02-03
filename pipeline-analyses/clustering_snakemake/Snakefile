@@ -1,0 +1,192 @@
+ENV = "clustering-env.yml"
+ENV2 = "clustering-env2.yml"
+
+PFAM_BASE=["PF00521_gyra",
+            "PF00204_gyrb",
+            "PF00181_rplb", 
+            "PF00189_rpsc",
+            "PF00154_reca",
+            "PF01411_alas",
+            "PF00562_rpb2d6"] 
+
+rule all:
+    input: 
+        expand("outputs/pid/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-mds.csv", pfam_base = PFAM_BASE),
+        expand("outputs/cd-hit/plass-hardtrim-all-bin-{pfam_base}-msa.pdf", pfam_base = PFAM_BASE)
+
+rule download_bin_prokka:
+    output: "inputs/bins/all_sb1_bin_prokka.faa"
+    shell:'''
+    curl -L -o {output} https://osf.io/k7agp/download
+    '''
+
+rule format_bin_prokka:
+    output: "inputs/bins/all_sb1_bin_prokka2.faa"
+    input: "inputs/bins/all_sb1_bin_prokka.faa"
+    shell:'''
+    sed 's/>/&BIN-/' {input} > {output} 
+    '''
+
+rule download_plass:
+    output: "inputs/plass/hu-s1-plass-hardtrim-clean-jan08.2019.tar.gz"
+    shell:'''
+    curl -L -o {output} https://osf.io/9hg85/download
+    '''
+
+rule decompress_plass:
+    output: dynamic("inputs/plass/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz.plass.cdhit.fa.clean.cut.dup")
+    input: "inputs/plass/hu-s1-plass-hardtrim-clean-jan08.2019.tar.gz"
+    params: folder = "inputs/plass"
+    shell:'''
+    tar xvf {input} -C {params.folder}
+    '''
+    
+rule cat_plass:
+    output: "inputs/plass/all.cdbg_ids.reads.hardtrim.plass.cdhit.clean.cut.dup.fa"
+    input:  dynamic("inputs/plass/hu-s1_k31_r1_search_oh0/{nbhd}.fa.cdbg_ids.reads.hardtrim.fa.gz.plass.cdhit.fa.clean.cut.dup")
+    shell:'''
+    cat {input} > {output}
+    '''
+
+rule cat_plass_and_bins:
+    output: "inputs/hu-s1_k31_r1_search_oh0_all_bin.faa"
+    input: 
+        plass = "inputs/plass/all.cdbg_ids.reads.hardtrim.plass.cdhit.clean.cut.dup.fa",
+        bins="inputs/bins/all_sb1_bin_prokka2.faa"
+    shell:'''
+    cat {input.plass} {input.bins} > {output}
+    '''
+
+rule download_pfam:
+    output: "inputs/pfam/{pfam_base}.sto"
+    params: 
+        out_dir = "inputs/pfam",
+        url = lambda w: "https://pfam.xfam.org/family/{pfam}/alignment/full".format(pfam = w.pfam_base.split("_")[0])
+    shell:'''
+    curl -L --max-time 600 -o {output} {params.url}
+    '''
+
+rule hmmbuild:
+    input: "inputs/pfam/{pfam_base}.sto"
+    output: "outputs/hmmbuild/{pfam_base}.hmm"
+    shell: '''
+    hmmbuild outputs/hmmbuild/{wildcards.pfam_base}.hmm inputs/pfam/{wildcards.pfam_base}.sto   
+    hmmpress outputs/hmmbuild/{wildcards.pfam_base}.hmm
+    '''
+ 
+rule hmmscan:
+    output:
+        out = "outputs/hmmscan/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100.out",
+        tbl = "outputs/hmmscan/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-tbl.out",
+        dom = "outputs/hmmscan/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-dom.out"
+    input:
+        hmm = "outputs/hmmbuild/{pfam_base}.hmm",
+        faa = "inputs/hu-s1_k31_r1_search_oh0_all_bin.faa"
+    conda: ENV
+    shell:'''
+    hmmscan -T 100 -o {output.out} --tblout {output.tbl} --domtblout {output.dom} {input.hmm} {input.faa} 
+    '''
+
+rule def_overlap_window_and_find_reads:
+    input:
+        dom = "outputs/hmmscan/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-dom.out",
+        rhmmer = "rhmmer.R"
+    output:
+        keep = "outputs/hmmscan/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-NAMES.txt"
+    conda: ENV2
+    script:'clustering-workflow-overlaps.R'
+
+rule grab_overlap_faa:
+    output: filtered_fa = "outputs/hmmscan/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100.faa"
+    input:
+        fasta = "inputs/hu-s1_k31_r1_search_oh0_all_bin.faa",
+        names = "outputs/hmmscan/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-NAMES.txt" 
+    conda: ENV
+    shell:'''
+    ./extract-hmmscan-matches.py {input.names} {input.fasta} > {output}
+    '''
+
+rule mafft:
+    output: "outputs/mafft/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-mafft.faa"
+    input: "outputs/hmmscan/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100.faa"
+    conda: ENV
+    shell:'''
+    mafft --auto --reorder {input} > {output}
+    '''
+
+rule mafft_to_sto:
+    output: "outputs/mafft/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100.sto"
+    input: "outputs/mafft/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-mafft.faa"
+    run:
+        from Bio import SeqIO
+        from Bio import AlignIO
+
+        align = AlignIO.read(str(input), "fasta")
+        with open(str(output), "w") as handle:
+            count = SeqIO.write(align, handle, "stockholm")
+
+rule calc_pid:
+    output: "outputs/pid/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100.pid"
+    input: "outputs/mafft/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100.sto"
+    conda: ENV
+    shell:'''
+    esl-alipid {input} > {output}
+    '''
+
+rule pid_mat:
+    output:
+        mat = "outputs/pid/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100.mat" 
+    input:
+        pid = "outputs/pid/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100.pid"
+    conda: ENV
+    script: 'clustering-workflow-mat.R'
+
+rule pid_mds:
+    output:
+        mds = "outputs/pid/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-mds.csv" 
+    input:
+        mat = "outputs/pid/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100.mat", 
+        info = "inputs/hu_info_sb1.csv"
+    conda: ENV
+    script: 'clustering-workflow-mds.R'
+
+rule cdhit:
+    output: "outputs/cd-hit/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-cdhit95.faa"
+    input: "outputs/hmmscan/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100.faa"
+    conda: ENV
+    shell:'''
+    cd-hit -i {input} -o {output} -c .95
+    '''
+
+rule fix_cdhit_names:
+    output: 
+        named="outputs/cd-hit/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-cdhit95-named.faa"
+    input: 
+        cdh="outputs/cd-hit/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-cdhit95.faa",
+        info="inputs/hu_info_sb1.csv"
+    conda: ENV
+    script: 'edit-cdhit-names-for-pretty-msa.R'
+
+rule dedup_cdhit_names:
+    output:"outputs/cd-hit/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-cdhit95-named.dup.faa"
+    input:"outputs/cd-hit/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-cdhit95-named.faa"
+    shell:'''
+    awk '(/^>/ && s[$0]++){{$0=$0"_"s[$0]}}1;' {input} > {output} 
+    '''
+
+rule mafft_cdhit:
+    output: "outputs/cd-hit/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-cdhit95-named-mafft.faa"
+    input: "outputs/cd-hit/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-cdhit95-named.dup.faa"
+    conda: ENV
+    shell:'''
+    mafft {input} > {output}
+    '''
+
+rule msa_cdhit:
+    output: 
+        pdf="outputs/cd-hit/plass-hardtrim-all-bin-{pfam_base}-msa.pdf"
+    input:
+        info="inputs/hu_info_sb1.csv",
+        aln="outputs/cd-hit/plass-hardtrim-all-bin-{pfam_base}-hmmscanT100-cdhit95-named-mafft.faa"
+    conda: ENV
+    script: 'plot_cdhit_msa.R' 

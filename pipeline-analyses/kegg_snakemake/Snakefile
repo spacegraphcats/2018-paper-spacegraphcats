@@ -1,0 +1,59 @@
+ENV = "env-kegg.yml"
+
+rule all:
+    input:
+        'outputs/GhostKOALA/genes/nitro_genes.csv',
+        'outputs/GhostKOALA/genes/novel_nbhd_marks.csv',
+        'outputs/figures/fig_hu_content_b.pdf',
+        'outputs/figures/fig_hu_content_b.png'
+
+rule download_kegg_nbhd:
+    output: 
+        ann = 'outputs/GhostKOALA/nbhd_user_ko_definition.txt',
+        tax = 'outputs/GhostKOALA/nbhd.user.out.top'  
+    shell:'''
+    curl -L -o {output.ann} https://osf.io/zx9qy/download 
+    curl -L -o {output.tax} https://osf.io/r78vf/download
+    '''
+
+rule download_kegg_bins:
+    output: 
+        ann = 'outputs/GhostKOALA/bin_user_ko_definition.txt',
+        tax = 'outputs/GhostKOALA/bin.user.out.top'  
+    shell:'''
+    # download kegg annotation files from osf
+    # placeholder:
+    curl -L -o {output.ann} https://osf.io/vxqeg/download
+    curl -L -o {output.tax} https://osf.io/2r7p4/download
+    '''
+
+rule novel_marker_genes:
+    output: 
+        csv = "outputs/GhostKOALA/genes/novel_nbhd_marks.csv" 
+    input:
+        nbhd_kegg = 'outputs/GhostKOALA/nbhd_user_ko_definition.txt',
+        bin_kegg = 'outputs/GhostKOALA/bin_user_ko_definition.txt'
+    conda: ENV
+    script: 'novel_marker_genes.R'
+
+rule nitro_genes:
+    output: csv = 'outputs/GhostKOALA/genes/nitro_genes.csv'
+    input:
+        info = 'inputs/hu_info.csv',
+        nbhd_kegg = 'outputs/GhostKOALA/nbhd_user_ko_definition.txt',
+        bin_kegg = 'outputs/GhostKOALA/bin_user_ko_definition.txt'
+    conda: ENV
+    script: 'nitrogenase.R'
+ 
+rule plot_fig_hu_content_b:
+    output: 
+        pdf = 'outputs/figures/fig_hu_content_b.pdf',
+        png = 'outputs/figures/fig_hu_content_b.png'
+    input:
+        info = 'inputs/hu_info.csv',
+        plass_kegg = 'outputs/GhostKOALA/nbhd_user_ko_definition.txt',
+        bin_kegg = 'outputs/GhostKOALA/bin_user_ko_definition.txt',
+        kegg = 'inputs/ko00001_parse.txt'
+    conda: ENV
+    script: 'fig_hu_content_b.R'
+
