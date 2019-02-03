@@ -1,0 +1,9 @@
+channels:
+ - bioconda
+ - conda-forge
+ - r
+dependencies:
+ - r-dplyr=0.7.4
+ - bioconductor-genomicranges=1.30.3
+ - r-readr
+ - r-tidyr

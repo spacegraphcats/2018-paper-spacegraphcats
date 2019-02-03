@@ -1,0 +1,18 @@
+channels:
+ - bioconda/label/gcc7
+ - bioconda
+ - conda-forge
+ - r
+dependencies:
+ - r-dplyr=0.7.8
+ - r-ggplot2=3.1.0
+ - r-tidyr=0.8.1
+ - hmmer=3.2.1
+# - bioconductor-genomicranges=1.30.3
+ - mafft=7.407
+ - cd-hit=4.6.8
+ - r-seqinr=3.4_5
+ - r-ggthemes=4.0.1
+ - screed=1.0
+ - bioconductor-ggtree=1.14.4=r351_0
+ - bioconductor-biostrings=2.48.0

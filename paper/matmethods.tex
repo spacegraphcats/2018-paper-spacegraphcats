@@ -47,16 +47,19 @@ long degree-two paths when possible.
 \subsection*{Neighborhood indexing and search}
 
 We used \sgc to build an $r$-dominating set for each denoised cDBG and
-index it. We then perform neighborhood queries with \sgc, which
+index it. We then performed neighborhood queries with \sgc, which
 produces a set of cDBG nodes and reads that contributed to them.  The
 full list of query genomes for the {\em Proteiniclasticum} query is
   available in Supp Material \ref{subsec:query_accessions}, and
-  the NCBI accessions for the {\em P. gingivalis}, {\em T. denticola}, and {\em B. thetaiotamicron} queries are in the directory {\tt pipeline-base} of the paper repository, files {\tt strain-gingivalis.txt}, {\tt strain-denticola.txt}, and {\tt strain-bacteroides.txt}, respectively.
+  the NCBI accessions for the {\em P. gingivalis}, {\em T. denticola}, 
+and {\em B. thetaiotamicron} queries are in the directory {\tt pipeline-base} 
+of the paper repository, files {\tt strain-gingivalis.txt}, 
+{\tt strain-denticola.txt}, and {\tt strain-bacteroides.txt}, respectively.
 
 \subsection*{Search results analysis}
 
 Query neighborhood size, Jaccard containment, and Jaccard similarity
-was estimated using modulo hash signatures with a k-mer size of 31 and
+were estimated using modulo hash signatures with a k-mer size of 31 and
 a scaled factor of 1000, as implemented in sourmash v2.0a9
 \cite{sourmash}.
 
@@ -86,9 +89,9 @@ identical amino acids in the alignment divided by the number of
 overlapping residues between the sequences. Pairwise distances were
 visualized using a multidimensional scaling calculated in R using the
 {\tt cmdscale} function. To visualize the assembly graph structure
-underlying these amino acid assemblies, we use paladin v1.3.1 
+underlying these amino acid assemblies, we used paladin v1.3.1 
 to map abundance-trimmed reads back to the \plass amino acid assembly,
-with the {\tt -f} argument set to 125 to set the minimum ORF length accepted \cite{paladin}. 
+with {\tt -f 125} to set the minimum ORF length accepted \cite{paladin}. 
 We extracted the reads that mapped to the gene of interest, created an
 assembly graph using BCALM v2.2.0 \cite{chikhi2016compacting}, and
 visualized the graph using Bandage v0.8.1 \cite{bandage}. We colored
