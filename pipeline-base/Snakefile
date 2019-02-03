@@ -12,6 +12,7 @@
 import os
 import itertools
 import json
+import screed
 
 from spacegraphcats.snakemake import (catlas_build, catlas_search,
                                       catlas_extract, catlas_search_input)
@@ -102,7 +103,7 @@ def plass_assemblies(conf_file):
     z = []
     for x in filenames:
         x = os.path.basename(x)
-        output = dirname + '/{}.cdbg_ids.reads.fa.gz.plass.cdhit.fa'.format(x)
+        output = dirname + '/{}.cdbg_ids.reads.fa.gz.plass.cdhit.fa.clean.cut.dup.fa'.format(x)
         z.append(output)
 
     return z
@@ -191,7 +192,7 @@ rule all:
 	"gingivalis.x.contigs.cont.csv",
         catlas_search('conf/hu-s1.json'),
         catlas_extract('conf/hu-s1.json'),
-        'fuso.reads.fa', 'ruminis.reads.fa',
+        'fuso.reads.fa.megahit.fa', 'ruminis.reads.fa.megahit.fa',
         plass_assemblies('conf/hu-s1.json'),
         "checkm-plass.txt",
         megahit_assemblies('conf/hu-s1.json'),
@@ -543,6 +544,22 @@ rule plass_cd_hit:
     shell:
         "cd-hit -c 1 -i {input} -o {output}"
 
+rule rename_plass_headers_clean:
+    input:
+        "{filename}.plass.cdhit.fa"
+    output:
+        "{filename}.plass.cdhit.fa.clean.cut.dup.fa"
+    run:
+        # rename sequences to be format 'hu-genome40_SRR1976948.1753381'
+        with open(str(output), 'wt') as fp:
+            for record in screed.open(str(input)):
+                genome_name = str(input)
+                genome_name = genome_name.split('/')[1]
+                genome_name = genome_name.split('.')[0]
+                seqname = record.name.split(' ')[0]
+                newname = genome_name + '_' + seqname
+                fp.write('>{}\n{}\n'.format(newname, record.sequence))
+
 rule checkm_plass:
     input:
         plass_assemblies('conf/hu-s1.json')
@@ -614,3 +631,15 @@ rule megahit_read_containment_summary:
         "megahit-containment.csv"
     shell:
         "head -1 {input[0]} > {output} && grep -hv 'similarity,' {input} >> {output}"
+
+rule checkm_single_file:
+    input:
+        "{filename}.fa"
+    output:
+        directory("checkm.{filename}.bins"),
+        directory("checkm.{filename}.out"),
+        "checkm.{filename}.txt"
+    conda:
+        "envs/checkm.yaml"
+    shell:
+        "rm -fr {output[0]} && mkdir {output[0]} && ln {input} {output[0]} && checkm lineage_wf -x fa {output[0]} {output[1]} -t {threads} --pplacer_threads={threads} -f {output[2]}"
