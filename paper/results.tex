@@ -72,7 +72,7 @@ the number of rounds, this vastly improves this algorithm's scalability.
 To maintain approximation guarantees on the dominating set size with fewer augmentations,
 we introduce a threshold parameter $\texttt{domThreshold}(r)$
 which affects the constant factor in our worst-case bound.
-We selected a threshold (see Appendix) that produces $r$-dominating sets of
+We selected a threshold (see Supp. Material) that produces $r$-dominating sets of
 comparable size to those computed by the algorithm in~\cite{felixThesis}. Additionally,
 we found that processing vertices using a minimum in-degree ordering (line~\ref{algstep:order})
 was superior to other common orders (e.g. arbitrary, min/max total degree, max in-degree).
@@ -181,7 +181,7 @@ contamination.
 The mean amino acid identity between {\em P. ruminis ML2} and the
 neighborhood assembly is above 95\%, suggesting that this is indeed
 the genome of the {\em Proteiniclasticum} variant, and that
-neighborhood query retrieves a full draft genome sequence (see Appendix~\ref{subsec:aai}).
+neighborhood query retrieves a full draft genome sequence (see Supp. Material~\ref{subsec:aai}).
 
 % FIGURE 3
 \begin{figure*}[th]
@@ -191,7 +191,7 @@ neighborhood query retrieves a full draft genome sequence (see Appendix~\ref{sub
     \subfloat{\includegraphics[width=0.55\linewidth]{figures/hu_strain_b}}
 	\caption{Query neighborhoods in \hu metagenome are large and contain additional marker genes.
   (a) Left Panel: Neighborhood sizes are larger in \hu than in \podarv. Here
-  we queried \podarv and \hu using each of 64 and 23 genomes fully present
+  we queried \podarv and \hu using each of 51 and 23 genomes fully present
   in the respective datasets and measured the relative size of its neighborhood—a
   size of 1 indicates that no additional sequence is present in the neighborhood,
   while a size of 2 indicates that the retrieved neighborhood is twice the size
