@@ -189,6 +189,65 @@ approximately 80 seconds.
 For data set complexity (number of k-mers, number of cDBG nodes) please see
 Table~\ref{tab:data}.
 
+\subsection{spacegraphcats pipeline overview}
+\label{subsec:sgc_pipeline}
+
+\textsf{spacegraphcats} follows a series of steps when run on sequencing
+data, see Figure~\ref{fig:sgc_dag}. In detail, we perform the following
+steps.
+
+\emph{BCALM}. Use BCALM to generate a cDBG. Then convert a BCALM {\tt unitigs.fa}
+output (a cDBG) into spacegraphcats files.
+Outputs an undirected graph, a file containing the sequences, and a
+{\tt .info.csv} file containing information about the contig. Also outputs 
+sourmash {\tt k=31}, {\tt scaled=1000} signatures for both input and
+output files.
+
+\emph{spacegraphcats.cdbg.label\_cdbg}. Build an index that can be
+used to retrieve individual reads or contigs by cDBG node ID; produce 
+a SQLite database for fast retrieval. Briefly, this script creates a 
+sqlite database with a single table, {\tt sequences}, where a query like
+{\tt SELECT DISTINCT sequences.offset FROM sequences WHERE label ...}
+can be executed to return the offset of all sequences with the given
+label. Here, 'label' is the cDBG ID to which the sequence belongs.
+The script {\tt extract\_reads\_by\_frontier\_sqlite.py} is a downstream script to
+extract the reads with a frontier search.
+
+Specifically 1. walk through the contigs assembled from the cDBG;  
+2. build a DBG cover using khmer tags, such that every k-mer in the DBG is 
+within distance d=40 of a tag;  3. label each tag with the cDBG node ID 
+from the contig; 4. save for later use.
+
+\emph{spacegraphcats.catlas.catlas}. The catlas is a hierarchical 
+atlas for querying graphs. Implements algorithms 1 and 2 (see main text).
+
+\emph{spacegraphcats.index.index\_contigs\_by\_kmer}. Use Minimal Perfect 
+Hashing (see BBHash) to construct a fast lookup table connecting k-mers 
+in the cDBG to cDBG node IDs.
+
+\emph{spacegraphcats.search.extract\_nodes\_by\_query}. Do a frontier 
+search, and retrieve cDBG node IDs and MinHash signature for the retrieved 
+contigs.
+
+\emph{spacegraphcats.search.extract\_contigs}. Retrieve the unitig sequences 
+for a given list of cDBG nodes.  Consumes the output of {\tt extract\_nodes\_by\_query} 
+to get the list of nodes.
+
+\emph{spacegraphcats.search.extract\_reads}. Retrieve the reads for a list of cDBG 
+nodes.  Consumes the output of {\tt extract\_nodes\_by\_query} to get the list of 
+nodes, and then uses the labeled cDBG output by {\tt .cdbg.label\_cdbg} to 
+find reads that overlap with the unitigs in those nodes.
+  
+
+\begin{figure*}
+ \centering
+ \includegraphics[width=\linewidth]{figures/sgc_dag}
+	\caption{The steps followed by \textsf{spacegraphcats} when run
+on sequencing data.
+}
+ \label{fig:sgc_dag}
+\end{figure*}
+
 \subsection{Query genome accession numbers for {\em Proteiniclasticum} search}
 \label{subsec:query_accessions}
 
@@ -228,6 +287,30 @@ See Table~\ref{tab:aai}.
   \caption{CompareM results for {\em Proteiniclasticum} genomes. {\em P. ruminis shakya} is the result of assembling the reads extracted from \podarv with the neighborhood search.}
   \label{tab:aai}
 \end{table}
+
+
+\subsection{\hu analysis pipeline overview}
+
+
+See Figure~\ref{fig:hu_dag}. We implemented three workflows to analyze the
+plass-assembled \hu query neighborhoods. 
+
+
+\begin{figure*}
+ \centering
+ \includegraphics[width=\linewidth]{figures/hu_dag}
+	\caption{Three workflows implemented to analyze the plass-assembled
+\hu query neighborhoods. The first three steps, depicted in blue, were common
+across all workflows. The green boxes depict the KEGG GhostKOALA annotation
+workflow, the results of which can be see in Figure~\ref{fig:hu_content}. 
+The orange boxes depict steps in common between the clustering and variant
+workflows used to generate Figure~\ref{fig:hu_content}. The red boxes depict
+steps used to generate the MDS clustering plot and the multiple sequence 
+alignment (see Figure~\ref{fig:gyrAalign}). The gold boxes depict the
+steps of the variant workflow used to generate the assembly graphs.  
+}
+ \label{fig:hu_dag}
+\end{figure*}
 
 \subsection{Genome bin completeness improvements for \hu}
 \label{subsec:checkm}
