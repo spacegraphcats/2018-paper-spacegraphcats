@@ -1,64 +1,69 @@
 \dropcap{M}etagenomics is the analysis of microbial communities through shotgun
 DNA sequencing, which randomly samples many subsequences (reads)
-from the genomic DNA of each microbe present in the community (@refs).
-%@cite
+from the genomic DNA of each microbe present in the community \cite{Quince2017}.
+
 A common problem in metagenomics is the reconstruction of
 individual microbial genomes from the mixture.
-%@cite
 Typically this is
 done by first running an assembly algorithm that reconstructs
 longer linear regions based on a graph of the sampled
 subsequences~\cite{pell2012scaling}, and then binning assembled
 contigs together using compositional features and genic content~\cite{laczny2017busybee,lin2016accurate}.  These
-``metagenome-assembled genomes'' can then be
+``metagenome-assembled genomes'' are then
 analyzed for phylogenetic markers and metabolic function. In recent years,
-well over 10,000 metagenome-assembled genomes have been published,
+nearly 200,000 metagenome-assembled genomes have been published,
 dramatically expanding our view of microbial life
-\cite{Parks2017,Tully2018,Stewart2018,Delmont2018,Hug2016}.
+\cite{Parks2017,Tully2018,Stewart2018,Delmont2018,Hug2016,Pasolli2019}.
 
-During the process of metagenome assembly and binning, some
-sequence present in the data may go unbinned due to either a failure
-to assemble \cite{CAMI,Awad155358} or a failure to bin.
-The underlying technical reasons for these failures include low
-coverage, high sequencing error, high strain variation, and/or sequences
-with insufficient compositional or genic signal.  Recent work has
-particularly focused on the problem of strain confusion, in which
-high strain variation results in considerable fragmentation of assembled
+Information present in shotgun metagenomes is often omitted from the
+binned genomes due to either a failure to
+assemble \cite{CAMI,Awad155358} or a failure to bin.  The underlying
+technical reasons for these failures include low coverage, high
+sequencing error, high strain variation, and/or sequences with
+insufficient compositional or genic signal.  Recent work has
+particularly focused on the problem of strain confusion, in which high
+strain variation results in considerable fragmentation of assembled
 content in mock or synthetic communities \cite{CAMI,Awad155358}; the
-extent and impact of strain confusion in real metagenomes is still unknown
-but potentially significant \cite{brownstrain,Brito2016,baltic}.\looseness-1
+extent and impact of strain confusion in real metagenomes is still
+unknown but potentially significant - we may be missing 20-40\% of
+true content in metagenome-assembled
+genomes \cite{brownstrain,Brito2016,baltic}.\looseness-1
 
 %TER "fragmentation of assembled content" -- strain variation breaks the assembly, which results in smaller contigs that cannot be binned.
-Associating missing metagenomic sequence to inferred bins or known
-genomes is technically challenging.  Current approaches to extending
+Associating unbinned metagenomic sequence to inferred bins or known
+genomes is technically challenging.  Some approaches to extending
 bins use manual inspection of sequence read pairs or assembly graphs
-and do not scale to many
-genomes @addrefs \cite{perchlorate,metacherchant}. In pangenome studies with the
-goal of investigating strain variants of known genomes,
- current approaches use mapping or k-mer baiting, in which
-assembled sequences are used to extract reads or contigs from a
-metagenome \cite{desman,Nayfach2016,ekg,mspminer}.
-These methods fail to recover genomic content that does not overlap with
-the query, such as large indels or novel genomic islands.
+and do not scale to many genomes
+\cite{perchlorate,metacherchant}. Other approaches, including
+pangenome studies investigating
+strain variation in known genomes,
+have used mapping or k-mer baiting, in which assembled sequences
+are used to extract reads or contigs from a
+metagenome or graph \cite{desman,Nayfach2016,ekg,mspminer,Petersen2016}.  These methods fail
+to recover genomic content that does not overlap with the query, such
+as large indels or novel genomic islands. Moreover, most assemblies
+and assembly graphs undergo substantial heuristic error pruning and may not
+contain relevant content
+\cite{CAMI,Awad155358}.
 
 Graph queries have shown promise for recovering sequence from regions that do
 not assemble well but are graph-proximal to the query \cite{metacherchant,perchlorate}. However, many graph query
 algorithms are NP-hard and hence computationally intractable in the
-general case @felix; compounding the computational challenge, metagenome assembly
+general case; compounding the computational challenge, metagenome assembly
 graphs are frequently large, with millions of nodes, and require 10s
 to 100s of gigabytes of RAM for storage.\looseness-1
 
 In this paper, we develop and implement a scalable graph query
-framework for metagenome assembly graphs. Crucially, we exploit the structural sparsity of compact De Bruijn
-assembly graphs in order to compute a succinct index data structure in linear
-time. We use this framework to perform neighborhood
-queries in large assembly graphs, which enables us to extract the
-genome of a novel bacterial species, recover missing sequence
-variation in amino acid sequences for genome bins, and identify
-missing content for metagenome-assembled genomes.  Our query methods
-are assembly-free and avoid techniques that
-may discard strain information such as error correction.  These algorithms are available in an
-open-source Python software package,
+framework for metagenome assembly graphs. Crucially, we exploit the
+structural sparsity of compact De Bruijn assembly graphs in order to
+compute a succinct index data structure in linear time. We use this
+framework to perform neighborhood queries in large assembly graphs,
+which enables us to extract the genome of a novel bacterial species,
+recover missing sequence variation in amino acid sequences for genome
+bins, and identify missing content for metagenome-assembled genomes.
+Our query methods are assembly-free and avoid techniques that may
+discard strain information such as error correction.  These algorithms
+are available in an open-source Python software package,
 \textsf{spacegraphcats}~\cite{spacegraphcats}.
 
 % Add read graph mapping.
