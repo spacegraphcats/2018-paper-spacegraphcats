@@ -62,7 +62,7 @@ then uses these distances to ensure each vertex is close to a dominator.
 The core of the efficient distance computation is based on
 \emph{distance-truncated transitive fraternal (dtf) augmentations}~\cite{felixThesis}
 which produce a directed graph in which each arc $uv$ is labeled with
-$\omega(uv)$, the distance from $u$ to $v$ in the original cDBG.
+$\omega(uv)$, the distance from $u$ to $v$ in the original cDBG.\looseness-1
 
 Importantly, our implementation enhances the algorithm
 in~\cite{felixThesis} by computing only $r{-}1$ rounds of dtf-augmentations
@@ -75,8 +75,9 @@ which affects the constant factor in our worst-case bound.
 We selected a threshold (see Supp. Material) that produces $r$-dominating sets of
 comparable size to those computed by the algorithm in~\cite{felixThesis}. Additionally,
 we found that processing vertices using a minimum in-degree ordering (line~\ref{algstep:order})
-was superior to other common orders (e.g. arbitrary, min/max total degree, max in-degree).
+was superior to other common orders (e.g. arbitrary, min/max total degree, max in-degree).\looseness-1
 
+\input{algorithms/r-domset}
 
 After computing an $r$-dominating set $D$ of $G$ with \algoref{alg:r-domset},
 \algoref{alg:index_pieces} partitions the vertices of $G$ into pieces so that
@@ -92,7 +93,6 @@ can then be performed using \algoref{alg:search} in time that
 scales linearly with the size of their {\em neighborhood} --
 all genomic content assigned to \pieces that contain part of the query.
 
-
 Our implementations of these algorithms in \sgc can be run on
 metagenomic data with millions of cDBG nodes (\autoref{tab:data});
 indexing takes under an hour, enabling queries to complete in seconds
@@ -101,10 +101,8 @@ for full benchmarking (including cDBG construction). This
 provides us with a tool to systematically investigate assembly graph
 neighborhoods.
 
-\input{algorithms/r-domset}
 % can collapse lines 11-12 and 17-18 similar to line 5 for space saving if necessary
 \input{algorithms/index_pieces}
-
 \input{algorithms/search}
 
 %Figure 2
@@ -150,6 +148,7 @@ graph neighborhood query can recover 35\% or more of some target genomes
 starting from a relative with Jaccard similarity as low as 1\%: even a
 small number of shared k-mers sufficed to define a much larger neighborhood
 that contains related genomes.
+
 
 We next applied neighborhood query to retrieve an unknown genome from \podarv.
 Several papers have noted the

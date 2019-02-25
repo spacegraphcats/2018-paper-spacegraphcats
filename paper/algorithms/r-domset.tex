@@ -1,4 +1,4 @@
-\begin{algorithm}[!h]
+\begin{algorithm}[!b]
 	\begin{algorithmic}[1]
 		\Require Graph $G$, radius $r$
 		\Ensure $r$-dominating set $D$ of $G$
@@ -9,7 +9,7 @@
 		\State Initialize $d[v] \leftarrow \infty$ and $c[v] \leftarrow 0$ for all~$v \in G$
 		\State $D\leftarrow \emptyset$
 		\ForAll{$v\in \vec G_r$ sorted by ascending in-degree}\label{algstep:order}
-			\ForAll{$u\in N^{-}(v)$}
+			\ForAll{$u\in N^{-}(v)$} \label{algstep:pull-loop}
 				\State $d[v]\leftarrow\operatorname{min}\left(d[v], d[u]+\omega(uv)\right)$\label{algstep:pull}
 			\EndFor
 			\If{$d[v]>r$}
@@ -22,7 +22,7 @@
 						\State $D\leftarrow D\cup \{u\}$ and
 							   $d[u]\leftarrow 0$\label{algstep:D2}
 						\ForAll{$w\in N^-(u)$}
-							\State $d[w]\leftarrow \operatorname{min}\left(d[w],\omega(wu)\right)$
+							\State $d[w]\leftarrow \operatorname{min}\left(d[w],\omega(wu)\right)$\label{algstep:D2end}
 						\EndFor
 					\EndIf
 				\EndFor
