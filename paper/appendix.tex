@@ -209,11 +209,11 @@ a SQLite database for fast retrieval. Briefly, this script creates a
 sqlite database with a single table, {\tt sequences}, where a query like
 {\tt SELECT DISTINCT sequences.offset FROM sequences WHERE label ...}
 can be executed to return the offset of all sequences with the given
-label. Here, 'label' is the cDBG ID to which the sequence belongs.
+label; the offsets refer to BGZF coordinates in the gzipped sequence collection. Here, 'label' is the cDBG ID to which the sequence belongs.
+
 The script {\tt extract\_reads\_by\_frontier\_sqlite.py} is a downstream script to
 extract the reads with a frontier search.
-
-Specifically 1. walk through the contigs assembled from the cDBG;  
+Specifically: 1. walk through the contigs assembled from the cDBG;  
 2. build a DBG cover using khmer tags, such that every k-mer in the DBG is 
 within distance d=40 of a tag;  3. label each tag with the cDBG node ID 
 from the contig; 4. save for later use.
