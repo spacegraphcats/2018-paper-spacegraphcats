@@ -12,3 +12,7 @@ The base pipeline for generating the primary sequence output files is in
 
 The remaining analysis pipelines are under `pipeline-analses/`. See
 [the README](pipeline-analyses/README.md) for more info.
+
+To run the figure generating code in binder, click below:
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/spacegraphcats/2018-paper-spacegraphcats/master)
