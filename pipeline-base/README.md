@@ -18,4 +18,6 @@ interleave-reads.py ${i}_1.fastq.gz ${i}_2.fastq.gz |
 ```
 
 Look at the ``Snakefile`` for more information for what happens next!
-
+(This is a
+[snakemake workflow](https://snakemake.readthedocs.io/en/stable/);
+execute `snakemake` to run it, after installing the software above.)

@@ -1,0 +1,12 @@
+channels:
+  - bioconda
+  - defaults
+  - conda-forge
+dependencies:
+  - pandas
+  - numpy
+  - matplotlib
+  - sourmash
+  - scipy
+  - altair
+  - vega
