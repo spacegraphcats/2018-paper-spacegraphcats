@@ -4,3 +4,11 @@ This is the paper repository for "Exploring neighborhoods in large
 metagenome assembly graphs reveals hidden sequence diversity.",
 [Brown et al., 2018](https://www.biorxiv.org/content/early/2018/11/05/462788).
 
+The paper in `paper/`; figure generation code is in `paper/figures/` along
+with supporting pipeline output.
+
+The base pipeline for generating the primary sequence output files is in
+`pipeline-base/`. See [the README](pipeline-base/README.md) for more info.
+
+The remaining analysis pipelines are under `pipeline-analses/`. See
+[the README](pipeline-analyses/README.md) for more info.
