@@ -4,7 +4,7 @@ This folder contains four snakemake pipelines to analyze the PLASS-assembled
 neighborhoods. These pipelines generate the content in Figures 4a and 4b, as 
 well as some appendix tables and figures.
 
-![](../paper/figures/hu_dag.pdf)
+![](../paper/figures/hu_dag.png)
 
 ## Clustering workflow
 
