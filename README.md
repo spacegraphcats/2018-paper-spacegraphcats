@@ -12,7 +12,7 @@ pipeline output.
 The base pipeline for generating the primary sequence output files is in
 `pipeline-base/`. See [the README](pipeline-base/README.md) for more info.
 
-The remaining analysis pipelines are under `pipeline-analses/`. See
+The remaining analysis pipelines are under `pipeline-analyses/`. See
 [the README](pipeline-analyses/README.md) for more info.
 
 To run the figure generating code in binder, click below:
