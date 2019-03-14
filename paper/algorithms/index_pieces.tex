@@ -1,4 +1,4 @@
-\begin{algorithm}[!h]
+\begin{algorithm}[!b]
 	\begin{algorithmic}[1]
 		\Require{Metagenome $\mathcal{M}$, radius $r$}
 		\Ensure{Invertible index $I \colon \mathcal{M} \to \mathcal{P}$; $\mathcal{P}$ is a set of \pieces}
@@ -15,8 +15,8 @@
 			\EndFor
 		\EndWhile
  		\State $\mathcal{P}[v] \leftarrow \{u:\delta[u] = v\}$\;\label{algstep:partition_end}
-		\State $I_{\mathcal{M}} \leftarrow \texttt{mphfIndex}(\mathcal{M}, \mathcal{P})$\;
-		\State \Return $I_{\mathcal{M}}$
+%		\State $I_{\mathcal{M}} \leftarrow \texttt{mphfIndex}(\mathcal{M}, \mathcal{P})$\;
+		\State \Return $\texttt{mphfIndex}(\mathcal{M}, \mathcal{P})$ %$I_{\mathcal{M}}$
 	\end{algorithmic}
 	\caption{$\texttt{indexPieces}(\mathcal{M},r)$}\label{alg:index_pieces}
 \end{algorithm}

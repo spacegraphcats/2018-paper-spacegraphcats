@@ -1,0 +1,18 @@
+digraph snakemake_dag {
+    graph[bgcolor=white, margin=0];
+    node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
+    edge[penwidth=2, color=grey];
+    0[label = "Extract contigs: spacegraphcats.search.extract_contigs", color = "0.60 0.6 0.85", style="rounded"];
+	1[label = "Extract reads: spacegraphcats.search.extract_reads", color = "0.60 0.6 0.85", style="rounded"];
+	2[label = "Search the catlas: spacegraphcats.search.extract_nodes_by_query", color = "0.60 0.6 0.85", style="rounded"];
+	3[label = "Index contigs and count node sizes: spacegraphcats.index.index_contigs_by_kmer", color = "0.60 0.6 0.85", style="rounded"];
+	4[label = "Build catlas: spacegraphcats.catlas.catlas", color = "0.60 0.6 0.85", style="rounded"];
+	5[label = "Label reads with cDBG node membership: spacegraphcats.cdbg.label_cdbg", color = "0.60 0.6 0.85", style="rounded"];
+	6[label = "Use BCALM to build cDBG", color = "0.60 0.6 0.85", style="rounded"];
+	2 -> 0
+    2 -> 1
+	3 -> 2
+	4 -> 2
+	5 -> 4
+	6 -> 5
+}

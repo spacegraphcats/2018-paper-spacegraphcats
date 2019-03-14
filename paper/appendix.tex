@@ -17,7 +17,7 @@ during the $i$th iteration of said loop. Let~$\tau :=
 for $\tau$ on cDBGs below).
 
 \begin{lemma}
-  After the for-loop at line~\ref{algstep:pull} has finished,
+  After the for-loop at line~\ref{algstep:pull-loop} has finished,
   \[
     d^i[v_i] = \begin{cases*}
       \dist_G(v,D^i) & if $\dist_G(v,D^i) \leq r$, and \\
@@ -39,7 +39,7 @@ for $\tau$ on cDBGs below).
   \begin{case}[$v_iu_h \in \dir G_d$]
     Then~$\omega(v_iu_h) = d$ and in iteration~$h$
     the value of~$d^h[v_i]$ is set to the correct value~$d$
-    in the loop at line~\ref{algstep:pull}.
+    at line~\ref{algstep:pull}.
     By assumption this distance remains minimal until iteration~$i$
     and hence~$d^i[v_i] = d^h[v_i] = d$.
   \end{case}
@@ -47,7 +47,7 @@ for $\tau$ on cDBGs below).
   \begin{case}[$u_hv_i \in \dir G_d$]
     Then~$\omega(v_iu_h) = d$ and in iteration~$i$
     the value of~$d^i[v_i]$ is set to the correct value~$d$
-    in the loop at line~\ref{algstep:pull}.
+    at line~\ref{algstep:pull}.
   \end{case}
 
   % The cases env is a bit hacky. Parenthesis don't work well,
@@ -55,7 +55,7 @@ for $\tau$ on cDBGs below).
   \def\ww#1{\omega(#1)}
   \begin{case}[$xu_h,xv_i \in \dir G_d$  with~$\ww{xu_h} + \ww{xv_i} = d$]\mbox{}\\
     During iteration~$h$ the value of~$d^h[x]$ is set to~$\ww{xu_h}$
-    in the loop at line~\ref{algstep:pull} and subsequently retrieved
+    at line~\ref{algstep:pull} and subsequently retrieved
     in iteration~$i$ when $d^i[v_i]$ is set to
     \[
       d^i[x] + \ww{xu_h} = \ww{xu_h} + \ww{xv_i} = d.
@@ -71,8 +71,8 @@ for $\tau$ on cDBGs below).
 \noindent
 As an immediate consequence, we see the conditional statement at the end of
 the loop at line~\ref{algstep:pull} accurately determines whether $v_i$ is
-dominated by~$D_i$ or not. Accordingly, lines~\ref{algstep:D2}ff
-of the loop are only executed if~$v_i$ is \emph{not} dominated by~$D^i$.
+dominated by~$D_i$ or not. Accordingly, line~\ref{algstep:D2}
+of the loop is only executed if~$v_i$ is \emph{not} dominated by~$D^i$.
 Another consequence is that all vertices in~$D_1$ have large distance to
 each other:
 
@@ -189,6 +189,65 @@ approximately 80 seconds.
 For data set complexity (number of k-mers, number of cDBG nodes) please see
 Table~\ref{tab:data}.
 
+\subsection{spacegraphcats pipeline overview}
+\label{subsec:sgc_pipeline}
+
+\textsf{spacegraphcats} follows a series of steps when run on sequencing
+data, see Figure~\ref{fig:sgc_dag}. In detail, we perform the following
+steps.
+
+\emph{BCALM}. Use BCALM to generate a cDBG. Then convert a BCALM {\tt unitigs.fa}
+output (a cDBG) into spacegraphcats files.
+Outputs an undirected graph, a file containing the sequences, and a
+{\tt .info.csv} file containing information about the contig. Also outputs 
+sourmash {\tt k=31}, {\tt scaled=1000} signatures for both input and
+output files.
+
+\emph{spacegraphcats.cdbg.label\_cdbg}. Build an index that can be
+used to retrieve individual reads or contigs by cDBG node ID; produce 
+a SQLite database for fast retrieval. Briefly, this script creates a 
+sqlite database with a single table, {\tt sequences}, where a query like
+{\tt SELECT DISTINCT sequences.offset FROM sequences WHERE label ...}
+can be executed to return the offset of all sequences with the given
+label; the offsets refer to BGZF coordinates in the gzipped sequence collection. Here, 'label' is the cDBG ID to which the sequence belongs.
+
+The script {\tt extract\_reads\_by\_frontier\_sqlite.py} is a downstream script to
+extract the reads with a frontier search.
+Specifically: 1. walk through the contigs assembled from the cDBG;  
+2. build a DBG cover using khmer tags, such that every k-mer in the DBG is 
+within distance d=40 of a tag;  3. label each tag with the cDBG node ID 
+from the contig; 4. save for later use.
+
+\emph{spacegraphcats.catlas.catlas}. The catlas is a hierarchical 
+atlas for querying graphs. Implements algorithms 1 and 2 (see main text).
+
+\emph{spacegraphcats.index.index\_contigs\_by\_kmer}. Use Minimal Perfect 
+Hashing (see BBHash) to construct a fast lookup table connecting k-mers 
+in the cDBG to cDBG node IDs.
+
+\emph{spacegraphcats.search.extract\_nodes\_by\_query}. Do a frontier 
+search, and retrieve cDBG node IDs and MinHash signature for the retrieved 
+contigs.
+
+\emph{spacegraphcats.search.extract\_contigs}. Retrieve the unitig sequences 
+for a given list of cDBG nodes.  Consumes the output of {\tt extract\_nodes\_by\_query} 
+to get the list of nodes.
+
+\emph{spacegraphcats.search.extract\_reads}. Retrieve the reads for a list of cDBG 
+nodes.  Consumes the output of {\tt extract\_nodes\_by\_query} to get the list of 
+nodes, and then uses the labeled cDBG output by {\tt .cdbg.label\_cdbg} to 
+find reads that overlap with the unitigs in those nodes.
+  
+
+\begin{figure*}
+ \centering
+ \includegraphics[width=\linewidth]{figures/sgc_dag}
+	\caption{The steps followed by \textsf{spacegraphcats} when run
+on sequencing data.
+}
+ \label{fig:sgc_dag}
+\end{figure*}
+
 \subsection{Query genome accession numbers for {\em Proteiniclasticum} search}
 \label{subsec:query_accessions}
 
@@ -228,6 +287,30 @@ See Table~\ref{tab:aai}.
   \caption{CompareM results for {\em Proteiniclasticum} genomes. {\em P. ruminis shakya} is the result of assembling the reads extracted from \podarv with the neighborhood search.}
   \label{tab:aai}
 \end{table}
+
+
+\subsection{\hu analysis pipeline overview}
+
+
+See Figure~\ref{fig:hu_dag}. We implemented three workflows to analyze the
+plass-assembled \hu query neighborhoods. 
+
+
+\begin{figure*}
+ \centering
+ \includegraphics[width=\linewidth]{figures/hu_dag}
+	\caption{Three workflows implemented to analyze the plass-assembled
+\hu query neighborhoods. The first three steps, depicted in blue, were common
+across all workflows. The green boxes depict the KEGG GhostKOALA annotation
+workflow, the results of which can be see in Figure~\ref{fig:hu_content}. 
+The orange boxes depict steps in common between the clustering and variant
+workflows used to generate Figure~\ref{fig:hu_content}. The red boxes depict
+steps used to generate the MDS clustering plot and the multiple sequence 
+alignment (see Figure~\ref{fig:gyrAalign}). The gold boxes depict the
+steps of the variant workflow used to generate the assembly graphs.  
+}
+ \label{fig:hu_dag}
+\end{figure*}
 
 \subsection{Genome bin completeness improvements for \hu}
 \label{subsec:checkm}
@@ -303,10 +386,10 @@ See Table~\ref{tab:kmer_inclusion}. We estimated the number of k-mers in each
 query neighborhood that were contained in the MEGAHIT assembly of that query
 neighborhood. We used sourmash {\tt compute} to calculate signatures with k-size of
 31 and a scaled value of 2000. We then used sourmash {\tt compare} to estimate
-containment in MEGAHIT assemblies. The query neighborhood with the smallest 
+containment in MEGAHIT assemblies. The query neighborhood with the smallest
 containment, \emph{M. harundinacea} isolate \emph{57\_489}, had the largest query
 neighborhood, while the query neighborhood with the largest containment,
-\emph{M. bacterium 39\_7}, had the smallest query neighborhood.  
+\emph{M. bacterium 39\_7}, had the smallest query neighborhood.
 
 \begin{table}
   \begin{tabular}{l c}
@@ -327,14 +410,14 @@ neighborhood, while the query neighborhood with the largest containment,
 
 See Figure~\ref{fig:gyrAalign}. The MDS plot in the left panel of figure 4 shows
 distinct gyrA sequences identified in the Plass assemblies using HMMER. To visualize
-the sequences within these clusters and in other query neighborhoods, we 
+the sequences within these clusters and in other query neighborhoods, we
 constructed a multiple sequence alignment. However, because many
 sequences assembled by Plass were fragmented (see Results: Some query neighborhoods
-contain substantial strain variation), we first clustered the sequences at 95\% 
-similarity using CD-HIT. We then aligned the centroid sequences using MAFFT with 
-default settings. To produce the multiple sequence alignment visualization, we 
+contain substantial strain variation), we first clustered the sequences at 95\%
+similarity using CD-HIT. We then aligned the centroid sequences using MAFFT with
+default settings. To produce the multiple sequence alignment visualization, we
 calculated an unrooted neighbor joining tree using the MAFFT alignment. Then we used
-the function {\tt msaplot} in the R package ggtree to plot the alignment.  
+the function {\tt msaplot} in the R package ggtree to plot the alignment.
 
 \begin{figure*}
  \centering
@@ -347,35 +430,35 @@ the function {\tt msaplot} in the R package ggtree to plot the alignment.
 \subsection{gyrA by neighborhood}
 \label{subsec:gyrAnbhd}
 
-See Table~\ref{tab:gyrAcounts}. As can be seen in the left panel of figure 4 in the 
-main text, we observe many unique amino acid sequences per single copy ortholog 
+See Table~\ref{tab:gyrAcounts}. As can be seen in the left panel of figure 4 in the
+main text, we observe many unique amino acid sequences per single copy ortholog
 per query neighborhood.
 Although we observe many possible traversal paths in compact De Bruijn graphs built
 from reads that give rise to these sequences, we have no way to ascertain whether we
-observed combinatorial complexity by assembling variants that would never be linked 
+observed combinatorial complexity by assembling variants that would never be linked
 in nature. Therefore, we sought to conservatively estimate the number of positions
-per amino acid sequence that contained variants using MAFFT alignments. First, we 
+per amino acid sequence that contained variants using MAFFT alignments. First, we
 subsetted the alignment to sequences from one query neighborhood. Then we identified
 all aligned non-gap characters for each position in the alignment (gaps were induced
 in some neighborhoods by the presence of amino acid residues in other query neighborhood
-amino acid sequences). For each of these positions, we counted the number of unique 
-amino acid sequences per position, and the number of times each occurred at that position. 
-We then elimated any variant that occurred fewer than 10 times. Lastly, we counted the 
-number of well-supported distinct characters. We did this for gyrA, as well as the 
+amino acid sequences). For each of these positions, we counted the number of unique
+amino acid sequences per position, and the number of times each occurred at that position.
+We then elimated any variant that occurred fewer than 10 times. Lastly, we counted the
+number of well-supported distinct characters. We did this for gyrA, as well as the
 amino acid sequences for the other genes we tested (see other genes). Table~\ref{tab:gyrAcounts}
 shows that we see increased number of gyrA sequences in many neighborhoods even with
-this conservative approach.  
+this conservative approach.
 
 \subsection{Other genes}
 
 \label{subsec:othergenes}
 
-See bin and neighborhood content results for alaS in Table~\ref{tab:alaS}, {\em gyrB} in 
-Table~\ref{tab:gyrB}, {\em recA} in Table~\ref{tab:recA}, {\em rpb2d6} in Table~\ref{tab:rpb2d6}, 
+See bin and neighborhood content results for alaS in Table~\ref{tab:alaS}, {\em gyrB} in
+Table~\ref{tab:gyrB}, {\em recA} in Table~\ref{tab:recA}, {\em rpb2d6} in Table~\ref{tab:rpb2d6},
 rplB in Table~\ref{tab:rplB}, and rpsC in Table~\ref{tab:rpsC}. We selected {\em gyrB} and
 {\em recA} because they were used by \hu to assign taxonomy to binned genomes. We selected
 other genes used as single copy orthologs by programs like CheckM, and with longer PFAM
-domains. 
+domains.
 
 
 \begin{table}

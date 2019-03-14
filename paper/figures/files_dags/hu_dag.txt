@@ -1,0 +1,85 @@
+digraph snakemake_dag {
+    graph[bgcolor=white, margin=0];
+    node[shape=box, style=rounded, fontname=sans,                 fontsize=10, penwidth=2];
+    edge[penwidth=2, color=grey];
+    0[label = "Visualize with Bandage", color = "0.17 0.6 0.85", style="rounded"];
+	1[label = "Convert cDBG unitigs to GFA format", color = "0.17 0.6 0.85", style="rounded"];
+	2[label = "Assemble the cDBG with BCALM", color = "0.17 0.6 0.85", style="rounded"];
+	3[label = "Remove duplicate reads", color = "0.17 0.6 0.85", style="rounded"];
+	4[label = "Combine reads that mapped to PFAM domain", color = "0.17 0.6 0.85", style="rounded"];
+	5[label = "Extract reads that mapped to PFAM domain", color = "0.17 0.6 0.85", style="rounded"];
+	6[label = "Identify reads that mapped to contig that matched PFAM domain", color = "0.17 0.6 0.85", style="rounded"];
+	7[label = "Sort BAM", color = "0.17 0.6 0.85", style="rounded"];
+	8[label = "Parse hmmscan results:\nidentify all matches", color = "0.17 0.6 0.85", style="rounded"];
+	9[label = "Index BAM", color = "0.17 0.6 0.85", style="rounded"];
+	10[label = "Convert SAM to BAM", color = "0.17 0.6 0.85", style="rounded"];
+	11[label = "Find contigs in assembly that match\nPFAM domain using hmmscan", color = "0.10 0.6 0.85", style="rounded"];
+	12[label = "Align reads to Plass assembly with paladin", color = "0.17 0.6 0.85", style="rounded"];
+	13[label = "Build HMM profile from PFAM alignment with hmmbuild", color = "0.10 0.6 0.85", style="rounded"];
+	14[label = "Deduplicate Plass assembly headers", color = "0.63 0.6 0.85", style="rounded"];
+	15[label = "Index the Plass assembly with paladin", color = "0.17 0.6 0.85", style="rounded"];
+	16[label = "Download PFAM domain alignment", color = "0.10 0.6 0.85", style="rounded"];
+	17[label = "Truncate Plass assembly headers", color = "0.63 0.6 0.85", style="rounded"];
+	18[label = "Plass assembly of a query neighborhood", color = "0.63 0.6 0.85", style="rounded"];
+	19[label = "Calculate MDS", color = "0.00 0.6 0.85", style="rounded"];
+	20[label = "Plot a Multiple Sequence Alignment", color = "0.00 0.6 0.85", style="rounded"];
+	21[label = "Convert to a matrix", color = "0.00 0.6 0.85", style="rounded"];
+	22[label = "Align contigs with MAFFT", color = "0.00 0.6 0.85", style="rounded"];
+	23[label = "Calculate pairwise identity using esl-alpid", color = "0.00 0.6 0.85", style="rounded"];
+	24[label = "Deduplicate contig names", color = "0.00 0.6 0.85", style="rounded"];
+	25[label = "Convert alignment to Stockholm format", color = "0.00 0.6 0.85", style="rounded"];
+	26[label = "Parse contig names", color = "0.00 0.6 0.85", style="rounded"];
+	27[label = "Align contigs with MAFFT", color = "0.00 0.6 0.85", style="rounded"];
+	28[label = "Cluster contigs with CD-HIT", color = "0.00 0.6 0.85", style="rounded"];
+	29[label = "Extract contigs from Plass assembly", color = "0.00 0.6 0.85", style="rounded"];
+	30[label = "Parse hmmscan output:\nfind window of domain with the largest number\nof overlapping sequences", color = "0.00 0.6 0.85", style="rounded"];
+	111[label = "Parse annotations for KEGG orthologs in Plass assembly\n annotations and not in genome bin annotations", color = "0.33 0.6 0.85", style="rounded"];
+	113[label = "Parse annotations for nitrogenase KEGG orthologs", color = "0.33 0.6 0.85", style="rounded"];
+	114[label = "Download genome bin annotations", color = "0.33 0.6 0.85", style="rounded"];
+	115[label = "Download Plass assembly annotations", color = "0.33 0.6 0.85", style="rounded"];
+	116[label = "Annotate assembly\n with KEGG GhostKOALA", color = "0.33 0.6 0.85", style="rounded"];
+	118[label = "Annotate amino acid sequences\n with KEGG GhostKOALA", color = "0.33 0.6 0.85", style="rounded"];
+	119[label = "Annotate genome bins with prokka", color = "0.33 0.6 0.85", style="rounded"];
+	1110[label = "Download Hu et al. genome\n bins from GenBank", color = "0.33 0.6 0.85", style="rounded"];  
+	1 -> 0
+    2 -> 1
+	3 -> 2
+	4 -> 3
+	5 -> 4
+	6 -> 5
+	8 -> 6
+	9 -> 6
+	10 -> 7
+	11 -> 8
+	7 -> 9
+	12 -> 10
+	13 -> 11
+	14 -> 11
+	15 -> 12
+	16 -> 13
+	17 -> 14
+	14 -> 15
+	18 -> 17
+	21 -> 19
+	22 -> 20
+	23 -> 21
+	24 -> 22
+	25 -> 23
+	26 -> 24
+	27 -> 25
+	29 -> 28
+    28 -> 26
+	29 -> 27
+	14 -> 29
+	30 -> 29
+	11 -> 30
+	114 -> 111
+	115 -> 111
+	114 -> 113
+	115 -> 113
+    14 -> 116
+    116 -> 115
+    1110 -> 119
+    119 -> 118
+    118 -> 114
+}

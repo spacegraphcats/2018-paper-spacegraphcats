@@ -62,7 +62,7 @@ then uses these distances to ensure each vertex is close to a dominator.
 The core of the efficient distance computation is based on
 \emph{distance-truncated transitive fraternal (dtf) augmentations}~\cite{felixThesis}
 which produce a directed graph in which each arc $uv$ is labeled with
-$\omega(uv)$, the distance from $u$ to $v$ in the original cDBG.
+$\omega(uv)$, the distance from $u$ to $v$ in the original cDBG.\looseness-1
 
 Importantly, our implementation enhances the algorithm
 in~\cite{felixThesis} by computing only $r{-}1$ rounds of dtf-augmentations
@@ -75,8 +75,9 @@ which affects the constant factor in our worst-case bound.
 We selected a threshold (see Supp. Material) that produces $r$-dominating sets of
 comparable size to those computed by the algorithm in~\cite{felixThesis}. Additionally,
 we found that processing vertices using a minimum in-degree ordering (line~\ref{algstep:order})
-was superior to other common orders (e.g. arbitrary, min/max total degree, max in-degree).
+was superior to other common orders (e.g. arbitrary, min/max total degree, max in-degree).\looseness-1
 
+\input{algorithms/r-domset}
 
 After computing an $r$-dominating set $D$ of $G$ with \algoref{alg:r-domset},
 \algoref{alg:index_pieces} partitions the vertices of $G$ into pieces so that
@@ -92,7 +93,6 @@ can then be performed using \algoref{alg:search} in time that
 scales linearly with the size of their {\em neighborhood} --
 all genomic content assigned to \pieces that contain part of the query.
 
-
 Our implementations of these algorithms in \sgc can be run on
 metagenomic data with millions of cDBG nodes (\autoref{tab:data});
 indexing takes under an hour, enabling queries to complete in seconds
@@ -101,10 +101,8 @@ for full benchmarking (including cDBG construction). This
 provides us with a tool to systematically investigate assembly graph
 neighborhoods.
 
-\input{algorithms/r-domset}
 % can collapse lines 11-12 and 17-18 similar to line 5 for space saving if necessary
 \input{algorithms/index_pieces}
-
 \input{algorithms/search}
 
 %Figure 2
@@ -151,6 +149,7 @@ starting from a relative with Jaccard similarity as low as 1\%: even a
 small number of shared k-mers sufficed to define a much larger neighborhood
 that contains related genomes.
 
+
 We next applied neighborhood query to retrieve an unknown genome from \podarv.
 Several papers have noted the
 presence of unexpected sequence in the assemblies of this data, and
@@ -174,7 +173,7 @@ We performed a neighborhood query into \podarv with all three known {\em
   Proteiniclasticum} genomes from GenBank.  We then extracted the reads
 overlapping this neighborhood and assembled them with MEGAHIT.  The
 retrieved genome neighborhood for {\em Proteiniclasticum} contains
-2256K novel k-mers (\autoref{fig:partial_query}(b)). The reads from
+2264K novel k-mers (\autoref{fig:partial_query}(b)). The reads from
 the query neighborhood assembled into a 3.1 Mbp genome bin. The
 assembly is estimated by CheckM to be 100\% complete, with 10.3\%
 contamination.
@@ -325,7 +324,7 @@ are retrieved and used to construct a compact De Bruijn graph, the
 variation is visible as spurs off of a few longer paths (insets in
 \autoref{fig:hu_content}(a)). When we count the number of
 well-supported amino acid variants in isolated positions (i.e. ignoring linkage between variants)
-we see that ten of the 23 neighborhoods have an increase number of gyrA
+we see that ten of the 23 neighborhoods have an increased number of gyrA
 genes, with four neighborhoods gaining a gyrA where none exists in
 the bin (\appendixref{subsec:gyrAnbhd}; see lowest inset
 in \autoref{fig:hu_content}(a) for one example). Only one
@@ -333,6 +332,7 @@ neighborhood, {\em M. bacterium}, loses its gyrA genes due to the
 stringent k-mer abundance trimming.
 Collectively, the use of the \plass assembler on genome
 neighborhoods substantially increases the number of gyrA sequences associated with bins.
+% To calculate max # distinct gyrA, see code in misc/distinct_positions.ipynb.
 
 We see this same pattern for many genes, including {\em alaS}, {\em gyrB},
 {\em rpb2}
@@ -344,6 +344,7 @@ This strain variation may be
 one reason that nucleotide assembly performs poorly: on average, only
 19.6\% of \plass-assembled proteins are found within the nucleotide
 assemblies.
+% to calculate this number, see misc/plass-in-nucleotide-assemblies.md.
 
 \subsection*{Query neighborhoods assembled with \plass contain additional functional content}
 
