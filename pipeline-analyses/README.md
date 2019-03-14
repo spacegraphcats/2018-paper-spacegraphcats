@@ -6,18 +6,18 @@ well as some appendix tables and figures.
 
 ## Clustering workflow
 
-See this [file](https://github.com/spacegraphcats/2018-paper-spacegraphcats/blob/master/pipeline-analyses/clustering_snakemake/README.md). 
+See [this file](clustering_snakemake/README.md)
 for details. The clustering workflow corresponds to the red path through the 
 DAG located in the appendix.
 
 ## Variant workflow
 
-See this [file](https://github.com/spacegraphcats/2018-paper-spacegraphcats/blob/master/pipeline-analyses/variant_snakemake/README.md) 
+See [this file](variant_snakemake/README.md) 
 for details. The variant workflow corresponds to the yellow path through the 
 DAG located in the appendix. 
 
 ## KEGG workflow & bin prokka
 
-See this [file](https://github.com/spacegraphcats/2018-paper-spacegraphcats/blob/master/pipeline-analyses/kegg_snakemake/README.md) 
+See [this file](kegg_snakemake/README.md) 
 for details. The KEGG workflow and the bin prokka workflow correspond to the red
 path through the DAG located in the appendix. 
