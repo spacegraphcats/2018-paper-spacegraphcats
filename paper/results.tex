@@ -61,8 +61,8 @@ distance at most $r$ (lines~\ref{algstep:dtf_start}-\ref{algstep:dtf_end}) and
 then uses these distances to ensure each vertex is close to a dominator.
 The core of the efficient distance computation is based on
 \emph{distance-truncated transitive fraternal (dtf) augmentations}~\cite{felixThesis}
-which produce a directed graph in which each arc $uv$ is labeled with
-$\omega(uv)$, the distance from $u$ to $v$ in the original cDBG.\looseness-1
+which produce a directed graph~$\dir G_r$ in which each arc $uv$ is labeled with
+$\omega(uv)$, the distance from $u$ to $v$ in the original cDBG~$G$.\looseness-1
 
 Importantly, our implementation enhances the algorithm
 in~\cite{felixThesis} by computing only $r{-}1$ rounds of dtf-augmentations

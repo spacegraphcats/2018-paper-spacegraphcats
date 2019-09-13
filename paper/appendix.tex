@@ -2,6 +2,68 @@
 
 \section{Appendix}
 
+\subsection{Dtf-augmentation}\label{app:dtf} For the sake
+of completeness, we briefly describe how dtf-augmentations
+$\dir G_1, \dir G_2, \ldots, \dir G_r$ are computed for an input
+graph $G$.  In the following we write $\maxindeg(\dir G)$ to denote the maximum in-degree of a directed graph $\dir G$ and we write
+$N^-(v)$ to denote the in-neighbourhood of $v$ in $\dir G$.
+
+First, the graph $\dir G_1$ is a \emph{min-degree
+orientation} of $G$ obtained as follows: we find a vertex~$u$ of
+minimal degree in $G$, orient the incident edges towards $u$ and
+the repeat the procedure in $G - u$ until no vertices remain.
+
+Given $\dir G_i$, $i \geq 1$ we then compute $\dir G_{i+1}$ by
+applying an \emph{augmentation step}:
+
+\begin{enumerate}
+    \item $\dir G_{i+1}$ contains all arcs of $\dir G_i$,
+    \item if there is a pair of arcs~$uv \in \dir G_j$ 
+          and $vw \in \dir G_k$ with $j + k = i + 1$, then
+          we add $uw$ to $\dir G_{i+1}$,
+    \item if there is a pair of arcs~$uv \in \dir G_j$ 
+          and $wv \in \dir G_k$ with $j + k = i + 1$, then
+          either the arc $uw$ or the arc $wu$ must be
+          in $\dir G_{i+1}$.
+\end{enumerate}
+The ambiguity in the last step is resolved as follows: 
+we collect all edges $uw$ for which the last case applies
+in a graph $H$ and then compute $\dir H = \texttt{orient}(H)$,
+after which we add the arcs in $\dir H$ to $\dir G_{i+1}$.
+
+For ease of notation, we define $\omega(uv)$ to be the
+smallest index $i \leq r$ such that $uv \in \dir G_i$
+(and $\infty$ if no such index exists).
+We make use of two crucial properties of dtf augmentations 
+in the following. First, vertices that have distance at most
+$r$ in $G$ have distance at most two in $\dir G_r$:
+
+\begin{lemma}[\cf Lemma 26 in~\cite{felixThesis}]
+  For every pair $u,v \in G$ with $\dist(u,v) = d$ and
+  for every integer~$r \geq d$ one of the following holds:
+  \begin{enumerate}
+    \item $uv \in \dir G_r$ and $\omega(uv) = d$,
+    \item $vu \in \dir G_r$ and $\omega(vu) = d$,
+    \item or there exists $x$ such that $xu, xv \in \dir G_r$ and
+          $\omega(xu) + \omega(xv) = d$.
+  \end{enumerate}
+\end{lemma}
+
+\noindent
+Second, if we compute dtf-augmentations of graphs from a bounded
+expansion class (to which graph of bounded maximum degree like
+cDBGs belong), then the maximum in-degree
+of its $r$th augmentation can be bounded by a function independent
+of the \emph{size} of the graph:
+
+\begin{theorem}[\cf Theorem 16 in~\cite{felixThesis}]
+  For every graph class $\mathcal G$ with bounded expansion there exists
+  a function~$f$ such that for every member $G \in \mathcal G$
+  the $r$th dtf-augmentation $\dir G_r$ computed as above
+  satisfies
+  $\maxindeg(\dir G_r) \leq f(r)$.
+\end{theorem}
+
 \subsection{Approximation guarantee}\label{app:threshold}
 % Note: labels don't work right now because we're not numbering subsections (style file issue)
 
@@ -102,7 +164,6 @@ the approximation factor.
   would not have been included in~$D$ at step~\MARK{2}. This contradicts our
   assumption of $v_{i_{\tau+2}} \in D_1$ so the claim must hold.
 \end{proof}
-
 
 \begin{lemma}
   There exists a subset~$A \subseteq D_1$ such that~$A$ is
