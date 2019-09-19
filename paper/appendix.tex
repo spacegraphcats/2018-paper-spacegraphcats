@@ -2,13 +2,30 @@
 
 \section{Appendix}
 
+\subsection{Notation}\label{app:notation} For a graph $G$
+we write $V(G)$ and $E(G)$ for its vertex and edge set, respectively. For a
+vertex $v \in V(G)$, we write $N(v)$ to denote its neighborhood, \ie the set
+containing all vertices that are adjacent to it in $G$. We further
+write $G-v$ for the graph obtained from $G$ by removing $v$ and all edges
+incident to it.
+
+For a directed graph (digraph) $\dir G$, we use $N^-(v)$ to denote
+the \emph{in-neighborhood} of $v \in V(\dir G)$, that is, the set 
+of all vertices $w$ for which an arc $wv$ exists in $\dir G$. The
+size of that in-neighbourhood is called the \emph{in-degree} of $v$.
+We write $\maxindeg(\dir G)$ for the maximum in-degree over all 
+vertices of $\dir G$.
+
+For ease of notation, we usually write ``$v \in G$'' instead of 
+``$v \in V(G)$'' and ``$uv \in G$'' instead of ``$\{u,v\} \in E(G)$''
+(same for digraphs).
+
 \subsection{Dtf-augmentation}\label{app:dtf} For the sake
 of completeness, we briefly describe how dtf-augmentations
 $\dir G_1, \dir G_2, \ldots, \dir G_r$ are computed for an input
-graph $G$.  In the following we write $\maxindeg(\dir G)$ to denote the maximum in-degree of a directed graph $\dir G$ and we write
-$N^-(v)$ to denote the in-neighbourhood of $v$ in $\dir G$.
+graph $G$. 
 
-First, the graph $\dir G_1$ is a \emph{min-degree
+First, the graph $\dir G_1$ is a \emph{minimum in-degree
 orientation} of $G$ obtained as follows: we find a vertex~$u$ of
 minimal degree in $G$, orient the incident edges towards $u$ and
 the repeat the procedure in $G - u$ until no vertices remain.
