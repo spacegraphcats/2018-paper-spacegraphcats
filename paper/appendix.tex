@@ -73,7 +73,7 @@ cDBGs belong), then the maximum in-degree
 of its $r$th augmentation can be bounded by a function independent
 of the \emph{size} of the graph:
 
-\begin{theorem}[\cf Theorem 16 in~\cite{felixThesis}]
+\begin{theorem}[\cf Theorem 16 in~\cite{felixThesis}]\label{thm:dtf}
   For every graph class $\mathcal G$ with bounded expansion there exists
   a function~$f$ such that for every member $G \in \mathcal G$
   the $r$th dtf-augmentation $\dir G_r$ computed as above
@@ -232,13 +232,17 @@ the approximation factor.
 \end{proof}
 
 \noindent
-Since a $(2r+1)$-scattered set provides a lower bound for an~$r$-dominating set, we conclude that Algorithm~\ref{alg:r-domset}
-computes a $2(\tau+2)\maxindeg(\dir G_{2r})\maxindeg(\dir G_r)$-approximation of an
-optimal $r$-dominating set, which is a constant-factor approximation in graphs
-of bounded expansion.
+Since a $(2r+1)$-scattered set provides a lower bound for an~$r$-dominating
+set, we conclude that Algorithm~\ref{alg:r-domset} computes a
+$2(\tau+2)\maxindeg(\dir G_{2r})\maxindeg(\dir G_r)$-approximation of an
+optimal $r$-dominating set. In other words, we obtain a constant-factor
+approximation in graphs of bounded expansion since the quantities $\maxindeg(\dir
+G_{2r})\maxindeg(\dir G_r)$ are constants per Theorem~\ref{thm:dtf} in bounded
+expansion classes and the quantity $2(\tau+2)$ is a constant of our choosing.
 
 In practice one could, depending on the value of $\maxindeg(\dir G_r)$
-and $\maxindeg(\dir G_{2r})$, compute the optimal value for~$\tau$. However, this
+and $\maxindeg(\dir G_{2r})$, compute the optimal value for~$\tau$ to minimize the 
+approximation guarantee. However, this
 would necessitate the computation of $2r$ augmentation, the expensive step we
 want to avoid. Alternatively, we can choose a `good enough' value for $\tau$
 that still guarantees a constant-factor approximation while being easy to
