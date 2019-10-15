@@ -397,7 +397,44 @@ steps of the variant workflow used to generate the assembly graphs.
 \subsection{Genome bin completeness improvements for \hu}
 \label{subsec:checkm}
 
-See Table~\ref{tab:completeness}.
+See Table~\ref{tab:completeness}, Table~\ref{tab:binstats}, and 
+Table~\ref{tab:nbhdstats}.
+
+
+\begin{table*}
+  \begin{tabular}{l c c c c c c}
+    \toprule
+    Species & Completeness & Contamination & Strain heterogeneity & Unique KOs & Size (bases) & Number of proteins \\
+    \midrule
+    \input{tables/bin-stats.tex}
+\\ 
+   \bottomrule
+  \end{tabular}
+  \caption{\label{tab:binstats}
+   Completeness, contamination, and strain heterogeneity as estimated
+   by checkM, unique KEGG orthologs predicted by GhostKOALA, bin size in 
+   bases, and number of prokka-predicted protein sequences in the \hu bins.}
+  \label{tab:binstats}
+ \end{table*}
+
+\begin{table*}
+  \begin{tabular}{l c c c c c c}
+    \toprule
+    Species & Completeness & Contamination & Strain heterogeneity & Unique KOs & Size (bases) & Number of proteins \\
+    \midrule
+    \input{tables/nbhd-stats.tex}
+\\
+    \bottomrule
+  \end{tabular}
+  \caption{\label{tab:nbhdstats}
+   Completeness, contamination, and strain heterogeneity as estimated
+   by checkM, unique KEGG orthologs predicted by GhostKOALA, neighborhood
+   size in  bases, and number of plass-assembled  protein sequences in the
+   query neighborhoods. All estimates were performed on the plass-assembled
+   proteins except size of neighborhood in bases, for which we used the 
+   neighborhood unitig sequences output by spacegraphcats.}
+  \label{tab:nbhdstats}
+ \end{table*}
 
 \begin{table*}
   \parbox[t][][t]{.55\linewidth}{%
