@@ -41,9 +41,8 @@ https://gist.github.com/netj/526585).
 
 For each data set, we built a compact De Bruijn graph (cDBG) for
 k=31 by computing the set of unitigs with
-BCALM~\cite{chikhi2016compacting}, removing all vertices of degree one
-with a mean $k$-mer abundance of 1.1 or less, and then contracting
-long degree-two paths when possible.
+BCALM~\cite{chikhi2016compacting} and removing all vertices of degree one
+with a mean $k$-mer abundance of 1.1 or less. After the removal of these vertices, we then contracted any newly revealed degree-two paths.
 
 \subsection*{Neighborhood indexing and search}
 
