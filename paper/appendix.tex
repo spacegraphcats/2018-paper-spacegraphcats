@@ -392,9 +392,9 @@ neighborhood, while the query neighborhood with the largest containment,
 \emph{M. bacterium 39\_7}, had the smallest query neighborhood.
 
 \begin{table}
-  \begin{tabular}{l c}
+  \begin{tabular}{l c c}
     \toprule
-    Species & MEGAHIT assembly containment \\
+    Species & MEGAHIT assembly containment & PLASS mapping \\
     \midrule
     % generated from notebook 'figures/megahit-assembly-inclusion.ipynb'
     \input{tables/megahit-inclusion.table.tex}
@@ -556,4 +556,20 @@ domains.
   \end{tabular}
   \caption{Bin and neighborhood rpsC protein content.}
   \label{tab:rpsC}
+\end{table}
+
+\newpage
+
+\begin{table}
+  \begin{tabular}{l c c}
+    \toprule
+    Species & MEGAHIT assembly containment & PLASS mapping \\
+    \midrule
+    % generated from notebook 'figures/megahit-assembly-inclusion.ipynb'
+    \input{tables/megahit-inclusion.table.tex}
+%    \input{tables/plass-genes/rpsC-table.tex}
+    \bottomrule
+  \end{tabular}
+  \caption{Containment of neighborhood k-mer content in MEGAHIT nucleotide assemblies.}
+  \label{tab:kmer_inclusion}
 \end{table}
