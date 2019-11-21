@@ -304,8 +304,10 @@ from the contig; 4. save for later use.
 atlas for querying graphs. Implements algorithms 1 and 2 (see main text).
 
 \emph{spacegraphcats.index.index\_contigs\_by\_kmer}. Use Minimal Perfect 
-Hashing (see BBHash) to construct a fast lookup table connecting k-mers 
-in the cDBG to cDBG node IDs.
+Hashing (BBHash, https://github.com/rizkg/BBHash) to construct a fast
+lookup table connecting k-mers in the cDBG to cDBG node IDs. (BBHash
+reference: A. Limasset, G. Rizk, R. Chikhi, P. Peterlongo, Fast and
+Scalable Minimal Perfect Hashing for Massive Key Sets, SEA 2017.)
 
 \emph{spacegraphcats.search.extract\_nodes\_by\_query}. Do a frontier 
 search, and retrieve cDBG node IDs and MinHash signature for the retrieved 

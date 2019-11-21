@@ -115,11 +115,11 @@ neighborhoods.
 	\caption{Neighborhood queries enable recovery of relevant genomic content.
   (a) Left Panel: Recovery of each of three target genomes from \podarv
   using queries at a variety of Jaccard distances from the target. Recovery is
-  calculated as containment of target genome in query neighborhood.
+  calculated as containment of target genome in query neighborhood. The solid lines represent logarithmic best-fit curves to the points.
   (b) Right Panel: Recovery of novel {\em Proteiniclasticum } content
-  from \podarv. Nucleotide content from two of the three known {\em P. ruminis} genomes
+  from \podarv. Nucleotide k-mers from two of the three known {\em P. ruminis} genomes
   overlapped approximately a megabase of sequence in the query neighborhood,
-  which also contained approximately 2.3 Mbp of unknown sequence; the third known genome, {\em P. ruminis CGMCC}, was omitted from the figure as it is 99.7\% similar to {\em P. ruminis DSM}. Numbers are in thousands of k-mers.}\label{fig:partial_query}
+  which also contained approximately 2.3 Mbp of unknown sequence; the third known genome, {\em P. ruminis CGMCC}, was omitted from the figure as it is 99.7\% similar to {\em P. ruminis DSM}. Numbers are in thousands of k-mers, estimated via sourmash.}\label{fig:partial_query}
 \end{figure*}
 
 \input{tables/benchmarking}
@@ -237,8 +237,8 @@ CheckM to estimate genome bin completeness.  The estimated bin
 completeness for many of the query genomes is low
 (\appendixref{subsec:checkm}).
 To see if the query neighborhoods contain missing marker genes, we
-assembled reads from the query neighborhoods using MEGAHIT.  However,
-we found little improvement in the completion metrics (\autoref{fig:hu_strain}(b)).
+assembled reads from the query neighborhoods using MEGAHIT, and found
+this improved the completion metrics (\autoref{fig:hu_strain}(b)).
 
 Investigating further, we found that the query neighborhood assemblies
 contain only between 4\% and 56\% of the neighborhood k-mer
