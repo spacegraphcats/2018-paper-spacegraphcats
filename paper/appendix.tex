@@ -399,14 +399,14 @@ steps of the variant workflow used to generate the assembly graphs.
 \subsection{Genome bin completeness improvements for \hu}
 \label{subsec:checkm}
 
-See Table~\ref{tab:binstats}, Table~\ref{tab:completeness}, and 
+See Table~\ref{tab:binstats}, Table~\ref{tab:bin-completeness}, and 
 Table~\ref{tab:nbhdstats}. Table~\ref{tab:binstats} shows completeness metrics
 for the binned genomes from the \hu sample and used as 
 queries. Table~\ref{tab:completeness} shows percent completeness and increased 
 completeness for MEGAHIT and \plass assemblies of the query neighborhoods. 
 Table~\ref{tab:nbhdstats} shows completeness metrics for \plass assembled
-query neighborhoods after stringent k-mer trimming (k > 5) of the SB1 sample
-reads.  
+query neighborhoods after stringent read trimming at low abundance k-mers 
+(k-mers present fewer than 5 times were removed) of the SB1 sample reads.  
 
 
 \begin{table*}
@@ -440,7 +440,7 @@ reads.
  \\
     \bottomrule
   \end{tabular}
-  \caption{\label{tab:completeness}%
+  \caption{\label{tab:bin-completeness}%
   Bin and neighborhood completeness, as estimated by CheckM. ``Bin completeness''
   is the result of running CheckM on the genome sequence from GenBank; MEGAHIT
    is the result of running CheckM on the MEGAHIT nucleotide assembly of the
@@ -448,7 +448,7 @@ reads.
    amino acid assembly of the neighborhood reads. $\Delta$ is the difference
    between the column and the bin completeness.}
   }%
-  \label{tab:completeness}
+  \label{tab:bin-completeness}
  \end{table*}
 
 \begin{table*}
@@ -472,10 +472,9 @@ reads.
   \label{tab:nbhdstats}
  \end{table*}
 
-  %\hfill
-  %\parbox[t][][t]{.4\linewidth}{
 \begin{table*}
-  \begin{tabular}{l l c c}
+ \parbox[t][][t]{.45\linewidth}{ 
+ \begin{tabular}{@{}l l c c@{}}
     \toprule
     Species & gyrA (bin) & gyrA (\plass) \\
     \midrule
@@ -505,7 +504,7 @@ reads.
     A. bacterium 49\_20 & 2 & 3 \\
     \bottomrule
   \end{tabular}
-  \caption{  \label{tab:gyrAcounts}%
+  \caption{\label{tab:gyrAcounts}
    Bin and neighborhood gyrA protein content. gyrA count for each bin is the number
     of gyrA amino acid sequences that are part of the original bin. gyrA count by \plass is
     the minimum number of gyrA amino acid sequences supported by at least one
@@ -513,6 +512,7 @@ reads.
     there is at least one position in the multiple sequence alignment of gyrA
     sequences for that neighborhood that has 3 distinct variants in 10 distinct
     sequences.}
+  }
   \label{tab:gyrAcounts}
 \end{table*}
 
@@ -567,7 +567,7 @@ the function {\tt msaplot} in the R package ggtree to plot the alignment.
 \subsection{gyrA by neighborhood}
 \label{subsec:gyrAnbhd}
 
-See Table~\ref{tab:gyrAcounts}. As can be seen in the left panel of figure 4 in the
+See Table~\ref{tab:gyrAcounts}. As can be seen in the left panel of Figure 4 in the
 main text, we observe many unique amino acid sequences per single copy ortholog
 per query neighborhood.
 Although we observe many possible traversal paths in compact De Bruijn graphs built
