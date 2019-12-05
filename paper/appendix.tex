@@ -399,30 +399,60 @@ steps of the variant workflow used to generate the assembly graphs.
 \subsection{Genome bin completeness improvements for \hu}
 \label{subsec:checkm}
 
-See Table~\ref{tab:completeness}.
+See Table~\ref{tab:binstats}, Table~\ref{tab:bin-completeness}, and 
+Table~\ref{tab:nbhdstats}. Table~\ref{tab:binstats} shows completeness metrics
+for the binned genomes from the \hu sample and used as 
+queries. Table~\ref{tab:completeness} shows percent completeness and increased 
+completeness for MEGAHIT and \plass assemblies of the query neighborhoods. 
+Table~\ref{tab:nbhdstats} shows completeness metrics for \plass assembled
+query neighborhoods after stringent read trimming at low abundance k-mers 
+(k-mers present fewer than 5 times were removed) of the SB1 sample reads.  
+
 
 \begin{table*}
-  \parbox[t][][t]{.55\linewidth}{%
-  \begin{tabular}{@{}l c c c@{}}
+  \begin{tabular}{l c c c c c c}
     \toprule
-    Bin name & Bin completeness & MEGAHIT ($\Delta$) & \plass ($\Delta$) \\
+    Species & Completeness (\%) & Redundancy (\%) & Strain heterogeneity (\%) & Unique KOs & Size (bases) & Number of proteins \\
     \midrule
-    % generated from notebook 'figures/fig-hu_strain.ipynb'
-    \input{tables/bin-completeness.tex}
- \\
+    \input{tables/bin-stats.tex}
+\\ 
+   \bottomrule
+  \end{tabular}
+  \caption{
+   Completeness metrics for the \hu genome bins from \cite{Hu2016}, used as queries into the SB1 metagenome. Completeness, redundancy, and 
+   strain heterogeneity as estimated
+   by checkM, unique KEGG orthologs predicted by GhostKOALA, bin size in 
+   bases, and number of prokka-predicted protein sequences in the \hu bins. 
+   Table is ordered by completeness. Note we refer to the checkM term 
+   ``contamination'' as ``redundancy'' as this better describes the calculated
+   metric.}
+  \label{tab:binstats}
+ \end{table*}
+
+\begin{table*}
+  \begin{tabular}{l c c c c c c}
+    \toprule
+    Species & Completeness (\%) & Redundancy (\%) & Strain heterogeneity (\%) & Unique KOs & Size (bases) & Number of proteins \\
+    \midrule
+    \input{tables/nbhd-stats.tex}
+\\
     \bottomrule
   \end{tabular}
-  \caption{\label{tab:completeness}%
-  Bin and neighborhood completeness, as estimated by CheckM. ``Bin completeness''
-  is the result of running CheckM on the genome sequence from GenBank; MEGAHIT
-   is the result of running CheckM on the MEGAHIT nucleotide assembly of the
-   neighborhood reads; \plass is the result of running CheckM on the \plass
-   amino acid assembly of the neighborhood reads. $\Delta$ is the difference
-   between the column and the bin completeness.}
-  }%
-  \hfill
-  \parbox[t][][t]{.4\linewidth}{
-  \begin{tabular}{@{}l l c c @{}}
+  \caption{
+   Completeness metrics for the query neighborhoods extracted from the \hu metagenome by {\sf spacegraphcats}. Completeness, redundancy, 
+   and strain heterogeneity as estimated
+   by checkM, unique KEGG orthologs predicted by GhostKOALA, neighborhood
+   size in  bases, and number of plass-assembled  protein sequences in the
+   query neighborhoods. Table is ordered by completeness of query bins (see 
+   Table~\ref{tab:binstats}). All estimates were performed on the k-mer trimmed
+   (k >= 5) \plass-assembled proteins except size of neighborhood in bases, 
+   for which we used the neighborhood unitig sequences output by {\sf spacegraphcats}.}
+  \label{tab:nbhdstats}
+ \end{table*}
+
+\begin{table*}
+ \parbox[t][][t]{.45\linewidth}{ 
+ \begin{tabular}{@{}l l c c@{}}
     \toprule
     Species & gyrA (bin) & gyrA (\plass) \\
     \midrule
@@ -452,7 +482,7 @@ See Table~\ref{tab:completeness}.
     A. bacterium 49\_20 & 2 & 3 \\
     \bottomrule
   \end{tabular}
-  \caption{  \label{tab:gyrAcounts}%
+  \caption{
    Bin and neighborhood gyrA protein content. gyrA count for each bin is the number
     of gyrA amino acid sequences that are part of the original bin. gyrA count by \plass is
     the minimum number of gyrA amino acid sequences supported by at least one
@@ -460,7 +490,8 @@ See Table~\ref{tab:completeness}.
     there is at least one position in the multiple sequence alignment of gyrA
     sequences for that neighborhood that has 3 distinct variants in 10 distinct
     sequences.}
-  }
+    }
+  \label{tab:gyrAcounts}
 \end{table*}
 
 \subsection{K-mer inclusion of reads by MEGAHIT assemblies}
@@ -514,7 +545,7 @@ the function {\tt msaplot} in the R package ggtree to plot the alignment.
 \subsection{gyrA by neighborhood}
 \label{subsec:gyrAnbhd}
 
-See Table~\ref{tab:gyrAcounts}. As can be seen in the left panel of figure 4 in the
+See Table~\ref{tab:gyrAcounts}. As can be seen in the left panel of Figure 4 in the
 main text, we observe many unique amino acid sequences per single copy ortholog
 per query neighborhood.
 Although we observe many possible traversal paths in compact De Bruijn graphs built
@@ -537,13 +568,15 @@ this conservative approach.
 
 \label{subsec:othergenes}
 
-See bin and neighborhood content results for alaS in Table~\ref{tab:alaS}, {\em gyrB} in
+See bin and neighborhood content results for {\em alaS} in Table~\ref{tab:alaS}, {\em gyrB} in
 Table~\ref{tab:gyrB}, {\em recA} in Table~\ref{tab:recA}, {\em rpb2d6} in Table~\ref{tab:rpb2d6},
 rplB in Table~\ref{tab:rplB}, and rpsC in Table~\ref{tab:rpsC}. We selected {\em gyrB} and
 {\em recA} because they were used by \hu to assign taxonomy to binned genomes. We selected
 other genes used as single copy orthologs by programs like CheckM, and with longer PFAM
 domains.
 
+
+\newpage
 
 \begin{table}
   \begin{tabular}{l l c c }
@@ -563,6 +596,8 @@ domains.
   \caption{Protein names and PFAM accessions for targeted analyses.}
   \label{tab:pfam_accessions}
 \end{table}
+
+\newpage
 
 \begin{table}
   \begin{tabular}{l l c c }
