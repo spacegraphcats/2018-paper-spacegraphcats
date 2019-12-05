@@ -418,14 +418,14 @@ query neighborhoods after stringent read trimming at low abundance k-mers
 \\ 
    \bottomrule
   \end{tabular}
-  \caption{\label{tab:binstats}
-   Completeness metrics for the \hu queries. Completeness, redundancy, and 
+  \caption{
+   Completeness metrics for the \hu genome bins from \cite{Hu2016}, used as queries into the SB1 metagenome. Completeness, redundancy, and 
    strain heterogeneity as estimated
    by checkM, unique KEGG orthologs predicted by GhostKOALA, bin size in 
    bases, and number of prokka-predicted protein sequences in the \hu bins. 
    Table is ordered by completeness. Note we refer to the checkM term 
-   ``contamination'' as ``redundancy'' as this better describes the strain 
-   variation in single copy genes captured by spacegraphcats queries.}
+   ``contamination'' as ``redundancy'' as this better describes the calculated
+   metric.}
   \label{tab:binstats}
  \end{table*}
 
@@ -440,7 +440,7 @@ query neighborhoods after stringent read trimming at low abundance k-mers
  \\
     \bottomrule
   \end{tabular}
-  \caption{\label{tab:bin-completeness}%
+  \caption{
   Bin and neighborhood completeness, as estimated by CheckM. ``Bin completeness''
   is the result of running CheckM on the genome sequence from GenBank; MEGAHIT
    is the result of running CheckM on the MEGAHIT nucleotide assembly of the
@@ -460,15 +460,15 @@ query neighborhoods after stringent read trimming at low abundance k-mers
 \\
     \bottomrule
   \end{tabular}
-  \caption{\label{tab:nbhdstats}
-   Completeness metrics for the query neighborhoods. Completeness, redundancy, 
+  \caption{
+   Completeness metrics for the query neighborhoods extracted from the \hu metagenome by {\sf spacegraphcats}. Completeness, redundancy, 
    and strain heterogeneity as estimated
    by checkM, unique KEGG orthologs predicted by GhostKOALA, neighborhood
    size in  bases, and number of plass-assembled  protein sequences in the
    query neighborhoods. Table is ordered by completeness of query bins (see 
    Table~\ref{tab:binstats}). All estimates were performed on the k-mer trimmed
-   (k < 5) \plass-assembled proteins except size of neighborhood in bases, 
-   for which we used the neighborhood unitig sequences output by spacegraphcats.}
+   (k >= 5) \plass-assembled proteins except size of neighborhood in bases, 
+   for which we used the neighborhood unitig sequences output by {\sf spacegraphcats}.}
   \label{tab:nbhdstats}
  \end{table*}
 
@@ -504,7 +504,7 @@ query neighborhoods after stringent read trimming at low abundance k-mers
     A. bacterium 49\_20 & 2 & 3 \\
     \bottomrule
   \end{tabular}
-  \caption{\label{tab:gyrAcounts}
+  \caption{
    Bin and neighborhood gyrA protein content. gyrA count for each bin is the number
     of gyrA amino acid sequences that are part of the original bin. gyrA count by \plass is
     the minimum number of gyrA amino acid sequences supported by at least one
@@ -512,7 +512,7 @@ query neighborhoods after stringent read trimming at low abundance k-mers
     there is at least one position in the multiple sequence alignment of gyrA
     sequences for that neighborhood that has 3 distinct variants in 10 distinct
     sequences.}
-  }
+    }
   \label{tab:gyrAcounts}
 \end{table*}
 
@@ -590,13 +590,15 @@ this conservative approach.
 
 \label{subsec:othergenes}
 
-See bin and neighborhood content results for alaS in Table~\ref{tab:alaS}, {\em gyrB} in
+See bin and neighborhood content results for {\em alaS} in Table~\ref{tab:alaS}, {\em gyrB} in
 Table~\ref{tab:gyrB}, {\em recA} in Table~\ref{tab:recA}, {\em rpb2d6} in Table~\ref{tab:rpb2d6},
 rplB in Table~\ref{tab:rplB}, and rpsC in Table~\ref{tab:rpsC}. We selected {\em gyrB} and
 {\em recA} because they were used by \hu to assign taxonomy to binned genomes. We selected
 other genes used as single copy orthologs by programs like CheckM, and with longer PFAM
 domains.
 
+
+\newpage
 
 \begin{table}
   \begin{tabular}{l l c c }
@@ -616,6 +618,8 @@ domains.
   \caption{Protein names and PFAM accessions for targeted analyses.}
   \label{tab:pfam_accessions}
 \end{table}
+
+\newpage
 
 \begin{table}
   \begin{tabular}{l l c c }
