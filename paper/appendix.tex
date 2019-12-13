@@ -15,10 +15,16 @@ of all vertices $w$ for which an arc $wv$ exists in $\dir G$. The
 size of that in-neighbourhood is called the \emph{in-degree} of $v$.
 We write $\maxindeg(\dir G)$ for the maximum in-degree over all 
 vertices of $\dir G$.
-
 For ease of notation, we usually write ``$v \in G$'' instead of 
 ``$v \in V(G)$'' and ``$uv \in G$'' instead of ``$\{u,v\} \in E(G)$''
 (same for digraphs).
+
+A vertex set~$S \subseteq V(G)$ is \emph{$r$-scattered} if all vertices
+in it have pairwise distance at least~$r$ in~$G$. Note that if a set~$S$
+is $(2r+1)$-scattered in~$G$, then no single vertex can $r$-dominate
+more than one vertex of~$S$. It follows that any $r$-dominating set of~$G$ must
+have size at least~$|S|$; we can therefore use $(2r+1)$-scattered sets to
+prove lower bounds on the $r$-domination number of a graph.
 
 \subsection{Dtf-augmentation}\label{app:dtf} For the sake
 of completeness, we briefly describe how dtf-augmentations
