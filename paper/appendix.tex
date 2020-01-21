@@ -10,12 +10,12 @@ write $G-v$ for the graph obtained from $G$ by removing $v$ and all edges
 incident to it.
 
 For a directed graph (digraph) $\dir G$, we use $N^-(v)$ to denote
-the \emph{in-neighborhood} of $v \in V(\dir G)$, that is, the set 
+the \emph{in-neighborhood} of $v \in V(\dir G)$, that is, the set
 of all vertices $w$ for which an arc $wv$ exists in $\dir G$. The
 size of that in-neighbourhood is called the \emph{in-degree} of $v$.
-We write $\maxindeg(\dir G)$ for the maximum in-degree over all 
+We write $\maxindeg(\dir G)$ for the maximum in-degree over all
 vertices of $\dir G$.
-For ease of notation, we usually write ``$v \in G$'' instead of 
+For ease of notation, we usually write ``$v \in G$'' instead of
 ``$v \in V(G)$'' and ``$uv \in G$'' instead of ``$\{u,v\} \in E(G)$''
 (same for digraphs).
 
@@ -29,11 +29,11 @@ prove lower bounds on the $r$-domination number of a graph.
 \subsection{Dtf-augmentation}\label{app:dtf} For the sake
 of completeness, we briefly describe how dtf-augmentations
 $\dir G_1, \dir G_2, \ldots, \dir G_r$ are computed for an input
-graph $G$. 
+graph $G$.
 
 First, the graph $\dir G_1$ is a \emph{minimum in-degree
 orientation} of $G$ obtained as follows: we find a vertex~$u$ of
-minimal degree in $G$, orient the incident edges towards $u$ and
+minimum degree in $G$, orient the incident edges towards $u$ and
 the repeat the procedure in $G - u$ until no vertices remain.
 
 Given $\dir G_i$, $i \geq 1$ we then compute $\dir G_{i+1}$ by
@@ -41,23 +41,24 @@ applying an \emph{augmentation step}:
 
 \begin{enumerate}
     \item $\dir G_{i+1}$ contains all arcs of $\dir G_i$,
-    \item if there is a pair of arcs~$uv \in \dir G_j$ 
+    \item if there is a pair of arcs~$uv \in \dir G_j$
           and $vw \in \dir G_k$ with $j + k = i + 1$, then
           we add $uw$ to $\dir G_{i+1}$,
-    \item if there is a pair of arcs~$uv \in \dir G_j$ 
+    \item if there is a pair of arcs~$uv \in \dir G_j$
           and $wv \in \dir G_k$ with $j + k = i + 1$, then
           either the arc $uw$ or the arc $wu$ must be
           in $\dir G_{i+1}$.
 \end{enumerate}
-The ambiguity in the last step is resolved as follows: 
+The ambiguity in the last step is resolved as follows:
 we collect all edges $uw$ for which the last case applies
-in a graph $H$ and then compute $\dir H = \texttt{orient}(H)$,
-after which we add the arcs in $\dir H$ to $\dir G_{i+1}$.
+in a graph $H$ and then compute a minimum in-degree
+orientation $\dir H$ of~$H$. We then add the arcs
+in $\dir H$ to $\dir G_{i+1}$.
 
 For ease of notation, we define $\omega(uv)$ to be the
 smallest index $i \leq r$ such that $uv \in \dir G_i$
 (and $\infty$ if no such index exists).
-We make use of two crucial properties of dtf augmentations 
+We make use of two crucial properties of dtf augmentations
 in the following. First, vertices that have distance at most
 $r$ in $G$ have distance at most two in $\dir G_r$:
 
@@ -247,7 +248,7 @@ G_{2r})\maxindeg(\dir G_r)$ are constants per Theorem~\ref{thm:dtf} in bounded
 expansion classes and the quantity $2(\tau+2)$ is a constant of our choosing.
 
 In practice one could, depending on the value of $\maxindeg(\dir G_r)$
-and $\maxindeg(\dir G_{2r})$, compute the optimal value for~$\tau$ to minimize the 
+and $\maxindeg(\dir G_{2r})$, compute the optimal value for~$\tau$ to minimize the
 approximation guarantee. However, this
 would necessitate the computation of $2r$ augmentation, the expensive step we
 want to avoid. Alternatively, we can choose a `good enough' value for $\tau$
@@ -287,13 +288,13 @@ steps.
 \emph{BCALM}. Use BCALM to generate a cDBG. Then convert a BCALM {\tt unitigs.fa}
 output (a cDBG) into spacegraphcats files.
 Outputs an undirected graph, a file containing the sequences, and a
-{\tt .info.csv} file containing information about the contig. Also outputs 
+{\tt .info.csv} file containing information about the contig. Also outputs
 sourmash {\tt k=31}, {\tt scaled=1000} signatures for both input and
 output files.
 
 \emph{spacegraphcats.cdbg.label\_cdbg}. Build an index that can be
-used to retrieve individual reads or contigs by cDBG node ID; produce 
-a SQLite database for fast retrieval. Briefly, this script creates a 
+used to retrieve individual reads or contigs by cDBG node ID; produce
+a SQLite database for fast retrieval. Briefly, this script creates a
 sqlite database with a single table, {\tt sequences}, where a query like
 {\tt SELECT DISTINCT sequences.offset FROM sequences WHERE label ...}
 can be executed to return the offset of all sequences with the given
@@ -301,33 +302,33 @@ label; the offsets refer to BGZF coordinates in the gzipped sequence collection.
 
 The script {\tt extract\_reads\_by\_frontier\_sqlite.py} is a downstream script to
 extract the reads with a frontier search.
-Specifically: 1. walk through the contigs assembled from the cDBG;  
-2. build a DBG cover using khmer tags, such that every k-mer in the DBG is 
-within distance d=40 of a tag;  3. label each tag with the cDBG node ID 
+Specifically: 1. walk through the contigs assembled from the cDBG;
+2. build a DBG cover using khmer tags, such that every k-mer in the DBG is
+within distance d=40 of a tag;  3. label each tag with the cDBG node ID
 from the contig; 4. save for later use.
 
-\emph{spacegraphcats.catlas.catlas}. The catlas is a hierarchical 
+\emph{spacegraphcats.catlas.catlas}. The catlas is a hierarchical
 atlas for querying graphs. Implements algorithms 1 and 2 (see main text).
 
-\emph{spacegraphcats.index.index\_contigs\_by\_kmer}. Use Minimal Perfect 
+\emph{spacegraphcats.index.index\_contigs\_by\_kmer}. Use Minimal Perfect
 Hashing (BBHash, https://github.com/rizkg/BBHash) to construct a fast
 lookup table connecting k-mers in the cDBG to cDBG node IDs. (BBHash
 reference: A. Limasset, G. Rizk, R. Chikhi, P. Peterlongo, Fast and
 Scalable Minimal Perfect Hashing for Massive Key Sets, SEA 2017.)
 
-\emph{spacegraphcats.search.extract\_nodes\_by\_query}. Do a frontier 
-search, and retrieve cDBG node IDs and MinHash signature for the retrieved 
+\emph{spacegraphcats.search.extract\_nodes\_by\_query}. Do a frontier
+search, and retrieve cDBG node IDs and MinHash signature for the retrieved
 contigs.
 
-\emph{spacegraphcats.search.extract\_contigs}. Retrieve the unitig sequences 
-for a given list of cDBG nodes.  Consumes the output of {\tt extract\_nodes\_by\_query} 
+\emph{spacegraphcats.search.extract\_contigs}. Retrieve the unitig sequences
+for a given list of cDBG nodes.  Consumes the output of {\tt extract\_nodes\_by\_query}
 to get the list of nodes.
 
-\emph{spacegraphcats.search.extract\_reads}. Retrieve the reads for a list of cDBG 
-nodes.  Consumes the output of {\tt extract\_nodes\_by\_query} to get the list of 
-nodes, and then uses the labeled cDBG output by {\tt .cdbg.label\_cdbg} to 
+\emph{spacegraphcats.search.extract\_reads}. Retrieve the reads for a list of cDBG
+nodes.  Consumes the output of {\tt extract\_nodes\_by\_query} to get the list of
+nodes, and then uses the labeled cDBG output by {\tt .cdbg.label\_cdbg} to
 find reads that overlap with the unitigs in those nodes.
-  
+
 
 \begin{figure*}
  \centering
@@ -383,7 +384,7 @@ See Table~\ref{tab:aai}.
 
 
 See Figure~\ref{fig:hu_dag}. We implemented three workflows to analyze the
-plass-assembled \hu query neighborhoods. 
+plass-assembled \hu query neighborhoods.
 
 
 \begin{figure*}
@@ -392,12 +393,12 @@ plass-assembled \hu query neighborhoods.
 	\caption{Three workflows implemented to analyze the plass-assembled
 \hu query neighborhoods. The first three steps, depicted in blue, were common
 across all workflows. The green boxes depict the KEGG GhostKOALA annotation
-workflow, the results of which can be see in Figure~\ref{fig:hu_content}. 
+workflow, the results of which can be see in Figure~\ref{fig:hu_content}.
 The orange boxes depict steps in common between the clustering and variant
 workflows used to generate Figure~\ref{fig:hu_content}. The red boxes depict
-steps used to generate the MDS clustering plot and the multiple sequence 
+steps used to generate the MDS clustering plot and the multiple sequence
 alignment (see Figure~\ref{fig:gyrAalign}). The gold boxes depict the
-steps of the variant workflow used to generate the assembly graphs.  
+steps of the variant workflow used to generate the assembly graphs.
 }
  \label{fig:hu_dag}
 \end{figure*}
@@ -405,13 +406,13 @@ steps of the variant workflow used to generate the assembly graphs.
 \subsection{Genome bin completeness improvements for \hu}
 \label{subsec:checkm}
 
-See Table~\ref{tab:binstats} and 
+See Table~\ref{tab:binstats} and
 Table~\ref{tab:nbhdstats}. Table~\ref{tab:binstats} shows completeness metrics
-for the binned genomes from the \hu sample and used as 
+for the binned genomes from the \hu sample and used as
 queries.
 Table~\ref{tab:nbhdstats} shows completeness metrics for \plass assembled
-query neighborhoods after stringent read trimming at low abundance k-mers 
-(k-mers present fewer than 5 times were removed) of the SB1 sample reads.  
+query neighborhoods after stringent read trimming at low abundance k-mers
+(k-mers present fewer than 5 times were removed) of the SB1 sample reads.
 
 
 \begin{table*}
@@ -420,15 +421,15 @@ query neighborhoods after stringent read trimming at low abundance k-mers
     Species & Completeness (\%) & Redundancy (\%) & Strain heterogeneity (\%) & Unique KOs & Size (bases) & Number of proteins \\
     \midrule
     \input{tables/bin-stats.tex}
-\\ 
+\\
    \bottomrule
   \end{tabular}
   \caption{
-   Completeness metrics for the \hu genome bins from \cite{Hu2016}, used as queries into the SB1 metagenome. Completeness, redundancy, and 
+   Completeness metrics for the \hu genome bins from \cite{Hu2016}, used as queries into the SB1 metagenome. Completeness, redundancy, and
    strain heterogeneity as estimated
-   by checkM, unique KEGG orthologs predicted by GhostKOALA, bin size in 
-   bases, and number of prokka-predicted protein sequences in the \hu bins. 
-   Table is ordered by completeness. Note we refer to the checkM term 
+   by checkM, unique KEGG orthologs predicted by GhostKOALA, bin size in
+   bases, and number of prokka-predicted protein sequences in the \hu bins.
+   Table is ordered by completeness. Note we refer to the checkM term
    ``contamination'' as ``redundancy'' as this better describes the calculated
    metric.}
   \label{tab:binstats}
@@ -444,19 +445,19 @@ query neighborhoods after stringent read trimming at low abundance k-mers
     \bottomrule
   \end{tabular}
   \caption{
-   Completeness metrics for the query neighborhoods extracted from the \hu metagenome by {\sf spacegraphcats}. Completeness, redundancy, 
+   Completeness metrics for the query neighborhoods extracted from the \hu metagenome by {\sf spacegraphcats}. Completeness, redundancy,
    and strain heterogeneity as estimated
    by checkM, unique KEGG orthologs predicted by GhostKOALA, neighborhood
    size in  bases, and number of plass-assembled  protein sequences in the
-   query neighborhoods. Table is ordered by completeness of query bins (see 
+   query neighborhoods. Table is ordered by completeness of query bins (see
    Table~\ref{tab:binstats}). All estimates were performed on the k-mer trimmed
-   (k >= 5) \plass-assembled proteins except size of neighborhood in bases, 
+   (k >= 5) \plass-assembled proteins except size of neighborhood in bases,
    for which we used the neighborhood unitig sequences output by {\sf spacegraphcats}.}
   \label{tab:nbhdstats}
  \end{table*}
 
 \begin{table*}
-% \parbox[t][][t]{.45\linewidth}{ 
+% \parbox[t][][t]{.45\linewidth}{
  \begin{tabular}{@{}l l c c@{}}
     \toprule
     Species & gyrA (bin) & gyrA (\plass) \\
