@@ -3,13 +3,13 @@ all:    $(MAIN).pdf
 
 .PRECIOUS: $(MAIN).pdf appendix.pdf
 
-$(MAIN).pdf: $(MAIN).tex *.tex algorithms/*.tex tables/*.tex *.bib
+$(MAIN).pdf: $(MAIN).tex *.tex *.bib
 	pdflatex $(MAIN).tex
 	bibtex $(MAIN)
 	pdflatex $(MAIN).tex
 	pdflatex $(MAIN).tex
 
-appendix.pdf: appendix.tex algorithms/*.tex
+appendix.pdf: appendix.tex *.tex
 	pdflatex appendix.tex
 	pdflatex appendix.tex
 
