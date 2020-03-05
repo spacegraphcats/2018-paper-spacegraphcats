@@ -10,21 +10,6 @@ graphs using BCALM v2.2.0 \cite{bcalm}.  Stringent read trimming at
 low-abundance k-mers was done with {\tt trim-low-abund.py} from khmer, with the
 parameters {\tt -C 5 -M 20e9 -k 31}.
 
-\subsection*{Software}
-
-The source code for the index construction and search is available at
-\url{https://github.com/spacegraphcats/spacegraphcats}~\cite{spacegraphcats}.
-It is implemented in Python 3 under the 3-Clause BSD License. Version 1.1, used in this paper, is archived at DOI: 10.5281/zenodo.2505206.
-
-Snakemake \cite{snakemake} workflows to reproduce all of the analysis
-are available at
-\url{https://github.com/spacegraphcats/2018-paper-spacegraphcats/},
-and Jupyter Notebooks to recreate Figures 1, 2, 3, and 4(b) are in
-that same repository \cite{jupyter}. The notebooks rely on the numpy,
-matplotlib, pandas, scipy, and Vega-Lite libraries
-\cite{numpy,matplotlib,pandas,scipy,vegalite}. The workflow repository
-is archived at DOI: 10.5281/zenodo.2592780.
-
 \subsection*{Benchmarking}
 
 We measured time and memory usage for Algorithms 1-3 by executing the
