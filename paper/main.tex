@@ -16,6 +16,14 @@
 \renewcommand{\significancestatement}[1]{\relax} % Remove 'significance statement' box
 }{}
 
+% per http://bytesizebio.net/2013/03/11/adding-supplementary-tables-and-figures-in-latex/
+\newcommand{\beginsupplement}{%
+  \setcounter{table}{0}
+  \renewcommand{\thetable}{S\arabic{table}}%
+  \setcounter{figure}{0}
+  \renewcommand{\thefigure}{S\arabic{figure}}%
+}
+
 
 % Used to adjust subfloat vertical alignment
 \usepackage[export]{adjustbox}
@@ -244,6 +252,9 @@ Not applicable.
 
 \newpage
 \clearpage
+
+\beginsupplement
+
 \input{appendix.tex}
 
 \end{document}

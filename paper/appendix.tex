@@ -1,8 +1,6 @@
 \appendix
 
-\section{Appendix}
-
-\subsection{Notation}\label{app:notation} For a graph $G$
+\section{Notation}\label{app:notation} For a graph $G$
 we write $V(G)$ and $E(G)$ for its vertex and edge set, respectively. For a
 vertex $v \in V(G)$, we write $N(v)$ to denote its neighborhood, \ie the set
 containing all vertices that are adjacent to it in $G$. We further
@@ -26,7 +24,7 @@ more than one vertex of~$S$. It follows that any $r$-dominating set of~$G$ must
 have size at least~$|S|$; we can therefore use $(2r+1)$-scattered sets to
 prove lower bounds on the $r$-domination number of a graph.
 
-\subsection{Dtf-augmentation}\label{app:dtf} For the sake
+\section{Dtf-augmentation}\label{app:dtf} For the sake
 of completeness, we briefly describe how dtf-augmentations
 $\dir G_1, \dir G_2, \ldots, \dir G_r$ are computed for an input
 graph $G$.
@@ -88,7 +86,7 @@ of the \emph{size} of the graph:
   $\maxindeg(\dir G_r) \leq f(r)$.
 \end{theorem}
 
-\subsection{Approximation guarantee}\label{app:threshold}
+\section{Approximation guarantee}\label{app:threshold}
 % Note: labels don't work right now because we're not numbering subsections (style file issue)
 
 Let us introduce some notation for the analysis of
@@ -256,7 +254,7 @@ that still guarantees a constant-factor approximation while being easy to
 determine in practice. In the context of cDBGs, we found that
 $\tau := (2r)^2$ yields reliably good results.
 
-\subsection{Computational Runtimes}
+\section{Computational Runtimes}
 \label{subsec:runtimes}
 
 See ``Benchmarking'' in Materials and Methods for benchmarking methods.
@@ -278,7 +276,7 @@ approximately 80 seconds.
 For data set complexity (number of k-mers, number of cDBG nodes) please see
 \autoref{tab:data}.
 
-\subsection{spacegraphcats pipeline overview}
+\section{spacegraphcats pipeline overview}
 \label{subsec:sgc_pipeline}
 
 \textsf{spacegraphcats} follows a series of steps when run on sequencing
@@ -339,7 +337,7 @@ on sequencing data.
  \label{fig:sgc_dag}
 \end{figure*}
 
-\subsection{Query genome accession numbers for {\em Proteiniclasticum} search}
+\section{Query genome accession numbers for {\em Proteiniclasticum} search}
 \label{subsec:query_accessions}
 
 See \autoref{tab:query_accessions}.
@@ -360,7 +358,7 @@ See \autoref{tab:query_accessions}.
   \label{tab:query_accessions}
 \end{table}
 
-\subsection{Amino Acid Identity results for {\em Proteiniclasticum}}
+\section{Amino Acid Identity results for {\em Proteiniclasticum}}
 \label{subsec:aai}
 
 See \autoref{tab:aai}.
@@ -380,7 +378,7 @@ See \autoref{tab:aai}.
 \end{table}
 
 
-\subsection{\hu analysis pipeline overview}
+\section{\hu analysis pipeline overview}
 
 
 See \autoref{fig:hu_dag}. We implemented three workflows to analyze the
@@ -403,7 +401,7 @@ steps of the variant workflow used to generate the assembly graphs.
  \label{fig:hu_dag}
 \end{figure*}
 
-\subsection{Genome bin completeness improvements for \hu}
+\section{Genome bin completeness improvements for \hu}
 \label{subsec:checkm}
 
 See \autoref{tab:binstats} and
@@ -500,7 +498,7 @@ query neighborhoods after stringent read trimming at low abundance k-mers
   \label{tab:gyrAcounts}
 \end{table*}
 
-\subsection{K-mer inclusion of reads by MEGAHIT assemblies}
+\section{K-mer inclusion of reads by MEGAHIT assemblies}
 \label{subsec:inclusion}
 
 See \autoref{tab:kmer_inclusion}. We estimated the number of k-mers in each
@@ -526,7 +524,7 @@ neighborhood, while the query neighborhood with the largest containment,
   \label{tab:kmer_inclusion}
 \end{table}
 
-\subsection{gyrA alignment}
+\section{gyrA alignment}
 \label{subsec:gyrAalign}
 
 See \autoref{fig:gyrAalign}. The MDS plot in the left panel of figure 4 shows
@@ -548,7 +546,7 @@ the function {\tt msaplot} in the R package ggtree to plot the alignment.
  \label{fig:gyrAalign}
 \end{figure*}
 
-\subsection{gyrA by neighborhood}
+\section{gyrA by neighborhood}
 \label{subsec:gyrAnbhd}
 
 See \autoref{tab:gyrAcounts}. As can be seen in the left panel of Figure 4 in the
@@ -570,7 +568,7 @@ amino acid sequences for the other genes we tested (see other genes). \autoref{t
 shows that we see increased number of gyrA sequences in many neighborhoods even with
 this conservative approach.
 
-\subsection{Other genes}
+\section{Other genes}
 
 \label{subsec:othergenes}
 
