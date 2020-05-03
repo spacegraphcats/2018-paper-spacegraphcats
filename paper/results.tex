@@ -96,7 +96,7 @@ all genomic content assigned to \pieces that contain part of the query.
 Our implementations of these algorithms in \sgc can be run on
 metagenomic data with millions of cDBG nodes (\autoref{tab:data});
 indexing takes under an hour, enabling queries to complete in seconds
-to minutes (\autoref{tab:benchmarking}). See \appendixref{subsec:runtimes}
+to minutes (\autoref{tab:benchmarking}). See Additional File 1, \appendixref{subsec:runtimes}
 for full benchmarking (including cDBG construction). This
 provides us with a tool to systematically investigate assembly graph
 neighborhoods.
@@ -235,14 +235,14 @@ We next investigated metagenomic content in the query
 neighborhoods.  As with the unknown variants in \podarv, we used
 CheckM to estimate genome bin completeness.  The estimated bin
 completeness for many of the query genomes is low
-(\appendixref{subsec:checkm}).
+(Additional File 1, \appendixref{subsec:checkm}).
 To see if the query neighborhoods contain missing marker genes, we
 assembled reads from the query neighborhoods using MEGAHIT, and found
 this improved the completion metrics (\autoref{fig:hu_strain}(b)).
 
 Investigating further, we found that the query neighborhood assemblies
 contain only between 4\% and 56\% of the neighborhood k-mer
-content (\appendixref{subsec:inclusion}), suggesting that MEGAHIT is
+content (Additional File 1, \appendixref{subsec:inclusion}), suggesting that MEGAHIT is
 not including many of the reads in the assembly of the query neighborhoods.
 This could result from high
 error rates and/or high strain variation in the underlying reads
@@ -326,7 +326,7 @@ variation is visible as spurs off of a few longer paths (insets in
 well-supported amino acid variants in isolated positions (\ie ignoring linkage between variants)
 we see that ten of the 23 neighborhoods have an increased number of gyrA
 genes, with four neighborhoods gaining a gyrA where none exists in
-the bin (\appendixref{subsec:gyrAnbhd}; see lowest inset
+the bin (Additional File 1, \appendixref{subsec:gyrAnbhd}; see lowest inset
 in \autoref{fig:hu_content}(a) for one example). Only one
 neighborhood, {\em M. bacterium}, loses its gyrA genes due to the
 stringent k-mer abundance trimming.
@@ -336,7 +336,7 @@ neighborhoods substantially increases the number of gyrA sequences associated wi
 
 We see this same pattern for many genes, including {\em alaS}, {\em gyrB},
 {\em rpb2}
-domain 6, {\em recA}, {\em rplB}, and {\em rpsC} (\appendixref{subsec:othergenes}).
+domain 6, {\em recA}, {\em rplB}, and {\em rpsC} (Additional File 1, \appendixref{subsec:othergenes}).
 This shows that multiple variants of those proteins are present within
 at least some of the neighborhoods and implies the presence of
 underlying nucleotide strain variation.
