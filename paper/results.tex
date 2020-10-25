@@ -61,8 +61,8 @@ distance at most $r$ (lines~\ref{algstep:dtf_start}-\ref{algstep:dtf_end}) and
 then uses these distances to ensure each vertex is close to a dominator.
 The core of the efficient distance computation is based on
 \emph{distance-truncated transitive fraternal (dtf) augmentations}~\cite{felixThesis}
-which produce a directed graph in which each arc $uv$ is labeled with
-$\omega(uv)$, the distance from $u$ to $v$ in the original cDBG.\looseness-1
+which produce a directed graph~$\dir G_r$ in which each arc $uv$ is labeled with
+$\omega(uv)$, the distance from $u$ to $v$ in the original cDBG~$G$.\looseness-1
 
 Importantly, our implementation enhances the algorithm
 in~\cite{felixThesis} by computing only $r{-}1$ rounds of dtf-augmentations
@@ -81,7 +81,7 @@ was superior to other common orders (e.g. arbitrary, min/max total degree, max i
 
 After computing an $r$-dominating set $D$ of $G$ with \algoref{alg:r-domset},
 \algoref{alg:index_pieces} partitions the vertices of $G$ into pieces so that
-each \piece $P[v]$ contains a connected set of vertices for which $v$ is the
+each \piece $P[v]$ contains a connected set of vertices for which $v$ is a
 closest member of $D$ (\autoref{fig:domset}). Finally, we use minimal perfect
 hashing (\texttt{mphfIndex})~\cite{limasset2017mphf} to compute an invertible
 index\footnote{an invertible function that defines both an index and the corresponding inverted index}
@@ -115,11 +115,11 @@ neighborhoods.
 	\caption{Neighborhood queries enable recovery of relevant genomic content.
   (a) Left Panel: Recovery of each of three target genomes from \podarv
   using queries at a variety of Jaccard distances from the target. Recovery is
-  calculated as containment of target genome in query neighborhood.
+  calculated as containment of target genome in query neighborhood. The solid lines represent logarithmic best-fit curves to the points.
   (b) Right Panel: Recovery of novel {\em Proteiniclasticum } content
-  from \podarv. Nucleotide content from two of the three known {\em P. ruminis} genomes
+  from \podarv. Nucleotide k-mers from two of the three known {\em P. ruminis} genomes
   overlapped approximately a megabase of sequence in the query neighborhood,
-  which also contained approximately 2.3 Mbp of unknown sequence; the third known genome, {\em P. ruminis CGMCC}, was omitted from the figure as it is 99.7\% similar to {\em P. ruminis DSM}. Numbers are in thousands of k-mers.}\label{fig:partial_query}
+  which also contained approximately 2.3 Mbp of unknown sequence; the third known genome, {\em P. ruminis CGMCC}, was omitted from the figure as it is 99.7\% similar to {\em P. ruminis DSM}. Numbers are in thousands of k-mers, estimated via sourmash.}\label{fig:partial_query}
 \end{figure*}
 
 \input{tables/benchmarking}
@@ -237,8 +237,8 @@ CheckM to estimate genome bin completeness.  The estimated bin
 completeness for many of the query genomes is low
 (\appendixref{subsec:checkm}).
 To see if the query neighborhoods contain missing marker genes, we
-assembled reads from the query neighborhoods using MEGAHIT.  However,
-we found little improvement in the completion metrics (\autoref{fig:hu_strain}(b)).
+assembled reads from the query neighborhoods using MEGAHIT, and found
+this improved the completion metrics (\autoref{fig:hu_strain}(b)).
 
 Investigating further, we found that the query neighborhood assemblies
 contain only between 4\% and 56\% of the neighborhood k-mer
@@ -350,10 +350,10 @@ assemblies.
 
 In addition to capturing variants close to sequences in the bins, we
 identify many novel genes in the query neighborhoods. We used KEGG to
-annotate the \plass-assembled amino acid sequences, and subtracted any
-homolog already annotated in the genome bin.
-We also ignoreed homolog abundance such that each homolog is counted only
-once per neighborhood.
+annotate the \plass-assembled amino acid sequences, and then removed
+any annotations already present for genes in the genome bin.  We also
+ignored homolog abundance such that each homolog is counted only once
+per neighborhood.
 
 Novel functional content is distributed throughout pathways present in
 the genome bins, and increases functionality associated with binned
