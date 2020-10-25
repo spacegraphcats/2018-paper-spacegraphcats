@@ -1,8 +1,6 @@
 \appendix
 
-\section{Appendix}
-
-\subsection{Notation}\label{app:notation} For a graph $G$
+\section{Notation}\label{app:notation} For a graph $G$
 we write $V(G)$ and $E(G)$ for its vertex and edge set, respectively. For a
 vertex $v \in V(G)$, we write $N(v)$ to denote its neighborhood, \ie the set
 containing all vertices that are adjacent to it in $G$. We further
@@ -26,7 +24,7 @@ more than one vertex of~$S$. It follows that any $r$-dominating set of~$G$ must
 have size at least~$|S|$; we can therefore use $(2r+1)$-scattered sets to
 prove lower bounds on the $r$-domination number of a graph.
 
-\subsection{Dtf-augmentation}\label{app:dtf} For the sake
+\section{Dtf-augmentation}\label{app:dtf} For the sake
 of completeness, we briefly describe how dtf-augmentations
 $\dir G_1, \dir G_2, \ldots, \dir G_r$ are computed for an input
 graph $G$.
@@ -75,7 +73,7 @@ $r$ in $G$ have distance at most two in $\dir G_r$:
 
 \noindent
 Second, if we compute dtf-augmentations of graphs from a bounded
-expansion class (to which graph of bounded maximum degree like
+expansion class (to which graphs of bounded maximum degree like
 cDBGs belong), then the maximum in-degree
 of its $r$th augmentation can be bounded by a function independent
 of the \emph{size} of the graph:
@@ -88,11 +86,11 @@ of the \emph{size} of the graph:
   $\maxindeg(\dir G_r) \leq f(r)$.
 \end{theorem}
 
-\subsection{Approximation guarantee}\label{app:threshold}
+\section{Approximation guarantee}\label{app:threshold}
 % Note: labels don't work right now because we're not numbering subsections (style file issue)
 
 Let us introduce some notation for the analysis of
-Algorithm~\ref{alg:r-domset}. We first partition the vertices of~$D$ according
+\algoref{alg:r-domset}. We first partition the vertices of~$D$ according
 to whether they were added in line~\ref{algstep:D1} (denoted by~$D_1$) or in
 line~\ref{algstep:D2} (denoted by~$D_2$). Let~$v_1,\ldots,v_n$ be the vertex-
 order in which they are iterated over in the loop starting at
@@ -221,7 +219,7 @@ the approximation factor.
   $\omega_{2r}(wu_i) \leq \omega_{2r}(wv)$ and since both weights sum to less
   than~$2r$, this means that~$\omega_{2r}(wu_i) \leq r$.
   Lemma~\ref{lemma:D1-intersection} now tells us that~$\ell \leq \tau + 1$.
-  Therefore~$v$ has at most~$(\tau+1) \maxindeg(\dir G_{2r})$ in-arcs of type~2 and we conclude that
+  Therefore~$v$ has at most~$(\tau+1) \maxindeg(\dir G_{2r})$ in-arcs of type~2, and we conclude that
   \[
     \maxindeg(\dir H) \leq \maxindeg(\dir G_{2r}) + (\tau+1)\maxindeg(\dir G_{2r}) = (\tau+2)\maxindeg(\dir G_{2r}).
   \]
@@ -240,7 +238,7 @@ the approximation factor.
 
 \noindent
 Since a $(2r+1)$-scattered set provides a lower bound for an~$r$-dominating
-set, we conclude that Algorithm~\ref{alg:r-domset} computes a
+set, we conclude that \algoref{alg:r-domset} computes a
 $2(\tau+2)\maxindeg(\dir G_{2r})\maxindeg(\dir G_r)$-approximation of an
 optimal $r$-dominating set. In other words, we obtain a constant-factor
 approximation in graphs of bounded expansion since the quantities $\maxindeg(\dir
@@ -256,7 +254,7 @@ that still guarantees a constant-factor approximation while being easy to
 determine in practice. In the context of cDBGs, we found that
 $\tau := (2r)^2$ yields reliably good results.
 
-\subsection{Computational Runtimes}
+\section{Computational Runtimes}
 \label{subsec:runtimes}
 
 See ``Benchmarking'' in Materials and Methods for benchmarking methods.
@@ -276,13 +274,13 @@ required 18 GB of RAM and a search with a 3 Mbp genome took
 approximately 80 seconds.
 
 For data set complexity (number of k-mers, number of cDBG nodes) please see
-Table~\ref{tab:data}.
+\autoref{tab:data}.
 
-\subsection{spacegraphcats pipeline overview}
+\section{spacegraphcats pipeline overview}
 \label{subsec:sgc_pipeline}
 
 \textsf{spacegraphcats} follows a series of steps when run on sequencing
-data, see Figure~\ref{fig:sgc_dag}. In detail, we perform the following
+data, see \autoref{fig:sgc_dag}. In detail, we perform the following
 steps.
 
 \emph{BCALM}. Use BCALM to generate a cDBG. Then convert a BCALM {\tt unitigs.fa}
@@ -332,17 +330,17 @@ find reads that overlap with the unitigs in those nodes.
 
 \begin{figure*}
  \centering
- \includegraphics[width=\linewidth]{figures/sgc_dag}
+ \includegraphics[width=\linewidth]{sgc_dag}
 	\caption{The steps followed by \textsf{spacegraphcats} when run
 on sequencing data.
 }
  \label{fig:sgc_dag}
 \end{figure*}
 
-\subsection{Query genome accession numbers for {\em Proteiniclasticum} search}
+\section{Query genome accession numbers for {\em Proteiniclasticum} search}
 \label{subsec:query_accessions}
 
-See Table~\ref{tab:query_accessions}.
+See \autoref{tab:query_accessions}.
 
 \begin{table}[b]
   \begin{tabular}{l l c c }
@@ -360,10 +358,10 @@ See Table~\ref{tab:query_accessions}.
   \label{tab:query_accessions}
 \end{table}
 
-\subsection{Amino Acid Identity results for {\em Proteiniclasticum}}
+\section{Amino Acid Identity results for {\em Proteiniclasticum}}
 \label{subsec:aai}
 
-See Table~\ref{tab:aai}.
+See \autoref{tab:aai}.
 
 \begin{table}
   \begin{tabular}{l l c c }
@@ -380,37 +378,37 @@ See Table~\ref{tab:aai}.
 \end{table}
 
 
-\subsection{\hu analysis pipeline overview}
+\section{\hu analysis pipeline overview}
 
 
-See Figure~\ref{fig:hu_dag}. We implemented three workflows to analyze the
+See \autoref{fig:hu_dag}. We implemented three workflows to analyze the
 plass-assembled \hu query neighborhoods.
 
 
 \begin{figure*}
  \centering
- \includegraphics[width=\linewidth]{figures/hu_dag}
+ \includegraphics[width=\linewidth]{hu_dag}
 	\caption{Three workflows implemented to analyze the plass-assembled
 \hu query neighborhoods. The first three steps, depicted in blue, were common
 across all workflows. The green boxes depict the KEGG GhostKOALA annotation
-workflow, the results of which can be see in Figure~\ref{fig:hu_content}.
+workflow, the results of which can be see in \autoref{fig:hu_content}.
 The orange boxes depict steps in common between the clustering and variant
-workflows used to generate Figure~\ref{fig:hu_content}. The red boxes depict
+workflows used to generate \autoref{fig:hu_content}. The red boxes depict
 steps used to generate the MDS clustering plot and the multiple sequence
-alignment (see Figure~\ref{fig:gyrAalign}). The gold boxes depict the
+alignment (see \autoref{fig:gyrAalign}). The gold boxes depict the
 steps of the variant workflow used to generate the assembly graphs.
 }
  \label{fig:hu_dag}
 \end{figure*}
 
-\subsection{Genome bin completeness improvements for \hu}
+\section{Genome bin completeness improvements for \hu}
 \label{subsec:checkm}
 
-See Table~\ref{tab:binstats} and
-Table~\ref{tab:nbhdstats}. Table~\ref{tab:binstats} shows completeness metrics
+See \autoref{tab:binstats} and
+\autoref{tab:nbhdstats}. \autoref{tab:binstats} shows completeness metrics
 for the binned genomes from the \hu sample and used as
 queries.
-Table~\ref{tab:nbhdstats} shows completeness metrics for \plass assembled
+\autoref{tab:nbhdstats} shows completeness metrics for \plass assembled
 query neighborhoods after stringent read trimming at low abundance k-mers
 (k-mers present fewer than 5 times were removed) of the SB1 sample reads.
 
@@ -420,7 +418,7 @@ query neighborhoods after stringent read trimming at low abundance k-mers
     \toprule
     Species & Completeness (\%) & Redundancy (\%) & Strain heterogeneity (\%) & Unique KOs & Size (bases) & Number of proteins \\
     \midrule
-    \input{tables/bin-stats.tex}
+    \input{bin-stats.tex}
 \\
    \bottomrule
   \end{tabular}
@@ -440,7 +438,7 @@ query neighborhoods after stringent read trimming at low abundance k-mers
     \toprule
     Species & Completeness (\%) & Redundancy (\%) & Strain heterogeneity (\%) & Unique KOs & Size (bases) & Number of proteins \\
     \midrule
-    \input{tables/nbhd-stats.tex}
+    \input{nbhd-stats.tex}
 \\
     \bottomrule
   \end{tabular}
@@ -450,7 +448,7 @@ query neighborhoods after stringent read trimming at low abundance k-mers
    by checkM, unique KEGG orthologs predicted by GhostKOALA, neighborhood
    size in  bases, and number of plass-assembled  protein sequences in the
    query neighborhoods. Table is ordered by completeness of query bins (see
-   Table~\ref{tab:binstats}). All estimates were performed on the k-mer trimmed
+   \autoref{tab:binstats}). All estimates were performed on the k-mer trimmed
    (k >= 5) \plass-assembled proteins except size of neighborhood in bases,
    for which we used the neighborhood unitig sequences output by {\sf spacegraphcats}.}
   \label{tab:nbhdstats}
@@ -492,7 +490,7 @@ query neighborhoods after stringent read trimming at low abundance k-mers
    Bin and neighborhood gyrA protein content. gyrA count for each bin is the number
     of gyrA amino acid sequences that are part of the original bin. gyrA count by \plass is
     the minimum number of gyrA amino acid sequences supported by at least one
-    position with at least 10 copies of each variant, e.g. ``3'' indicates that
+    position with at least 10 copies of each variant, \eg ``3'' indicates that
     there is at least one position in the multiple sequence alignment of gyrA
     sequences for that neighborhood that has 3 distinct variants in 10 distinct
     sequences.}
@@ -500,10 +498,10 @@ query neighborhoods after stringent read trimming at low abundance k-mers
   \label{tab:gyrAcounts}
 \end{table*}
 
-\subsection{K-mer inclusion of reads by MEGAHIT assemblies}
+\section{K-mer inclusion of reads by MEGAHIT assemblies}
 \label{subsec:inclusion}
 
-See Table~\ref{tab:kmer_inclusion}. We estimated the number of k-mers in each
+See \autoref{tab:kmer_inclusion}. We estimated the number of k-mers in each
 query neighborhood that were contained in the MEGAHIT assembly of that query
 neighborhood. We used sourmash {\tt compute} to calculate signatures with k-size of
 31 and a scaled value of 2000. We then used sourmash {\tt compare} to estimate
@@ -518,7 +516,7 @@ neighborhood, while the query neighborhood with the largest containment,
     Species & MEGAHIT assembly containment \\
     \midrule
     % generated from notebook 'figures/megahit-assembly-inclusion.ipynb'
-    \input{tables/megahit-inclusion.table.tex}
+    \input{megahit-inclusion.table.tex}
 %    \input{tables/plass-genes/rpsC-table.tex}
     \bottomrule
   \end{tabular}
@@ -526,10 +524,10 @@ neighborhood, while the query neighborhood with the largest containment,
   \label{tab:kmer_inclusion}
 \end{table}
 
-\subsection{gyrA alignment}
+\section{gyrA alignment}
 \label{subsec:gyrAalign}
 
-See Figure~\ref{fig:gyrAalign}. The MDS plot in the left panel of figure 4 shows
+See \autoref{fig:gyrAalign}. The MDS plot in the left panel of figure 4 shows
 distinct gyrA sequences identified in the Plass assemblies using HMMER. To visualize
 the sequences within these clusters and in other query neighborhoods, we
 constructed a multiple sequence alignment. However, because many
@@ -542,16 +540,16 @@ the function {\tt msaplot} in the R package ggtree to plot the alignment.
 
 \begin{figure*}
  \centering
- \includegraphics[width=\linewidth]{figures/gyrA-cdhit95-msa}
+ \includegraphics[width=\linewidth]{gyrA-cdhit95-msa}
 	\caption{A multiple sequence alignment and neighbor joining tree of representative gyrA amino acid fragments assembled by \plass from the genome neighborhoods in \hu. Protein sequences that originated from the genome bin are prepended with "Bin." All other sequences were assembled by Plass.
  }
  \label{fig:gyrAalign}
 \end{figure*}
 
-\subsection{gyrA by neighborhood}
+\section{gyrA by neighborhood}
 \label{subsec:gyrAnbhd}
 
-See Table~\ref{tab:gyrAcounts}. As can be seen in the left panel of Figure 4 in the
+See \autoref{tab:gyrAcounts}. As can be seen in the left panel of Figure 4 in the
 main text, we observe many unique amino acid sequences per single copy ortholog
 per query neighborhood.
 Although we observe many possible traversal paths in compact De Bruijn graphs built
@@ -566,17 +564,17 @@ amino acid sequences). For each of these positions, we counted the number of uni
 amino acid sequences per position, and the number of times each occurred at that position.
 We then elimated any variant that occurred fewer than 10 times. Lastly, we counted the
 number of well-supported distinct characters. We did this for gyrA, as well as the
-amino acid sequences for the other genes we tested (see other genes). Table~\ref{tab:gyrAcounts}
+amino acid sequences for the other genes we tested (see other genes). \autoref{tab:gyrAcounts}
 shows that we see increased number of gyrA sequences in many neighborhoods even with
 this conservative approach.
 
-\subsection{Other genes}
+\section{Other genes}
 
 \label{subsec:othergenes}
 
-See bin and neighborhood content results for {\em alaS} in Table~\ref{tab:alaS}, {\em gyrB} in
-Table~\ref{tab:gyrB}, {\em recA} in Table~\ref{tab:recA}, {\em rpb2d6} in Table~\ref{tab:rpb2d6},
-rplB in Table~\ref{tab:rplB}, and rpsC in Table~\ref{tab:rpsC}. We selected {\em gyrB} and
+See bin and neighborhood content results for {\em alaS} in \autoref{tab:alaS}, {\em gyrB} in
+\autoref{tab:gyrB}, {\em recA} in \autoref{tab:recA}, {\em rpb2d6} in \autoref{tab:rpb2d6},
+rplB in \autoref{tab:rplB}, and rpsC in \autoref{tab:rpsC}. We selected {\em gyrB} and
 {\em recA} because they were used by \hu to assign taxonomy to binned genomes. We selected
 other genes used as single copy orthologs by programs like CheckM, and with longer PFAM
 domains.
@@ -611,7 +609,7 @@ domains.
     Species & alaS (bin) & alaS (\plass) \\
     \midrule
     % generated from notebook 'tables/plass-genes/distinct_positions.ipynb'
-    \input{tables/plass-genes/alaS-table.tex}
+    \input{alaS-table.tex}
     \bottomrule
   \end{tabular}
   \caption{Bin and neighborhood alaS protein content.}
@@ -624,7 +622,7 @@ domains.
     Species & gyrB (bin) & gyrB (\plass) \\
     \midrule
     % generated from notebook 'tables/plass-genes/distinct_positions.ipynb'
-    \input{tables/plass-genes/gyrB-table.tex}
+    \input{gyrB-table.tex}
     \bottomrule
   \end{tabular}
   \caption{Bin and neighborhood gyrB protein content.}
@@ -637,7 +635,7 @@ domains.
     Species & recA (bin) & recA (\plass) \\
     \midrule
     % generated from notebook 'tables/plass-genes/distinct_positions.ipynb'
-    \input{tables/plass-genes/recA-table.tex}
+    \input{recA-table.tex}
     \bottomrule
   \end{tabular}
   \caption{Bin and neighborhood recA protein content.}
@@ -650,7 +648,7 @@ domains.
     Species & rpb2d6 (bin) & rpb2d6 (\plass) \\
     \midrule
     % generated from notebook 'tables/plass-genes/distinct_positions.ipynb'
-    \input{tables/plass-genes/rpb-table.tex}
+    \input{rpb-table.tex}
     \bottomrule
   \end{tabular}
   \caption{Bin and neighborhood rpb2d6 protein content.}
@@ -663,7 +661,7 @@ domains.
     Species & rplB (bin) & rplB (\plass) \\
     \midrule
     % generated from notebook 'tables/plass-genes/distinct_positions.ipynb'
-    \input{tables/plass-genes/rplB-table.tex}
+    \input{rplB-table.tex}
     \bottomrule
   \end{tabular}
   \caption{Bin and neighborhood rplB protein content.}
@@ -676,7 +674,7 @@ domains.
     Species & rpsC (bin) & rpsC (\plass) \\
     \midrule
     % generated from notebook 'tables/plass-genes/distinct_positions.ipynb'
-    \input{tables/plass-genes/rpsC-table.tex}
+    \input{rpsC-table.tex}
     \bottomrule
   \end{tabular}
   \caption{Bin and neighborhood rpsC protein content.}
