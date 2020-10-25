@@ -4,11 +4,11 @@ from the genomic DNA of each microbe present in the community \cite{Quince2017}.
 
 A common problem in metagenomics is the reconstruction of
 individual microbial genomes from the mixture.
-Typically this is
+Typically, this is
 done by first running an assembly algorithm that reconstructs
 longer linear regions based on a graph of the sampled
 subsequences~\cite{pell2012scaling}, and then binning assembled
-contigs together using compositional features and genic content~\cite{laczny2017busybee,lin2016accurate}.  These
+contigs together using compositional features and gene content~\cite{laczny2017busybee,lin2016accurate}.  These
 ``metagenome-assembled genomes'' are then
 analyzed for phylogenetic markers and metabolic function. In recent years,
 nearly 200,000 metagenome-assembled genomes have been published,
@@ -20,7 +20,7 @@ binned genomes due to either a failure to
 assemble \cite{CAMI,Awad155358} or a failure to bin.  The underlying
 technical reasons for these failures include low coverage, high
 sequencing error, high strain variation, and/or sequences with
-insufficient compositional or genic signal.  Recent work has
+insufficient compositional or coding signal.  Recent work has
 particularly focused on the problem of strain confusion, in which high
 strain variation results in considerable fragmentation of assembled
 content in mock or synthetic communities \cite{CAMI,Awad155358}; the
@@ -50,14 +50,16 @@ In this paper, we develop and implement a scalable graph query
 framework for extracting unbinned sequence from metagenome assembly
 graphs with millions of nodes. Crucially, we exploit the structural
 sparsity of compact De Bruijn assembly graphs in order to compute a
-succinct index data structure in linear time. We use this framework to
-perform neighborhood queries in large assembly graphs, which enables
-us to extract the genome of a novel bacterial species, recover missing
-sequence variation in amino acid sequences for genome bins, and
-identify missing content for metagenome-assembled genomes.  Our query
-methods are assembly-free and avoid techniques that may discard strain
-information such as error correction.  These algorithms are available
-in an open-source Python software package,
+succinct index data structure in linear time. Our initial
+investigations presented here focus on using this index to perform
+neighborhood queries in large assembly graphs to investigate genome
+binning and content recovery.  This enables us to extract the genome
+of a novel bacterial species, recover missing sequence variation in
+amino acid sequences for genome bins, and identify missing content for
+metagenome-assembled genomes.  Our query methods are assembly-free and
+avoid techniques that may discard strain information such as error
+correction.  These algorithms are available in an open-source Python
+software package,
 \textsf{spacegraphcats}~\cite{spacegraphcats}.
 
 % Add read graph mapping.

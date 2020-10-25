@@ -16,6 +16,14 @@
 \renewcommand{\significancestatement}[1]{\relax} % Remove 'significance statement' box
 }{}
 
+% per http://bytesizebio.net/2013/03/11/adding-supplementary-tables-and-figures-in-latex/
+\newcommand{\beginsupplement}{%
+  \setcounter{table}{0}
+  \renewcommand{\thetable}{S\arabic{table}}%
+  \setcounter{figure}{0}
+  \renewcommand{\thefigure}{S\arabic{figure}}%
+}
+
 
 % Used to adjust subfloat vertical alignment
 \usepackage[export]{adjustbox}
@@ -103,27 +111,35 @@
 % \usepackage{setspace}
 % \doublespacing
 
-\graphicspath{{figures}}
-
-\title{Exploring neighborhoods in large metagenome assembly graphs reveals hidden sequence diversity}
+\title{Exploring neighborhoods in large metagenome assembly graphs using spacegraphcats reveals hidden sequence diversity}
 
 % Use letters for affiliations, numbers to show equal authorship (if applicable) and to indicate the corresponding author
-\author[a,1]{C. Titus Brown}
+\author[a,d,1]{C. Titus Brown}
 % ORCID: 0000-0001-6001-2677
-\author[b]{Dominik Moritz}
+% d, @ctitusbrown
+\author[b,e]{Dominik Moritz}
 % ORCID: 0000-0002-3110-1053
+% e, @domoritz
 \author[c]{Michael P. O'Brien}
 % ORCID: 0000-0002-5942-791X
-\author[c]{Felix Reidl}
+\author[c,f]{Felix Reidl}
 % ORCID: 0000-0002-2354-3003
-\author[a]{Taylor Reiter}
+% f, @quantumgravitas
+\author[a,g]{Taylor Reiter}
 % ORCID: 0000-0002-7388-421X
-\author[c,1]{Blair D. Sullivan}
+% g, @ReiterTaylor
+\author[c,h,1]{Blair D. Sullivan}
 % ORCID: 0000-0001-7720-6208
+% h, @BlairDSullivan
 
 \affil[a]{Department of Population Health and Reproduction, University of California Davis}
 \affil[b]{Paul G. Allen School of Computer Science and Engineering, University of Washington}
 \affil[c]{Department of Computer Science, NC State University}
+\affil[d]{Twitter: @ctitusbrown}
+\affil[e]{Twitter: @domoritz}
+\affil[f]{Twitter: @quantumgravitas}
+\affil[g]{Twitter: @ReiterTaylor}
+\affil[h]{Twitter: @BlairDSullivan}
 
 % Please give the surname of the lead author for the running footer
 \leadauthor{Brown}
@@ -132,7 +148,7 @@
 \significancestatement{Authors must submit a 120-word maximum statement about the significance of their research paper written at a level understandable to an undergraduate educated scientist outside their field of speciality. The primary goal of the Significance Statement is to explain the relevance of the work in broad context to a broad readership. The Significance Statement appears in the paper itself and is required for all research papers.}
 
 % Please include corresponding author, author contribution and author declaration information
-\authorcontributions{DM, MPO, FR, and BDS designed and implemented algorithms; CTB, DM, MPO, and FR developed software; CTB and TR conducted biological data analysis; CTB and BDS supervised work. All authors interpreted results, wrote text, created figures, and approved the submitted paper.}
+%\authorcontributions{}
 %\authordeclaration{Please declare any conflict of interest here.}
 \correspondingauthor{\textsuperscript{1}To whom correspondence should be addressed. E-mail: ctbrown@ucdavis.edu, vbsulliv@ncsu.edu}
 
@@ -186,10 +202,7 @@
 \showmatmethods % Display the Materials and Methods section
 
 
-\acknow{This work is funded in part by the Gordon and Betty Moore
-  Foundation’s Data-Driven Discovery Initiative through Grants
-  GBMF4551 to C. Titus Brown, GBMF4553 to Jeffrey Heer, and GBMF4560
-  to Blair D. Sullivan.  This work arose from the Barnraising for
+\acknow{This work arose from the Barnraising for
   Data-Intensive Discovery at Mt. Desert Island Biological Lab in May
   2016.  We thank Erich Schwarz, Martin Steinegger, Johannes
   S{\"o}ding, Mark Blaxter, and members of the Data Intensive Biology
@@ -197,6 +210,52 @@
  }%end of acknow
 
 \showacknow % Display the acknowledgments section
+
+\paragraph{Authors’ Contributions}
+
+DM, MPO, FR, and BDS designed and implemented algorithms; CTB, DM,
+MPO, and FR developed software; CTB and TR conducted biological data
+analysis; CTB and BDS supervised work. All authors interpreted
+results, wrote text, created figures, and approved the submitted
+paper.
+
+\paragraph{Availability of data and materials}
+
+The data sets used in this paper are available in the Sequence Read
+Archive under accessions SRR606249 (\texttt{podarV})and SRR1976948
+(\texttt{hu}, sample SB1).
+
+The source code for the index construction and search is available at
+\url{https://github.com/spacegraphcats/spacegraphcats}~\cite{spacegraphcats}.
+It is implemented in Python 3 under the 3-Clause BSD License. Version 1.1, used in this paper, is archived at DOI: 10.5281/zenodo.2505206.
+
+Snakemake \cite{snakemake} workflows to reproduce all of the analysis
+are available at
+\url{https://github.com/spacegraphcats/2018-paper-spacegraphcats/},
+and Jupyter Notebooks to recreate Figures 1, 2, 3, and 4(b) are in
+that same repository \cite{jupyter}. The notebooks rely on the numpy,
+matplotlib, pandas, scipy, and Vega-Lite libraries
+\cite{numpy,matplotlib,pandas,scipy,vegalite}. The workflow repository
+is archived at DOI: 10.5281/zenodo.2592780.
+
+\paragraph{Competing interests}
+
+The authors declare that they have no competing interests.
+
+\paragraph{Funding}
+
+This work is funded in part by the Gordon and Betty Moore Foundation’s
+Data-Driven Discovery Initiative through Grants GBMF4551 to C. Titus
+Brown, GBMF4553 to Jeffrey Heer, and GBMF4560 to Blair D. Sullivan.
+
+\paragraph{Ethics Approval}
+
+Not applicable.
+
+\paragraph{Additional Files} {\tt Additional File 1.pdf} contains
+supplementary text, figures, and tables.
+
+\subsection*{References}
 
 % \pnasbreak splits and balances the columns before the references.
 % If you see unexpected formatting errors, try commenting out this line
@@ -208,6 +267,9 @@
 
 \newpage
 \clearpage
+
+\beginsupplement
+
 \input{appendix.tex}
 
 \end{document}

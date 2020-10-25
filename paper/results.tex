@@ -13,7 +13,7 @@
 % FIGURE 1
 \begin{figure*}
  \centering
- \includegraphics[width=\linewidth]{figures/domset}
+ \includegraphics[width=\linewidth]{domset}
 	\caption{
  %(Reads ->) genomes -> DBG -> cDBG -> dominating set
  Starting from a collection of genomic sequences (\textbf a), we form an assembly graph
@@ -61,8 +61,8 @@ distance at most $r$ (lines~\ref{algstep:dtf_start}-\ref{algstep:dtf_end}) and
 then uses these distances to ensure each vertex is close to a dominator.
 The core of the efficient distance computation is based on
 \emph{distance-truncated transitive fraternal (dtf) augmentations}~\cite{felixThesis}
-which produce a directed graph in which each arc $uv$ is labeled with
-$\omega(uv)$, the distance from $u$ to $v$ in the original cDBG.\looseness-1
+which produce a directed graph~$\dir G_r$ in which each arc $uv$ is labeled with
+$\omega(uv)$, the distance from $u$ to $v$ in the original cDBG~$G$.\looseness-1
 
 Importantly, our implementation enhances the algorithm
 in~\cite{felixThesis} by computing only $r{-}1$ rounds of dtf-augmentations
@@ -72,16 +72,16 @@ the number of rounds, this vastly improves this algorithm's scalability.
 To maintain approximation guarantees on the dominating set size with fewer augmentations,
 we introduce a threshold parameter $\texttt{domThreshold}(r)$
 which affects the constant factor in our worst-case bound.
-We selected a threshold (see Supp. Material) that produces $r$-dominating sets of
+We selected a threshold (see Additional File 1) that produces $r$-dominating sets of
 comparable size to those computed by the algorithm in~\cite{felixThesis}. Additionally,
 we found that processing vertices using a minimum in-degree ordering (line~\ref{algstep:order})
-was superior to other common orders (e.g. arbitrary, min/max total degree, max in-degree).\looseness-1
+was superior to other common orders (\eg arbitrary, min/max total degree, max in-degree).\looseness-1
 
-\input{algorithms/r-domset}
+\input{r-domset}
 
 After computing an $r$-dominating set $D$ of $G$ with \algoref{alg:r-domset},
 \algoref{alg:index_pieces} partitions the vertices of $G$ into pieces so that
-each \piece $P[v]$ contains a connected set of vertices for which $v$ is the
+each \piece $P[v]$ contains a connected set of vertices for which $v$ is a
 closest member of $D$ (\autoref{fig:domset}). Finally, we use minimal perfect
 hashing (\texttt{mphfIndex})~\cite{limasset2017mphf} to compute an invertible
 index\footnote{an invertible function that defines both an index and the corresponding inverted index}
@@ -96,33 +96,33 @@ all genomic content assigned to \pieces that contain part of the query.
 Our implementations of these algorithms in \sgc can be run on
 metagenomic data with millions of cDBG nodes (\autoref{tab:data});
 indexing takes under an hour, enabling queries to complete in seconds
-to minutes (\autoref{tab:benchmarking}). See \appendixref{subsec:runtimes}
+to minutes (\autoref{tab:benchmarking}). See Additional File 1, \appendixref{subsec:runtimes}
 for full benchmarking (including cDBG construction). This
 provides us with a tool to systematically investigate assembly graph
 neighborhoods.
 
 % can collapse lines 11-12 and 17-18 similar to line 5 for space saving if necessary
-\input{algorithms/index_pieces}
-\input{algorithms/search}
+\input{index_pieces}
+\input{search}
 
 %Figure 2
 \begin{figure*}
   \centering
-  \subfloat{\includegraphics[width=0.4\linewidth,valign=c]{figures/partial_query_a}}%
+  \subfloat{\includegraphics[width=0.4\linewidth,valign=c]{partial_query_a}}%
   \hspace*{2cm}%
-  \subfloat{\includegraphics[width=0.3\linewidth,valign=c]{figures/partial_query_b}}%
+  \subfloat{\includegraphics[width=0.3\linewidth,valign=c]{partial_query_b}}%
   \hspace*{1cm}%
 	\caption{Neighborhood queries enable recovery of relevant genomic content.
   (a) Left Panel: Recovery of each of three target genomes from \podarv
   using queries at a variety of Jaccard distances from the target. Recovery is
-  calculated as containment of target genome in query neighborhood.
+  calculated as containment of target genome in query neighborhood. The solid lines represent logarithmic best-fit curves to the points.
   (b) Right Panel: Recovery of novel {\em Proteiniclasticum } content
-  from \podarv. Nucleotide content from two of the three known {\em P. ruminis} genomes
+  from \podarv. Nucleotide k-mers from two of the three known {\em P. ruminis} genomes
   overlapped approximately a megabase of sequence in the query neighborhood,
-  which also contained approximately 2.3 Mbp of unknown sequence; the third known genome, {\em P. ruminis CGMCC}, was omitted from the figure as it is 99.7\% similar to {\em P. ruminis DSM}. Numbers are in thousands of k-mers.}\label{fig:partial_query}
+  which also contained approximately 2.3 Mbp of unknown sequence; the third known genome, {\em P. ruminis CGMCC}, was omitted from the figure as it is 99.7\% similar to {\em P. ruminis DSM}. Numbers are in thousands of k-mers, estimated via sourmash.}\label{fig:partial_query}
 \end{figure*}
 
-\input{tables/benchmarking}
+\input{benchmarking}
 
 \subsection*{Neighborhood queries enable recovery of relevant unknown genomic content}
 %Use queries that aren't 100% present in the graph to try to retrieve things that are there.
@@ -180,14 +180,14 @@ contamination.
 The mean amino acid identity between {\em P. ruminis ML2} and the
 neighborhood assembly is above 95\%, suggesting that this is indeed
 the genome of the {\em Proteiniclasticum} variant, and that
-neighborhood query retrieves a full draft genome sequence (see Supp. Material~\ref{subsec:aai}).
+neighborhood query retrieves a full draft genome sequence (see Additional File 1, \appendixref{subsec:aai}).
 
 % FIGURE 3
 \begin{figure*}[th]
 	\centering
-    \subfloat{\includegraphics[width=0.34\linewidth]{figures/hu_strain_a}}
+    \subfloat{\includegraphics[width=0.34\linewidth]{hu_strain_a}}
     \hspace{.05\linewidth}
-    \subfloat{\includegraphics[width=0.55\linewidth]{figures/hu_strain_b}}
+    \subfloat{\includegraphics[width=0.55\linewidth]{hu_strain_b}}
 	\caption{Query neighborhoods in \hu metagenome are large and contain additional marker genes.
   (a) Left Panel: Neighborhood sizes are larger in \hu than in \podarv. Here
   we queried \podarv and \hu using each of 51 and 23 genomes fully present
@@ -235,14 +235,14 @@ We next investigated metagenomic content in the query
 neighborhoods.  As with the unknown variants in \podarv, we used
 CheckM to estimate genome bin completeness.  The estimated bin
 completeness for many of the query genomes is low
-(\appendixref{subsec:checkm}).
+(Additional File 1, \appendixref{subsec:checkm}).
 To see if the query neighborhoods contain missing marker genes, we
-assembled reads from the query neighborhoods using MEGAHIT.  However,
-we found little improvement in the completion metrics (\autoref{fig:hu_strain}(b)).
+assembled reads from the query neighborhoods using MEGAHIT, and found
+this improved the completion metrics (\autoref{fig:hu_strain}(b)).
 
 Investigating further, we found that the query neighborhood assemblies
 contain only between 4\% and 56\% of the neighborhood k-mer
-content (\appendixref{subsec:inclusion}), suggesting that MEGAHIT is
+content (Additional File 1, \appendixref{subsec:inclusion}), suggesting that MEGAHIT is
 not including many of the reads in the assembly of the query neighborhoods.
 This could result from high
 error rates and/or high strain variation in the underlying reads
@@ -266,8 +266,8 @@ approach to detecting marker genes \cite{CheckM}.
 %FIGURE 4
 \begin{figure*}[!h]
 	% \centering
-    \subfloat{\includegraphics[width=0.54\linewidth]{figures/hu_content_a}}\hspace*{0.01\linewidth}%
-    \subfloat{\includegraphics[width=0.45\linewidth]{figures/hu_content_b}}
+    \subfloat{\includegraphics[width=0.54\linewidth]{hu_content_a}}\hspace*{0.01\linewidth}%
+    \subfloat{\includegraphics[width=0.45\linewidth]{hu_content_b}}
     \caption{Query neighborhoods in \hu contain sequence variants and new genes.
       (a) Left Panel: gyrA has substantial minor sequence variation in several
       query neighborhoods. In this multidimensional scaling plot, each point
@@ -323,10 +323,10 @@ fragmented \plass assemblies; when the underlying nucleotide sequences
 are retrieved and used to construct a compact De Bruijn graph, the
 variation is visible as spurs off of a few longer paths (insets in
 \autoref{fig:hu_content}(a)). When we count the number of
-well-supported amino acid variants in isolated positions (i.e. ignoring linkage between variants)
+well-supported amino acid variants in isolated positions (\ie ignoring linkage between variants)
 we see that ten of the 23 neighborhoods have an increased number of gyrA
 genes, with four neighborhoods gaining a gyrA where none exists in
-the bin (\appendixref{subsec:gyrAnbhd}; see lowest inset
+the bin (Additional File 1, \appendixref{subsec:gyrAnbhd}; see lowest inset
 in \autoref{fig:hu_content}(a) for one example). Only one
 neighborhood, {\em M. bacterium}, loses its gyrA genes due to the
 stringent k-mer abundance trimming.
@@ -336,7 +336,7 @@ neighborhoods substantially increases the number of gyrA sequences associated wi
 
 We see this same pattern for many genes, including {\em alaS}, {\em gyrB},
 {\em rpb2}
-domain 6, {\em recA}, {\em rplB}, and {\em rpsC} (\appendixref{subsec:othergenes}).
+domain 6, {\em recA}, {\em rplB}, and {\em rpsC} (Additional File 1, \appendixref{subsec:othergenes}).
 This shows that multiple variants of those proteins are present within
 at least some of the neighborhoods and implies the presence of
 underlying nucleotide strain variation.
@@ -350,10 +350,10 @@ assemblies.
 
 In addition to capturing variants close to sequences in the bins, we
 identify many novel genes in the query neighborhoods. We used KEGG to
-annotate the \plass-assembled amino acid sequences, and subtracted any
-homolog already annotated in the genome bin.
-We also ignoreed homolog abundance such that each homolog is counted only
-once per neighborhood.
+annotate the \plass-assembled amino acid sequences, and then removed
+any annotations already present for genes in the genome bin.  We also
+ignored homolog abundance such that each homolog is counted only once
+per neighborhood.
 
 Novel functional content is distributed throughout pathways present in
 the genome bins, and increases functionality associated with binned
