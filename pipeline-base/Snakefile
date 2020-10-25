@@ -204,6 +204,28 @@ rule all:
         "checkm-hardtrim-plass.txt",
         "megahit-containment.csv"
 
+rule catlas_searches:
+    input:
+        catlas_search('conf/podar-ref.json'),
+        catlas_search('conf/podar-ref.json', cdbg_only=True),
+        catlas_search('conf/podarV.json'),
+        signatures(recover_fuso, recover_ruminis),
+        signatures(strain_gingivalis, strain_denticola, strain_bacteroides),
+        signatures(podar_ref_genomes, hu_bin_genomes),
+        catlas_search('conf/podarV-ruminis.json', suffix='_ruminis'),
+        catlas_search('conf/podarV-fuso.json', suffix='_fuso'),
+        catlas_search('conf/podarV-denticola.json', suffix='_denticola'),
+        catlas_search('conf/podarV-bacteroides.json', suffix='_bacteroides'),
+        catlas_search('conf/podarV-gingivalis.json', suffix='_gingivalis'),
+        "bacteroides.csv", "denticola.csv", "gingivalis.csv",
+	"bacteroides.x.contigs.cont.csv",
+	"denticola.x.contigs.cont.csv",
+	"gingivalis.x.contigs.cont.csv",
+        catlas_search('conf/hu-s1.json'),
+        catlas_extract('conf/hu-s1.json'),
+        signatures(megahit_assemblies('conf/hu-s1.json')),
+        signatures(catlas_extract('conf/hu-s1.json'))
+
 rule download_podar_ref_genomes:
     output:
         podar_ref_genomes
