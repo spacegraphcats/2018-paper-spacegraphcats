@@ -103,7 +103,7 @@ def plass_assemblies(conf_file):
     z = []
     for x in filenames:
         x = os.path.basename(x)
-        output = dirname + '/{}.cdbg_ids.reads.fa.gz.plass.cdhit.fa.clean.cut.dup.fa'.format(x)
+        output = dirname + '/{}.cdbg_ids.reads.gz.plass.cdhit.fa.clean.cut.dup.fa'.format(x)
         z.append(output)
 
     return z
@@ -124,7 +124,7 @@ def megahit_assemblies(conf_file):
     z = []
     for x in filenames:
         x = os.path.basename(x)
-        output = dirname + '/{}.cdbg_ids.reads.fa.gz.megahit.fa'.format(x)
+        output = dirname + '/{}.cdbg_ids.reads.gz.megahit.fa'.format(x)
         z.append(output)
 
     return z
@@ -648,7 +648,7 @@ rule megahit_read_containment:
 rule megahit_read_containment_summary:
     input:
         add_suffix_to_search_output('conf/hu-s1.json',
-                                    'cdbg_ids.reads.fa.gz.megahit.cont.csv')
+                                    'cdbg_ids.reads.gz.megahit.cont.csv')
     output:
         "megahit-containment.csv"
     shell:
